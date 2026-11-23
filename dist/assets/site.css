@@ -139,3 +139,8 @@ footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:va
   .srow .sbar{grid-column:1 / -1;order:3}
 }
 @media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+
+.langs{display:flex;gap:2px;flex-wrap:wrap;font-size:.8rem}
+.langs a{color:var(--muted);text-decoration:none;padding:4px 7px;border-radius:5px;font-weight:500}
+.langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
+header.top .wrap{row-gap:4px}
