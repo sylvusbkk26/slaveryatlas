@@ -9,3 +9,5 @@ Histoire comparée de l'esclavage par civilisation et par époque.
 
 Déploiement : Cloudflare Workers Builds, à chaque push sur `main` (`npx wrangler deploy`).
 Reconstruire avant de committer : `python3 build/build.py`.
+
+Dépôt relié à Cloudflare Workers Builds le 23/11/2026.
