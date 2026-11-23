@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>奴隶制图谱</title>
+<meta name="description" content="按文明与时代比较的奴隶制历史：规模、身份、废除与历史学家的争论。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : atlas d'archives — encre bleu de fer sur papier gris froid, ocre pour les chiffres, rouge sombre pour les mises en garde.
+   Layout : bandeau de navigation fixe, colonne de lecture ~68ch, outils (frise, tableau) en pleine largeur. */
+:root{
+  --paper:#f3f4f2;
+  --panel:#ffffff;
+  --ink:#1b2431;
+  --muted:#5b6574;
+  --rule:#d5d9dd;
+  --accent:#1f4f7a;
+  --ochre:#a86a12;
+  --warn:#8e2b2b;
+  --chip:#e7ebef;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+    --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+  --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:600}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.read{max-width:68ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-lg{display:flex;flex-direction:column;gap:40px}
+
+/* Navigation */
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:.92rem;font-weight:500}
+nav.main a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.proto{background:var(--chip);color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px}
+.proto strong{color:var(--warn)}
+
+main{padding:40px 0 72px}
+section.view{display:none}
+section.view.active{display:block}
+
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);font-weight:600}
+.lead{font-size:1.15rem;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* Chiffres clés */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.fig .n{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--ochre);font-variant-numeric:tabular-nums;line-height:1.1}
+.fig .l{font-weight:600}
+.fig .s{font-size:.85rem;color:var(--muted)}
+
+/* Frise */
+.frise{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;overflow-x:auto}
+.frise-inner{min-width:760px;display:flex;flex-direction:column;gap:5px}
+.frow{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px}
+.frow .name{font-size:.84rem;text-align:right;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+.bar{position:absolute;top:2px;height:12px;border-radius:3px;background:var(--accent);opacity:.85;border:0;padding:0;cursor:pointer}
+.bar.race{background:var(--warn)}
+.bar:hover{opacity:1}
+.axis{display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* Cartes civilisations */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.live{border-left:4px solid var(--ochre)}
+.card .soon{font-size:.75rem;color:var(--muted)}
+.card.live .soon{color:var(--ochre);font-weight:600}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.principles div{border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+
+/* Comparer */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.filters select,.filters input[type=search]{font:inherit;font-size:.92rem;padding:7px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:170px}
+.filters .chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:.9rem;padding-bottom:7px}
+.count{font-size:.88rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--chip);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--ochre)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .civ{font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);margin:2px 4px 0 0;white-space:nowrap}
+.pill.oui{color:var(--warn)}
+.pill.flag{border:1px solid var(--rule);background:transparent}
+.yes{color:var(--warn);font-weight:600}
+
+/* Page modèle */
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fiche dd{margin:0;font-weight:500}
+.callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.callout.blue{border-left-color:var(--accent)}
+.debate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.debate>div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.scale{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px}
+.srow{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:10px;align-items:center;font-size:.86rem}
+.sbar{height:14px;background:var(--chip);border-radius:3px;position:relative;overflow:hidden}
+.sbar span{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.sbar span.range{background:var(--ochre);opacity:.55}
+.srow .v{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+ul.src{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.back{font-size:.88rem;text-decoration:none;font-weight:500}
+ol.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;position:relative;padding-left:16px}
+ol.timeline li::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ochre)}
+ol.timeline .yr{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+@media (max-width:560px){ ol.timeline li{grid-template-columns:1fr;gap:2px} }
+footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){
+  nav.main{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  nav.main a{white-space:nowrap}
+  .srow{grid-template-columns:1fr auto}
+  .srow .sbar{grid-column:1 / -1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#accueil">奴隶制图谱</a>
+    <nav class="main" aria-label="主导航">
+      <a href="#accueil">首页</a>
+      <a href="#comparer">比较</a>
+      <a href="#civilisations">文明</a>
+      <a href="#abolitions">废除</a>
+      <a href="#debat">争论</a>
+      <a href="#aujourdhui">当代</a>
+      <a href="#methode">方法</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ACCUEIL -->
+<section class="view" id="v-accueil">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">比较史 · 从汉谟拉比到今天</span>
+      <h1>奴隶制：一部涉及所有文明的历史</h1>
+      <p class="lead">美索不达米亚、罗马、中国、朝鲜、哈里发国家、非洲诸王国、奥斯曼帝国、克里米亚鞑靼人、巴巴里海盗、阿兹特克人、欧洲列强：几乎所有重要社会都曾实行奴隶制。本网站将这些制度并列呈现，连同其数据、规则与终结方式，使每个人都能依据事实进行比较。</p>
+    </div>
+
+    <div class="figures" aria-label="关键数据">
+      <div class="fig"><span class="n">1250万</span><span class="l">大西洋奴隶贸易</span><span class="s">1501年至1875年间被装船运走的非洲人，其中138万由悬挂法国旗帜的船只运载（SlaveVoyages数据库）。</span></div>
+      <div class="fig"><span class="n">800万至1700万</span><span class="l">东方奴隶贸易</span><span class="s">撒哈拉、红海、印度洋，约公元650年至1900年。估计极不确定（Alencastro、Austen）。</span></div>
+      <div class="fig"><span class="n">200万至500万</span><span class="l">克里米亚鞑靼人的掠袭</span><span class="s">在波兰-立陶宛和莫斯科公国被掳走的俘虏，1441年至1774年（İnalcık、Charnysh与Lall）。</span></div>
+      <div class="fig"><span class="n">1981</span><span class="l">最后一次废除</span><span class="s">毛里塔尼亚，以法令形式废除；直到2007年奴隶制才在该国被定为刑事犯罪。沙特阿拉伯和也门：1962年。</span></div>
+    </div>
+
+    <div class="stack">
+      <h2>奴隶制度时间轴</h2>
+      <p class="muted read">每根横条覆盖该制度存在的时期。红色表示奴隶身份依据种族出身而被指定的制度。点击横条可打开比较表。</p>
+      <div class="frise" role="group" aria-label="时间轴">
+        <div class="frise-inner" id="frise"></div>
+        <div class="axis"><span></span><div class="ticks" id="ticks"></div></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>基于战争、债务、出生或宗教的身份</span><span><i style="background:var(--warn)"></i>依种族出身指定的身份</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">非线性比例：为便于阅读，古代部分已被压缩。</p>
+    </div>
+
+    <div class="stack">
+      <h2>按文明浏览</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="stack">
+      <h2>本网站如何进行比较</h2>
+      <div class="principles">
+        <div><h3>逐项标准比较</h3><p class="muted">规模、持续时间、占人口比例、法律地位、世袭传承、解放、终结。没有任何单一标准足以对一个制度进行归类。</p></div>
+        <div><h3>不能相加的数字</h3><p class="muted">跨越三个世纪的流量、某一天的存量与占人口的比例是三种不同的度量。每个数字都会注明它属于哪一种。</p></div>
+        <div><h3>每项估计均注明出处</h3><p class="muted">各个区间都归于提出它的历史学家，有争议的数字也会如实标明。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARER -->
+<section class="view" id="v-comparer">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">工具</span>
+      <h1>比较各奴隶制度</h1>
+      <p class="lead">按地区筛选，单独查看世袭或种族化的制度，按日期排序。“有争议”“二手资料”和“待核实”标签表明每个数字的可靠程度。</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">搜索<input type="search" id="f-q" placeholder="罗马、nobi、达荷美……"></label>
+        <label for="f-region">地区<select id="f-region"><option value="">全部</option></select></label>
+        <label for="f-sort">排序方式<select id="f-sort">
+          <option value="vol">估计规模（从大到小）</option>
+          <option value="part">占人口比例（从高到低）</option>
+          <option value="dur">持续时间（从长到短）</option>
+          <option value="end">终结时间最近者优先</option>
+          <option value="start">按时间顺序（最早者优先）</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> 仅显示世袭制</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> 仅显示种族标准</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">制度 ↕</button></th>
+            <th><button type="button" data-sort="start">时期 ↕</button></th>
+            <th>规模或占人口比例</th>
+            <th>如何沦为奴隶</th>
+            <th>世袭</th>
+            <th>种族标准</th>
+            <th>解放</th>
+            <th><button type="button" data-sort="end">终结 ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>现代奴役：性质不同的数字</strong>
+        <p>国际劳工组织、Walk Free和国际移民组织估计，2021年处于现代奴役状态的人数为5000万（2800万为强迫劳动，2200万为强迫婚姻）。这是在某一天测得的存量：不能与大西洋奴隶贸易的1250万相比较，后者是375年间的累计总数。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARESQUES -->
+<section class="view" id="v-barbaresques">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">地中海 · 1530-1830</span>
+      <h1>巴巴里海盗与欧洲奴隶</h1>
+      <p class="lead">在三个世纪里，阿尔及尔、突尼斯、的黎波里和萨累的海盗在海上和欧洲沿岸俘获信奉基督教的水手、渔民和村民，将他们在马格里布出售或扣押以索取赎金。</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>时期</dt><dd>约1530年至1830年</dd></div>
+      <div><dt>估计规模</dt><dd>100万至125万（Davis，推算有争议）</dd></div>
+      <div><dt>有据可查的人数</dt><dd>17世纪为2.5万至3.5万</dd></div>
+      <div><dt>沦为奴隶的方式</dt><dd>海上劫掠、沿海掠袭</dd></div>
+      <div><dt>世袭</dt><dd>否</dd></div>
+      <div><dt>标准</dt><dd>宗教（基督徒）</dd></div>
+      <div><dt>脱离途径</dt><dd>赎买、改宗、逃亡</dd></div>
+      <div><dt>终结</dt><dd>1816年（阿尔及尔遭炮击），1830年（法国征服）</dd></div>
+    </dl>
+
+    <div class="stack read">
+      <h2>劫掠与赎金的经济</h2>
+      <p>巴巴里诸摄政国是奥斯曼帝国自治程度不一的附庸，它们将海上劫掠作为一项国家活动。俘虏被用于划桨战船、公共工程或家庭劳役，许多人被转卖给其家人或宗教修会。三位一体会（创立于1198年）和施恩会（传统上认为创立于1218年）在整个基督教世界募集资金，以赎回俘虏。</p>
+      <p>约1650年，仅阿尔及尔一地就有3万多名欧洲奴隶。掠袭波及意大利、西班牙、普罗旺斯，也波及爱尔兰、英格兰和冰岛。</p>
+      <p>终结来自外部。1816年，埃克斯茅斯勋爵（Lord Exmouth）率领的英荷舰队炮击阿尔及尔，使约1,200名奴隶获释（数字因来源而异）。1830年法国征服阿尔及尔，海上劫掠随之终结。</p>
+    </div>
+
+    <div class="stack">
+      <h2>有多少人？Davis的数字及其批评</h2>
+      <div class="scale" aria-label="数量级比较">
+        <div class="srow"><span>有据可查的存量（17世纪）</span><div class="sbar"><span style="left:0;width:2.8%"></span></div><span class="v">2.5万-3.5万</span></div>
+        <div class="srow"><span>巴巴里，估计总数</span><div class="sbar"><span style="left:0;width:80%"></span><span class="range" style="left:80%;width:20%"></span></div><span class="v">100万-125万</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">横条按0-125万的比例绘制。赭色部分表示估计值的高端不确定性。</p>
+      <div class="debate">
+        <div>
+          <h3>Robert C. Davis的估计</h3>
+          <p>在《<em>Christian Slaves, Muslim Masters</em>》（《基督徒奴隶，穆斯林主人》，2003年）中，Davis估计1530年至1780年间“几乎可以肯定有100万、也许多达125万”欧洲人被奴役。他以观察到的人数为出发点，假定每年需要补充四分之一（死亡、赎回、改宗），即每年约8,500次俘获。</p>
+          <p>他还提出，1500年至1650年间，被带往巴巴里的欧洲基督徒很可能多于被运往美洲的非洲人。</p>
+        </div>
+        <div>
+          <h3>批评意见</h3>
+          <p>Peter Earle认为，以最高峰时期（1580-1680年）为基础进行推算夸大了总数。John Wright强调回溯性计算的脆弱。Ehud Toledano批评其缺乏奥斯曼方面的史料，Jarbel Rodriguez则批评其混淆了可赎俘虏与奴隶。</p>
+          <p>Davis本人也承认，他的方法是现有档案条件下唯一可行的方法，而非最好的方法。</p>
+        </div>
+      </div>
+      <div class="callout blue read">
+        <strong>比较时应记住的要点</strong>
+        <p>欧洲人也曾是大规模奴隶贸易的受害者，既包括此处所述，也包括鞑靼人的掠袭（200万至500万俘虏）。Davis的数字是一个偏高的数量级，而非精确统计。就其全部存续期而言，两种奴隶贸易相差一个数量级：巴巴里为100万至125万，大西洋为1250万。巴巴里的俘虏可以被赎回，其身份也不会传给子女。</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>资料来源</h2>
+      <ul class="src">
+        <li>Robert C. Davis，<em>Christian Slaves, Muslim Masters</em>（《基督徒奴隶，穆斯林主人》），Palgrave Macmillan，2003年。介绍：<a href="https://news.osu.edu/when-europeans-were-slaves--research-suggests-white-slavery-was-much-more-common-than-previously-believed/">Ohio State University News, 2004</a>。</li>
+        <li>争论与批评：<a href="https://mg.co.za/article/2004-03-11-book-reopens-arguments-about-slave-raids-on-europe/">Mail &amp; Guardian, 2004</a>；<a href="https://en.wikipedia.org/wiki/Barbary_slave_trade">Wikipedia, Barbary slave trade</a>（二手资料）。</li>
+        <li>赎俘修会：<a href="https://en.wikipedia.org/wiki/Mercedarians">Wikipedia, Mercedarians</a>（二手资料）。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CIVILISATIONS -->
+<section class="view" id="v-civilisations">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">按文明浏览</span>
+      <h1>所有文明</h1>
+      <p class="lead">每个页面都遵循相同的框架：时期、规模、如何沦为奴隶、身份是否世袭、解放、奴隶制的终结、争论与资料来源。</p>
+    </div>
+    <div class="stack-lg" id="civgroups"></div>
+  </div>
+</section>
+<!-- TRAITE ATLANTIQUE -->
+<section class="view" id="v-traite-atlantique">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">大西洋 · 1501-1888</span>
+      <h1>大西洋奴隶贸易与殖民地奴隶制</h1>
+      <p class="lead">1501年至1875年间，欧洲和美洲的船只将约1250万非洲人运往美洲，他们大多是从非洲国家和商人手中购得的。他们在巴西、加勒比地区和美国南部的种植园中沦为奴隶。</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>时期</dt><dd>1501年至1875年（奴隶贸易）；奴隶制延续至1888年</dd></div>
+      <div><dt>装船人数</dt><dd>1250万（SlaveVoyages）</dd></div>
+      <div><dt>活着登岸人数</dt><dd>≈ 1070万</dd></div>
+      <div><dt>海上死亡率</dt><dd>≈ 12%至16%</dd></div>
+      <div><dt>沦为奴隶的方式</dt><dd>从非洲国家和商人处购买、战争、掠袭</dd></div>
+      <div><dt>世袭</dt><dd>是</dd></div>
+      <div><dt>标准</dt><dd>种族（肤色）</dd></div>
+      <div><dt>终结</dt><dd>英国1833年，法国1848年，美国1865年，巴西1888年</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>谁在运送俘虏？</h2>
+      <div class="scale" aria-label="按船旗统计的装船非洲人">
+        <div class="srow"><span>葡萄牙与巴西</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">585万</span></div>
+        <div class="srow"><span>英国</span><div class="sbar"><span style="left:0;width:55.7%"></span></div><span class="v">326万</span></div>
+        <div class="srow"><span>法国</span><div class="sbar"><span style="left:0;width:23.6%"></span></div><span class="v">138万</span></div>
+        <div class="srow"><span>西班牙与乌拉圭</span><div class="sbar"><span style="left:0;width:18.2%"></span></div><span class="v">106万</span></div>
+        <div class="srow"><span>荷兰</span><div class="sbar"><span style="left:0;width:9.5%"></span></div><span class="v">55万</span></div>
+        <div class="srow"><span>美国</span><div class="sbar"><span style="left:0;width:5.2%"></span></div><span class="v">31万</span></div>
+        <div class="srow"><span>丹麦与波罗的海地区</span><div class="sbar"><span style="left:0;width:1.9%"></span></div><span class="v">11万</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">1501年至1875年间装船的非洲人，按船只所挂旗帜统计。来源：SlaveVoyages数据库，估计值。</p>
+    </div>
+
+    <div class="stack read">
+      <h2>法国：南特、圣多明各与《黑人法典》</h2>
+      <p>法国共组织了4,118次贩奴航行，其中44%从南特出发，其次是勒阿弗尔、拉罗谢尔、圣马洛和翁弗勒尔。1685年的《黑人法典》（Code noir）为其殖民地的奴隶制提供了法律框架，并将奴隶界定为动产。</p>
+      <p>1789年，圣多明各有45万多名奴隶，而白人约3万，有色自由人约3万；该地主导着世界蔗糖生产。据同时代作者Hilliard d'Auberteuil所述，1680年至1776年间有80多万非洲人被运到那里，仅有29万人存活。</p>
+      <p>独立之后，1825年的敕令强迫海地向前殖民者支付1.5亿法郎的赔款，1838年减至9000万法郎。连同相关贷款，海地一直偿还到1921-1922年。</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>惊人的人口反差</strong>
+      <p>直接在北美登岸的非洲人仅约38.8万，但美国在1860年有近400万奴隶：那里的奴隶人口每十年增长约25%。而在巴西和加勒比地区，奴隶人口每十年减少约20%（Michael Tadman）。蔗糖体制只有依靠新俘虏的不断输入才能维持。</p>
+    </div>
+
+    <div class="stack">
+      <h2>历史学家认为这一制度的独特之处</h2>
+      <div class="debate">
+        <div>
+          <h3>独一无二的组合</h3>
+          <p>单凭任何一项标准都不足以使大西洋奴隶贸易与众不同：其他奴隶贸易持续时间更长，或规模相当。使其独特的是这些因素的组合。奴隶身份是世袭的，并依肤色而指定。出口型种植园被纳入欧洲资本主义之中。流量集中在约350年间，而奴隶与奴隶主的后代如今是同一国家的公民。</p>
+        </div>
+        <div>
+          <h3>奴隶制与资本主义</h3>
+          <p>Eric Williams（1944年）认为，奴隶制的利润帮助资助了工业革命。Stanley Engerman估计这些利润不到英国经济的5%，Seymour Drescher则表明，英国废除这一制度时它并未衰落。相反，Joseph Inikori强调整个大西洋贸易的分量。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>废除</h2>
+      <p>法国于1794年2月4日废除奴隶制；波拿巴于1802年恢复奴隶贸易，最终废除是在1848年。英国于1807年禁止奴隶贸易，1833年废除奴隶制，并向奴隶主支付了2000万英镑；奴隶则一无所得。</p>
+      <p>1808年至1867年间，皇家海军西非分舰队（West Africa Squadron）截获约1,600艘贩奴船，解放约15万非洲人，代价是近1,600名水兵死亡。Chaim Kaufmann和Robert Pape认为这是“现代史上代价最高昂的国际道德行动，远超其他”。</p>
+    </div>
+
+    <div class="stack read">
+      <h2>资料来源</h2>
+      <ul class="src">
+        <li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages，估计数据</a>（Eltis与Richardson）。</li>
+        <li>Henry Louis Gates Jr.，<a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">“How many slaves landed in the US?”</a>，PBS。</li>
+        <li>BnF Heritage，<a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">“Slave trade”</a>与<a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">“Haiti's independence debt”</a>。</li>
+        <li>UCL，<a href="https://www.ucl.ac.uk/lbs/project/context/">Legacies of British Slavery</a>。</li>
+        <li>Kaufmann与Pape，<a href="https://www.cambridge.org/core/journals/international-organization/article/abs/explaining-costly-international-moral-action-britains-sixtyyear-campaign-against-the-atlantic-slave-trade/C13419C7C80556BF07280DAAFDC2C9DD"><em>International Organization</em>, 1999</a>。</li>
+        <li>人口统计与Williams之争：<a href="https://en.wikipedia.org/wiki/Atlantic_slave_trade">Wikipedia, Atlantic slave trade</a>与<a href="https://en.wikipedia.org/wiki/Capitalism_and_Slavery">Capitalism and Slavery</a>（二手资料）。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRAITES ORIENTALES -->
+<section class="view" id="v-traites-orientales">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">撒哈拉、红海、印度洋 · 650-1900</span>
+      <h1>东方奴隶贸易</h1>
+      <p class="lead">在近十二个世纪里，非洲俘虏被穿越撒哈拉、经由红海以及从斯瓦希里海岸运往北非、阿拉伯半岛、海湾地区、波斯和印度。这是各大奴隶贸易中持续时间最长、也最缺乏精确度量的一种。</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>时期</dt><dd>约650年至1900年；废除一直延续到1962-1981年</dd></div>
+      <div><dt>估计规模</dt><dd>800万至1700万，据不同作者高达2500万</dd></div>
+      <div><dt>仅撒哈拉一线</dt><dd>742万（Lovejoy）</dd></div>
+      <div><dt>沦为奴隶的方式</dt><dd>掠袭、战争、从非洲国家购买</dd></div>
+      <div><dt>世袭</dt><dd>不一；妾所生子女往往为自由人</dd></div>
+      <div><dt>标准</dt><dd>以宗教为主；肤色偏见存在争议</dd></div>
+      <div><dt>用途</dt><dd>家务、后宫、军队，少量种植园</dd></div>
+      <div><dt>终结</dt><dd>沙特阿拉伯和也门1962年，阿曼1970年，毛里塔尼亚1981年</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>有多少人？估计值相差可达三倍</h2>
+      <div class="scale" aria-label="不同作者对东方奴隶贸易的估计">
+        <div class="srow"><span>Alencastro</span><div class="sbar"><span style="left:0;width:32%"></span></div><span class="v">≈ 800万</span></div>
+        <div class="srow"><span>Segal</span><div class="sbar"><span style="left:0;width:46%"></span><span class="range" style="left:46%;width:10%"></span></div><span class="v">1150万-1400万</span></div>
+        <div class="srow"><span>M'Bokolo（1998年）</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 1700万</span></div>
+        <div class="srow"><span>Austen，Pétré-Grenouilleau沿用</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 1700万</span></div>
+        <div class="srow"><span>Bairoch</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">≈ 2500万</span></div>
+        <div class="srow"><span>大西洋奴隶贸易，作为参照</span><div class="sbar"><span style="left:0;width:50%;background:var(--warn)"></span></div><span class="v">1250万</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">横条按0-2500万的比例绘制。东方奴隶贸易跨越约1,250年，大西洋奴隶贸易约375年。</p>
+      <div class="callout read">
+        <strong>差距为何如此之大</strong>
+        <p>历史学家Klas Rönnbäck指出，对于650年至1400年的几个世纪，数字“只能靠猜测”：差距主要来自对几乎没有数据的中世纪所作的假设。而大西洋奴隶贸易则是逐船重建的。流传的“数千万乃至数亿”之类数字被专家们普遍认为严重夸大。</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>一种以家务和军事为主、女性比例更高的奴隶贸易</h2>
+      <p>大西洋奴隶贸易运送的男女比例约为二比一。东方奴隶贸易则更多地寻求女性，用于纳妾和家务劳动。男性充当仆役、士兵或苦力。少数男孩被阉割成为宦官；据描述，这种手术的死亡率很高，但尚无可靠的百分比。</p>
+      <p>穆斯林世界也曾使前奴隶成为精英：马穆鲁克是皈依伊斯兰教的奴隶士兵，于1250年至1517年统治埃及。</p>
+      <p>种植园依然罕见，但有两个例外。僧祇奴起义（Zanj，869-883年，巴士拉附近）动员了5万多名盐沼奴隶。19世纪，桑给巴尔的丁香种植园依赖奴隶，而奴隶占当地人口的比例高达三分之二。</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>为何后代如此之少？</strong>
+      <p>中东几乎没有明显可见的非洲裔离散群体。历史学家将其解释为部分男性被阉割、女性比例高，以及妾所生子女（往往为自由人）被融入社会。这些因素各自的分量尚无量化。与美洲的这一反差，也在一定程度上解释了为何这种奴隶贸易在集体记忆中分量较轻。</p>
+    </div>
+
+    <div class="stack">
+      <h2>围绕“被掩盖的种族灭绝”的争论</h2>
+      <div class="debate">
+        <div>
+          <h3>Tidiane N'Diaye</h3>
+          <p>在《<em>Le Génocide voilé</em>》（《被掩盖的种族灭绝》，2008年）中，这位法国-塞内加尔人类学家估计被运往东方者达1700万，并称之为种族灭绝。他将约100万后代与大西洋奴隶贸易的7000万后代相对照。他给出的数量级与学术文献接近，但后两个数字没有出处。</p>
+        </div>
+        <div>
+          <h3>批评意见</h3>
+          <p>Moritz Behrendt在2010年的一篇书评中批评他几乎只依赖欧洲探险家的记述，将差异极大的各种制度视为一个整体，并把这种奴隶贸易称为“阿拉伯-穆斯林的”，却不把大西洋奴隶贸易称为“欧洲-基督教的”。N'Diaye所称四分之三被阉割者死亡的数字，在已查到的学术资料中找不到任何依据。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>迟来的废除</h2>
+      <p>在奥斯曼帝国，1908年仍有女奴被出售。此后正式废除陆续进行：伊朗和约旦1929年，巴林1937年，科威特1949年，卡塔尔1952年，沙特阿拉伯和也门1962年，阿曼1970年，毛里塔尼亚1981年。1948年，反奴隶制协会（Anti-Slavery Society）估计阿拉伯半岛约有100万名奴隶。这些废除几乎全部是在英国或国际压力下实现的。</p>
+    </div>
+
+    <div class="stack read">
+      <h2>资料来源</h2>
+      <ul class="src">
+        <li>Paul Lovejoy，<em>Transformations in Slavery</em>（《奴隶制的转变》），第3版，2012年：<a href="https://www.bu.edu/africa/files/2023/11/Slave-Trade-Tables.docx.pdf">统计表，Boston University</a>。</li>
+        <li>Klas Rönnbäck，<a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">“Slave trades out of Africa”</a>，African Economic History Network。</li>
+        <li>比较估计：<a href="https://human.libretexts.org/Courses/Lumen_Learning/Book:_History_of_World_Civilization_II-2_(Lumen)/04:_2:_African_Slave_Trade/04.2:_TransSaharan_Slave_Trade">LibreTexts</a>（二手资料）。</li>
+        <li>Moritz Behrendt，<a href="https://qantara.de/node/10064">《<em>Le Génocide voilé</em>》书评</a>，Qantara.de，2010年。</li>
+        <li>废除与僧祇奴：<a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a>（二手资料）。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-mesopotamie-egypte"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">古代 · 公元前3千纪至前1千纪</span><h1>美索不达米亚与古埃及</h1><p class="lead">已知最古老的法典就已对奴隶制作出规定。在美索不达米亚和埃及，人们因战争、债务或为摆脱贫困而卖身而沦为奴隶。</p></div><dl class="fiche"><div><dt>时期</dt><dd>公元前3千纪至前1千纪</dd></div><div><dt>规模</dt><dd>无可靠估计</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、债务、卖身或出卖子女</dd></div><div><dt>世袭</dt><dd>未确定</dd></div><div><dt>种族标准</dt><dd>无</dd></div><div><dt>关键文本</dt><dd>《汉谟拉比法典》，约公元前1753年</dd></div></dl><div class="stack read"><h2>《汉谟拉比法典》</h2><p>该法典区分三类人：<em>awīlum</em>（享有完全权利的自由人）、<em>muškēnum</em>，以及<em>wardum</em>或<em>amtum</em>，即男奴或女奴。奴隶在法典中是附带担保出售的财产：第278至281条规定买卖担保，第15至20条惩处窝藏逃奴者，第282条规定否认其主人的奴隶要被割去耳朵。</p><p>一条常被引用的规定，即第117条，据称在三年后释放因债务被卖之人。这一点仍有待在学术译本中核实。关于奴隶在美索不达米亚人口中所占比例，目前没有任何估计。</p></div><div class="stack read"><h2>埃及：与其说是奴隶，不如说是仆役</h2><p>被译为“奴隶”的埃及词语，所指更接近劳工或仆役。奴隶可以拥有财产，并享有某些保护。新王国时期，来自努比亚、利比亚和亚洲的外国俘虏所构成的奴隶制有所扩展。</p><p>奴隶制并不是埃及占主导地位的生产方式。</p></div><div class="callout blue read"><strong>金字塔并非由奴隶建造</strong><p>埃及学家一致认为：大金字塔是由被征调或领取报酬的劳工建造的。希罗多德所述“10万奴隶”的数字缺乏依据。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">Wikipedia, Code of Hammurabi</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Egypt">Wikipedia, Slavery in ancient Egypt</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-grece"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">古代 · 公元前8世纪至前2世纪</span><h1>希腊：雅典与斯巴达的黑劳士</h1><p class="lead">雅典民主在一定程度上依赖奴隶的劳动，这些奴隶大多不是希腊人。斯巴达统治着人数远超其公民的黑劳士（helots）人口。</p></div><dl class="fiche"><div><dt>雅典</dt><dd>2万至8万名奴隶（有争议）</dd></div><div><dt>斯巴达</dt><dd>17万至22.4万名黑劳士</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、海盗、贸易；黑劳士则源于征服</dd></div><div><dt>世袭</dt><dd>是</dd></div><div><dt>标准</dt><dd>族群（非希腊人），而非种族</dd></div><div><dt>解放</dt><dd>公元前4世纪的雅典较为常见</dd></div></dl><div class="stack"><h2>雅典：一个争议极大的数字</h2><div class="scale"><div class="srow"><span>现代低估值</span><div class="sbar"><span style="left:0;width:5.0%"></span></div><span class="v">≈ 2万</span></div><div class="srow"><span>现代高估值</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">8万及以上</span></div><div class="srow"><span>古代人口普查（可疑）</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">40万</span></div></div><p class="muted" style="font-size:.82rem">横条按0-40万的比例绘制。由阿特纳奥斯（Athenaeus）转述的40万这一数字被大多数研究者否定。</p></div><div class="stack read"><h2>雅典</h2><p>法勒鲁姆的德米特里乌斯（公元前317-前307年）所做的人口普查记有2.1万名公民、1万名外邦人和40万名奴隶，大多数历史学家怀疑这一数字。现代估计从约2万到8万或更多不等。劳里昂银矿据称使用了约3万名奴隶。</p><p>奴隶来自战争、海盗和贸易，主要是“蛮族”：在一份32名被没收奴隶的名单中，有13人是色雷斯人。梭伦在公元前6世纪禁止雅典人因债务沦为奴隶。亚里士多德将奴隶理论化为“有生命的工具”，并提出“天生”奴隶的学说。</p></div><div class="stack read"><h2>斯巴达的黑劳士</h2><p>拉科尼亚和美塞尼亚的黑劳士是国家的集体财产，被束缚于土地，须缴纳部分收成。据亚里士多德记载，监察官每年都向他们宣战，以便<em>krypteia</em>（秘密警察）可以杀死他们而不致招来宗教上的污秽。修昔底德记述了约2,000名曾被许诺获得自由的黑劳士的失踪。</p><p>公元前369年，伊巴密浓达解放了美塞尼亚。</p></div><div class="callout blue read"><strong>奴隶还是农奴？</strong><p>古人自己也犹豫不决：克里提亚斯称黑劳士为“最彻底的奴隶”，波吕克斯则把他们置于“自由人与奴隶之间”。历史学家Jean Ducat称之为农奴制。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Greece">Wikipedia, Slavery in ancient Greece</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Helots">Wikipedia, Helots</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-rome"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">古代 · 公元前2世纪 – 公元5世纪</span><h1>罗马，一个奴隶制社会</h1><p class="lead">罗马是历史上的大型奴隶制社会之一：数以百万计的战俘在其庄园、矿山和家宅中劳作。但获释奴隶可以成为公民。</p></div><dl class="fiche"><div><dt>时期</dt><dd>公元前2世纪 – 公元5世纪</dd></div><div><dt>意大利</dt><dd>100万至150万（Scheidel）到300万（Brunt）</dd></div><div><dt>帝国（260-425年）</dt><dd>≈ 占人口的10%至15%</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、出生、弃婴、海盗</dd></div><div><dt>世袭</dt><dd>是</dd></div><div><dt>种族标准</dt><dd>无</dd></div><div><dt>解放</dt><dd>常见，可获得公民权</dd></div><div><dt>终结</dt><dd>逐渐转向隶农制和农奴制</dd></div></dl><div class="stack"><h2>意大利有多少奴隶？</h2><div class="scale"><div class="srow"><span>Keith Hopkins（公元前28年）</span><div class="sbar"><span style="left:0;width:26.7%"></span></div><span class="v">80万</span></div><div class="srow"><span>Walter Scheidel</span><div class="sbar"><span style="left:0;width:33.3%"></span><span class="range" style="left:33.3%;width:16.7%"></span></div><span class="v">100万-150万</span></div><div class="srow"><span>Julius Beloch</span><div class="sbar"><span style="left:0;width:66.7%"></span></div><span class="v">≈ 200万</span></div><div class="srow"><span>Peter Brunt</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 300万</span></div></div><p class="muted" style="font-size:.82rem">横条按0-300万的比例绘制。这些是某一时刻的存量，而非流量。</p></div><div class="stack read"><h2>由战争和出生维持的人口</h2><p>据Walter Scheidel（沙伊德尔）估计，意大利奴隶人口的形成需要在公元前最后两个世纪输入200万至400万名奴隶。不过，意大利约四分之三的奴隶可能生来就是奴隶。</p><p>在法律上，奴隶是一件物（<em>res</em>），没有法律人格，其证词只有在酷刑下才会被采纳。斯巴达克斯起义（公元前73-前71年）是其中最著名的事件。</p></div><div class="callout blue read"><strong>罗马更像巴西，而不像美国</strong><p>输入人数与奴隶人口之比（约3比1）使罗马更接近奴隶制巴西，而不是美国南部；在美国南部，奴隶人口从1810年的120万增至1860年的近400万，而输入人数仅为60万至65万（Scheidel）。</p></div><div class="stack read"><h2>一条真实的出路</h2><p>正式解放通常会赋予罗马公民权，获释奴隶的子女生来自由。解放如此普遍，以至于奥古斯都不得不通过<em>lex Fufia Caninia</em>（《富菲乌斯·卡尼尼乌斯法》，公元前2年）和<em>lex Aelia Sentia</em>（《埃利乌斯·森提乌斯法》，公元4年）加以限制。这与美洲的种族奴隶制形成了重大反差。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://www.cambridge.org/core/journals/journal-of-roman-studies/article/human-mobility-in-roman-italy-ii-the-slave-population/72D80C5839817A1F4C456A33C9F62E7A">Walter Scheidel, “The slave population”, Journal of Roman Studies, 2005</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Rome">Wikipedia, Slavery in ancient Rome</a>（二手资料；帝国的数字可能出自Kyle Harper，待核实）</li></ul></div></div></section>
+<section class="view" id="v-chine"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">亚洲 · 商 – 1910</span><h1>中国：少数却延续千年的奴役</h1><p class="lead">奴隶制贯穿整个中国历史，从商代被用作人牲的俘虏，到20世纪被卖作婢女的女孩，但它从未成为经济的基础。</p></div><dl class="fiche"><div><dt>时期</dt><dd>商 – 1909/1910年</dd></div><div><dt>规模</dt><dd>比例很低；清朝入关时≈ 200万</dd></div><div><dt>沦为奴隶的方式</dt><dd>刑罚、战争、债务、出卖子女</dd></div><div><dt>世袭</dt><dd>对某些群体而言是</dd></div><div><dt>种族标准</dt><dd>否</dd></div><div><dt>终结</dt><dd>1909-1910年；相关做法延续至1949年</dd></div></dl><div class="stack read"><h2>从汉到清</h2><p>汉代奴隶仅占“人口中极小的一部分”，且蓄奴数量有上限：诸侯王和列侯200人，官吏30人。篡位者王莽于公元9年废除奴隶制，又于公元12年恢复。</p><p>唐律禁止将良人沦为奴隶，但允许将罪犯、外族人和孤儿沦为奴隶，他们被归入“贱民”，在法律上等同于牲畜。满洲入关时，清朝约有200万奴隶。雍正皇帝于1723年至1730年间解放了大多数世袭贱民群体。</p></div><div class="callout read"><strong>迟来且不彻底的废除</strong><p>奴隶制于1909年正式废除（某些资料称1910年），但这种做法一直延续到1949年，尤其是<em>mui tsai</em>（“妹仔”），即被卖作婢女的女孩。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_China">Wikipedia, Slavery in China</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-coree"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">亚洲 · 918 – 1894</span><h1>朝鲜：nobi（奴婢）多达人口的40%</h1><p class="lead">在朝鲜王朝时期，朝鲜的奴隶人口比例位居世界最高之列。但这一制度的性质仍有争议，许多历史学家认为它更接近农奴制。</p></div><dl class="fiche"><div><dt>时期</dt><dd>918 – 1894</dd></div><div><dt>占人口比例</dt><dd>≥ 30%（15-17世纪），南部高达40%</dd></div><div><dt>1858年</dt><dd>≈ 1.5%</dd></div><div><dt>沦为奴隶的方式</dt><dd>债务、饥荒、出生</dd></div><div><dt>世袭</dt><dd>是</dd></div><div><dt>种族标准</dt><dd>否（朝鲜本族nobi）</dd></div><div><dt>终结</dt><dd>1801年、1886-1887年、1894年</dd></div></dl><div class="stack"><h2>nobi占人口的比例</h2><div class="scale"><div class="srow"><span>朝鲜王朝之前</span><div class="sbar"><span style="left:0;width:25.0%"></span></div><span class="v">≤ 10%</span></div><div class="srow"><span>15-17世纪</span><div class="sbar"><span style="left:0;width:75.0%"></span><span class="range" style="left:75.0%;width:25.0%"></span></div><span class="v">30-40%</span></div><div class="srow"><span>1858</span><div class="sbar"><span style="left:0;width:3.8%"></span></div><span class="v">≈ 1.5%</span></div></div><p class="muted" style="font-size:.82rem">横条按0-40%的比例绘制。来源：Kye（2021年）、Kim Sun Joo（2023年）、Kim（2003年）。</p></div><div class="stack read"><h2>一种世袭身份</h2><p>nobi身份通过出生传承，并因饥荒时期的债务和卖身而不断补充。1663年汉城的一份户籍在登记居民中记有73%的nobi，但这只是一个地方样本。</p><p>官奴婢于1801年获释。世袭身份于1886-1887年被废除，该制度随1894年的甲午改革而消失。</p></div><div class="stack"><h2>奴隶还是农奴？</h2><div class="debate"><div><h3>数量标准</h3><p>由于占人口的30%至40%，朝鲜王朝时期的朝鲜可跻身大型奴隶制社会之列，与美国南部或罗马处于同一水平。</p></div><div><h3>权利与融入</h3><p>nobi可以拥有财产和土地，住在主人家以外的nobi有自己的家庭。Kim称之为“在奴隶制下发展起来的农奴制”，James Palais（帕莱）认为他们更接近农奴，Rhee和Yang则认为“奴隶”一词并不恰当。</p></div></div></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Korea">Wikipedia, Slavery in Korea</a>（二手资料，概述Kye 2021、Kim 2023、Palais 1998）</li></ul></div></div></section>
+<section class="view" id="v-inde"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">亚洲 · 13世纪 – 1861</span><h1>印度：苏丹国、农业奴役与英国的废除</h1><p class="lead">在南亚次大陆，奴隶制表现为苏丹国统治下的战俘、向中亚的输出，以及打击低种姓的世袭农业奴役。</p></div><dl class="fiche"><div><dt>时期</dt><dd>德里苏丹国 – 1861年</dd></div><div><dt>约1840年</dt><dd>依定义不同，110万至800万-900万</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、欠税、农业奴役</dd></div><div><dt>世袭</dt><dd>是（农业奴役）</dd></div><div><dt>标准</dt><dd>与种姓重叠，而非种族</dd></div><div><dt>终结</dt><dd>1843年，1861年《刑法典》</dd></div></dl><div class="stack read"><h2>编年史中的数字</h2><p>德里苏丹国的编年史给出的数字很可能被夸大：阿拉丁·卡尔吉时有5万名年轻奴隶，菲鲁兹·沙·图格鲁克时有18万名。历史学家Scott Levi将向中亚输出印度教徒与苏丹国和莫卧儿国家的建构联系起来。17世纪，荷兰东印度公司每年还从阿拉干和孟加拉输出150至400名奴隶。</p></div><div class="callout blue read"><strong>为何估计值相差八倍</strong><p>对于1840年代，估计从约110万到800万-900万不等（Bartle Frere，1841年）。一切取决于定义：是否把普拉亚尔（Pulayar）或帕赖亚尔（Paraiyar）等低种姓的受奴役农业劳动者算作奴隶？</p></div><div class="stack read"><h2>“以否认方式”的废除</h2><p>英属印度于1843年撤销对奴隶制的法律承认，随后通过1861年的《刑法典》在实际上将其定为犯罪。历史学家Indrani Chatterjee称之为“以否认方式的废除”，因为农业奴役在很大程度上延续了下来。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_India">Wikipedia, Slavery in India</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-siam"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">东南亚 · 17世纪 – 1915</span><h1>暹罗与群岛：债务与掠袭</h1><p class="lead">在暹罗，奴隶制主要是可以赎身的债务奴役。在菲律宾群岛，苏禄的船队掠袭整个东南亚的海岸。</p></div><dl class="fiche"><div><dt>约1854年的暹罗</dt><dd>人口的1/4至1/3（Pallegoix）</dd></div><div><dt>苏禄，1770-1870年</dt><dd>20万至30万人被奴役</dd></div><div><dt>沦为奴隶的方式</dt><dd>债务、战争、海上掠袭</dd></div><div><dt>世袭</dt><dd>可能</dd></div><div><dt>种族标准</dt><dd>否</dd></div><div><dt>暹罗的终结</dt><dd>1874 → 1905 → 1915</dd></div></dl><div class="stack read"><h2>暹罗：可赎身的奴役</h2><p>约1854年，帕莱古瓦主教（Mgr Pallegoix）估计，约600万居民中有四分之一到三分之一是债务奴隶。这是观察者的估计，而非人口普查。</p><p>主人不得杀害或残害奴隶，奴隶可以拥有财产、继承遗产、订立契约、诉诸法庭并为自己赎身。历史学家Cruikshank认为西方的奴隶制模式不适用于这一制度。</p></div><div class="stack read"><h2>朱拉隆功的渐进废除</h2><p>朱拉隆功国王分阶段推行废除。1874年的诏令规定，1868年以后生而为奴的子女年满21岁即获自由。废奴法颁布于1905年，1908年的《刑法典》将买卖奴隶定为犯罪，奴隶制于1915年在法律上终结。</p></div><div class="stack read"><h2>苏禄的掠袭</h2><p>据称，苏禄和马京达瑙苏丹国的伊拉农（Iranun）和班吉吉（Banguingui）船队在1770年至1870年间奴役了20万至30万人，掠袭范围远至马六甲海峡、爪哇和华南。马来语<em>lanun</em>（“海盗”）一词即源自伊拉农人之名。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf">R. B. Cruikshank, “Slavery in Nineteenth Century Siam”, Journal of the Siam Society, 1975</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Thailand">Wikipedia, Slavery in Thailand</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Philippines">Wikipedia, Slavery in the Philippines</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-asie-centrale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">中亚 · 16世纪 – 1873</span><h1>希瓦与布哈拉的奴隶市场</h1><p class="lead">在俄国征服之前，希瓦和布哈拉汗国是大型奴隶市场，其来源是土库曼人和哈萨克人对波斯人和俄国移民的袭击。</p></div><dl class="fiche"><div><dt>时期</dt><dd>16世纪 – 1873年</dd></div><div><dt>规模</dt><dd>≈ 100万波斯人（19世纪上半叶），资料依据薄弱</dd></div><div><dt>沦为奴隶的方式</dt><dd>土库曼人和哈萨克人的袭击</dd></div><div><dt>标准</dt><dd>宗教：什叶派和基督徒</dd></div><div><dt>终结</dt><dd>1873年，迫于俄国压力</dd></div></dl><div class="stack read"><h2>以宗教为界</h2><p>由于伊斯兰教禁止奴役穆斯林，逊尼派汗国将什叶派波斯人视为可合法奴役的对象，基督徒亦然。传教士Josef Wolff统计，1840年代布哈拉有20万名波斯奴隶。</p></div><div class="callout read"><strong>脆弱的数字</strong><p>约100万波斯人被奴役的数字以及Wolff的数字都依据旅行者的记述，应视为数量级。</p></div><div class="stack read"><h2>终结</h2><p>俄国奴隶于1840年在圣彼得堡的压力下获释。1873年俄国征服希瓦，引发奴隶起义，考夫曼将军（Kaufman）随即要求废除奴隶制。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Khivan_slave_trade">Wikipedia, Khivan slave trade</a>（二手资料）</li><li>Jeff Eden，<em>Slavery and Empire in Central Asia</em>（《中亚的奴隶制与帝国》），Cambridge UP，2018年（<a href="https://dash.harvard.edu/bitstream/handle/1/33493418/EDEN-DISSERTATION-2016.pdf">博士论文</a>）</li></ul></div></div></section>
+<section class="view" id="v-afrique"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">非洲 · 17世纪 – 1981</span><h1>非洲的奴隶制社会</h1><p class="lead">奴隶制在奴隶贸易之前就已存在于非洲，甚至在19世纪有所加剧。索科托哈里发国或达荷美王国等国家位列其时代的大型奴隶制社会。</p></div><dl class="fiche"><div><dt>约1900年的索科托</dt><dd>100万至250万名奴隶，占人口的1/4至1/2</dd></div><div><dt>约1932年的埃塞俄比亚</dt><dd>≥ 200万名奴隶（反奴隶制协会）</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、掠袭、贡赋、债务</dd></div><div><dt>世袭</dt><dd>常见</dd></div><div><dt>种族标准</dt><dd>否</dd></div><div><dt>终结</dt><dd>1901年（北尼日利亚），1942年（埃塞俄比亚），1981年（毛里塔尼亚）</dd></div></dl><div class="stack read"><h2>索科托哈里发国</h2><p>该哈里发国于19世纪初建立于今尼日利亚北部，约1900年至少有100万、可能多达250万名奴隶。Jan Hogendorn和Paul Lovejoy（洛夫乔伊）估计，奴隶在约1000万总人口中所占比例在四分之一到二分之一之间。索科托因此跻身现代大型奴隶制社会之列，排在1860年的美国（约400万）和巴西之后。</p><p>英国人卢加德（Lugard）于1901年废除了奴隶的法律地位，且不予补偿。</p></div><div class="stack read"><h2>达荷美：大西洋奴隶贸易的参与者</h2><p>奴隶贸易提供了达荷美王室收入的主要部分。盖佐国王直到1851-1852年英国封锁之后才签署结束出口的条约，而出口又在1857-1858年恢复。在宫廷中，奴隶贸易的支持者与主张转向棕榈油的人之间存在真正的争论。维达、邦尼和罗安达三个港口共向大西洋运出了200多万名俘虏。</p></div><div class="callout blue read"><strong>不可一概而论</strong><p>奴隶占“四分之一到二分之一”的比例适用于19世纪的大型奴隶制国家，而非整个非洲。</p></div><div class="stack read"><h2>埃塞俄比亚与毛里塔尼亚：最后的废除</h2><p>埃塞俄比亚于1923年以废除奴隶制为条件加入国际联盟。1935-1936年的意大利法律解放了约42万名奴隶，海尔·塞拉西于1942年8月26日废除奴隶制。</p><p>在毛里塔尼亚，法国1905年的废除未得到执行。1981年的一项法令废除了奴隶制，但未规定刑事处罚，2007年的一项法律将其定为犯罪。当前的估计分歧很大：据2018年《全球奴役指数》为9万人，据BBC 2017年报道为60万人。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Sokoto_Caliphate">Wikipedia, Sokoto Caliphate</a>（二手资料，Hogendorn与Lovejoy）</li><li><a href="https://en.wikipedia.org/wiki/History_of_the_Kingdom_of_Dahomey">Wikipedia, Kingdom of Dahomey</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Ethiopia">Wikipedia, Slavery in Ethiopia</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Mauritania">Wikipedia, Slavery in Mauritania</a>（二手资料）</li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, “Slave trades out of Africa”</a></li></ul></div></div></section>
+<section class="view" id="v-europe-medievale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">欧洲 · 9世纪 – 18世纪</span><h1>中世纪欧洲、维京人与地中海</h1><p class="lead">西欧语言中的“奴隶”一词（法语esclave、英语slave）源自“斯拉夫人”（Slave）：在中世纪，东欧的俘虏被卖往伊斯兰世界和拜占庭。此后奴隶制在西欧衰落，但在地中海地区并未衰落。</p></div><dl class="fiche"><div><dt>时期</dt><dd>9世纪 – 18世纪</dd></div><div><dt>英格兰，1086年</dt><dd>≈ 人口的10%（《末日审判书》）</dd></div><div><dt>塞维利亚，1565年</dt><dd>≈ 人口的7.4%</dd></div><div><dt>沦为奴隶的方式</dt><dd>战争、维京人掠袭、黑海奴隶贸易</dd></div><div><dt>标准</dt><dd>宗教，后来日益以非洲出身为准</dd></div><div><dt>终结</dt><dd>1102年（英格兰），1334年（瑞典），马耳他1798年</dd></div></dl><div class="stack read"><h2>维京人与斯拉夫人</h2><p>从9世纪到11世纪，维京人俘获爱尔兰人、盎格鲁-撒克逊人和法兰克人，并经伏尔加河和第聂伯河将斯拉夫俘虏运往阿拔斯哈里发国和拜占庭。都柏林成为一个大市场。牛津大学的“Dirhams for Slaves”（以迪拉姆换奴隶）项目估计，奴隶是北欧的主要出口品之一。</p><p>10世纪，斯拉夫人是奴隶贸易中最主要的群体，由此产生了拉丁语<em>sclavus</em>，进而产生法语“esclave”（William Phillips）。</p></div><div class="stack read"><h2>从西欧的衰落到地中海的奴隶贸易</h2><p>在西欧，奴隶制在10世纪至12世纪间逐渐让位于农奴制：英格兰于1102年禁止奴隶贸易，瑞典于1334年废除奴隶制。</p><p>地中海地区直到近代仍保有奴隶。从13世纪起，威尼斯和热那亚主导黑海奴隶贸易，克里米亚的卡法是其大市场。1414年至1423年间，威尼斯至少售出了1万名奴隶。1565年，塞维利亚在85,538名居民中有6,327名奴隶，其中大多数是非洲人。</p></div><div class="callout blue read"><strong>通往大西洋的环节</strong><p>葡萄牙人在撒哈拉以南非洲的第一次掠袭发生于1441年。伊比利亚的奴隶制连接了中世纪地中海与大西洋奴隶贸易。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_medieval_Europe">Wikipedia, Slavery in medieval Europe</a>（二手资料）</li><li><a href="https://historyireland.com/?p=10176">History Ireland</a></li><li><a href="https://krc.web.ox.ac.uk/node/309951">Oxford, Dirhams for Slaves</a></li></ul></div></div></section>
+<section class="view" id="v-ottomans"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">奥斯曼帝国 · 14世纪 – 1908</span><h1>奥斯曼帝国：士兵、后宫与家仆</h1><p class="lead">在奥斯曼帝国，奴隶制首先是政治性和家庭性的：精英士兵、后宫嫔妾、宦官和仆役。在鼎盛时期，君士坦丁堡五分之一的人口是奴隶。</p></div><dl class="fiche"><div><dt>时期</dt><dd>14世纪 – 1908年（该制度的终结定于1924年）</dd></div><div><dt>君士坦丁堡</dt><dd>≈ 人口的1/5（16-17世纪）</dd></div><div><dt>奴隶士兵</dt><dd>1609年≈ 10万名kapıkulu</dd></div><div><dt>沦为奴隶的方式</dt><dd>鞑靼人袭击、德夫希尔梅（devşirme）、购自高加索和非洲</dd></div><div><dt>标准</dt><dd>价格与职能依出身而定</dd></div><div><dt>解放</dt><dd>常见；可能实现社会上升</dd></div></dl><div class="stack read"><h2>位居国家顶层的奴隶</h2><p><em>kapıkulu</em>即“朝廷的奴隶”，其中包括通过德夫希尔梅（即向巴尔干和安纳托利亚基督徒男孩征收的“血税”）招募的耶尼切里禁卫军，1609年约有10万人。奴隶可以成为维齐尔。</p></div><div class="stack read"><h2>后宫与宦官</h2><p>后宫嫔妾是买来的，大多出身基督徒：切尔克斯人、阿布哈兹人、格鲁吉亚人。黑人宦官来自撒哈拉以南非洲，白人宦官来自巴尔干或高加索。价格因出身而异：一名做家务的年轻白人女孩约值3,000库鲁什，一名非洲女孩为1,500至2,500库鲁什（Madeline Zilfi）。</p></div><div class="stack read"><h2>很大程度上有名无实的废除</h2><p>1830年关于白人奴隶的敕令（firman），1847年“装点门面”式地关闭伊斯坦布尔奴隶市场，1854-1855年禁止切尔克斯和格鲁吉亚奴隶贸易，随后于1857年禁止黑人奴隶贸易，而在的黎波里直到1890年代才得到执行。1908年仍有女奴被出售。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a>（二手资料）</li><li>Madeline Zilfi，<em>Women and Slavery in the Late Ottoman Empire</em>（《奥斯曼帝国晚期的女性与奴隶制》），Cambridge UP，2010年</li></ul></div></div></section>
+<section class="view" id="v-tatars"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">东欧 · 1441-1783</span><h1>克里米亚鞑靼人的掠袭</h1><p class="lead">在三个多世纪里，鞑靼和诺盖骑兵掠袭波兰-立陶宛、乌克兰和莫斯科公国，为克里米亚和奥斯曼帝国的奴隶市场提供货源。这是近代规模最大的奴隶贸易之一，也是在法国最不为人知的之一。</p></div><dl class="fiche"><div><dt>时期</dt><dd>1441 – 1783</dd></div><div><dt>估计规模</dt><dd>200万至500万名俘虏</dd></div><div><dt>大市场</dt><dd>卡法，约1570年每年≈ 2万宗交易</dd></div><div><dt>沦为奴隶的方式</dt><dd>掠袭</dd></div><div><dt>标准</dt><dd>宗教（基督徒）</dd></div><div><dt>脱离途径</dt><dd>赎买</dd></div><div><dt>终结</dt><dd>1783年俄国吞并克里米亚</dd></div></dl><div class="stack"><h2>有多少俘虏？</h2><div class="scale"><div class="srow"><span>Baranowski（仅波兰-立陶宛）</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">≤ 100万</span></div><div class="srow"><span>İnalcık与Kołodziejczyk（1500-1700年）</span><div class="sbar"><span style="left:0;width:40.0%"></span></div><span class="v">≈ 200万</span></div><div class="srow"><span>Charnysh与Lall，统计值</span><div class="sbar"><span style="left:0;width:72.8%"></span></div><span class="v">≥ 364万</span></div><div class="srow"><span>Charnysh与Lall，含缺失数据</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 500万</span></div></div><p class="muted" style="font-size:.82rem">横条按0-500万的比例绘制。为累计流量。</p></div><div class="stack read"><h2>东欧的一场失血</h2><p>据Volha Charnysh和Ranjit Lall的研究（<em>American Political Science Review</em>，2026年），1441年至1774年间至少有364万人被俘，若估算缺失数据则约为500万。这相当于1400年东欧人口的四分之一以上。</p><p>Orest Subtelny指出，某些袭击掳走多达3万人，但平均规模约为3,000人。在1475年起受奥斯曼控制的卡法，1570年代每年售出近2万名奴隶（Halil İnalcık）。</p></div><div class="callout read"><strong>一个新的、尚待讨论的估计</strong><p>Charnysh-Lall研究是最新、数值也最高的估计；它尚未经过专家讨论。历史学家Alan Fisher认为，由于史料夸大数字，无法算出可靠的总数。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Crimean-Nogai_Raids">Wikipedia, Crimean–Nogai slave raids</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a>（二手资料）</li><li>Charnysh与Lall，<em>American Political Science Review</em>，2026年（发表情况待确认）</li></ul></div></div></section>
+<section class="view" id="v-russie"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">俄国 · 1450-1861</span><h1>俄国：从kholops到农奴</h1><p class="lead">俄国曾有真正意义上的奴隶制，即<em>kholopstvo</em>，随后是大规模的农奴制，1857年涉及三分之一以上的人口。俄国农奴于1861年获得解放，比美国奴隶早四年。</p></div><dl class="fiche"><div><dt>Kholops</dt><dd>≈ 莫斯科公国人口的10%（Hellie）</dd></div><div><dt>私有农奴，1857年</dt><dd>6250万人中的2310万（≈ 37.7%）</dd></div><div><dt>沦为奴隶的方式</dt><dd>卖身、债务、俘获；依法律成为农奴</dd></div><div><dt>世袭</dt><dd>是</dd></div><div><dt>种族标准</dt><dd>否</dd></div><div><dt>终结</dt><dd>1679/1723年（kholops），1861年（农奴）</dd></div></dl><div class="stack read"><h2>Kholops：自卖其身的俄罗斯人</h2><p>据Richard Hellie（赫利）研究，kholops约占莫斯科公国人口的10%。他认为这是“世界上最独特的奴隶制度之一”，因为奴隶大多是自卖其身的俄罗斯人。农业kholops于1679年并入农奴，家内kholops于1723年并入。</p></div><div class="stack read"><h2>农奴制</h2><p>农奴制于1649年成文化，将农民束缚于土地，并赋予地主近乎全面的权利。农奴可以不连同土地被转让，但在财产、宗教和诉诸法庭方面保有一定保护。亚历山大二世于1861年废除农奴制；前农奴购买土地的价格往往高于市价，赎买年金直到1907年才被取消。</p></div><div class="callout blue read"><strong>1861年与1865年：两次废除，两种制度</strong><p>Peter Kolchin对俄国农奴制与美国奴隶制所作的比较富有启发，但也存在争议。农奴与其主人同属一个民族、信奉同一宗教，在法律上既不是动产，也不是依种族指定的。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://www.historytoday.com/archive/slaves-not-serfs">History Today, “Slaves, not serfs”</a>（关于Hellie）</li><li><a href="https://en.wikipedia.org/wiki/Serfdom_in_Russia">Wikipedia, Serfdom in Russia</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Kholop">Wikipedia, Kholop</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-ameriques"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← 所有文明</a><span class="eyebrow">美洲 · 14世纪 – 19世纪</span><h1>哥伦布前后的美洲</h1><p class="lead">美洲原住民社会存在多种形式的奴役。此后殖民化奴役了数以百万计的美洲原住民，而某些原住民民族自身也拥有黑人奴隶。</p></div><dl class="fiche"><div><dt>阿兹特克人</dt><dd>身份不世袭，子女生而自由</dd></div><div><dt>西北海岸</dt><dd>奴隶人口多达1/4</dd></div><div><dt>被奴役的美洲原住民</dt><dd>四个世纪中250万至500万（Reséndez）</dd></div><div><dt>卡罗来纳，1670-1715年</dt><dd>2.4万至5.1万人被输出（Gallay）</dd></div><div><dt>标准</dt><dd>1492年前无；此后为种族</dd></div><div><dt>终结</dt><dd>征服；残余延续至19世纪</dd></div></dl><div class="stack read"><h2>阿兹特克人与印加人</h2><p>在阿兹特克人中，人们因刑罚、战争、债务或卖身而成为<em>tlacotli</em>，例如在1450年代的饥荒期间。奴隶可以结婚、拥有财产甚至拥有奴隶，其子女生而自由（Ross Hassig）。但俘虏会被献祭，而一个被转卖三次的“不可救药”的奴隶也可能被用于献祭。</p><p>在印加人中，<em>yanakuna</em>构成一种世袭的奴役，有时地位很高；“奴隶”一词作为译名存在争议。</p></div><div class="stack read"><h2>西北海岸</h2><p>在北美太平洋沿岸，奴隶制融入了狩猎-渔猎社会和夸富宴（potlatch）之中。Leland Donald表明，这种奴役符合跨文化的奴隶制定义；在某些群体中，奴隶多达人口的四分之一。</p></div><div class="stack read"><h2>“另一种奴隶制”</h2><p>Andrés Reséndez（雷森德斯）（<em>The Other Slavery</em>，《另一种奴隶制》，2017年班克罗夫特奖）估计，四个世纪中被奴役的美洲原住民有250万至500万。他的定义较宽，涵盖了在法律禁令之后仍然延续的委托监护制（encomienda）、劳役摊派制（repartimiento）、债务劳役和强迫劳动。Alan Gallay估计，1670年至1715年间有2.4万至5.1万名美洲原住民从卡罗来纳各港口被输出。</p><p>最后，“五大文明部落”（切罗基人、克里克人、乔克托人、奇克索人、塞米诺尔人）约1839年在印第安领地拥有4,500至5,000名黑人奴隶。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Aztec_Empire">Wikipedia, Slavery in the Aztec Empire</a>（二手资料）</li><li><a href="https://www.ucpress.edu/books/aboriginal-slavery-on-the-northwest-coast-of-north-america/hardcover">Leland Donald, Aboriginal Slavery on the Northwest Coast, UC Press, 1997</a></li><li><a href="https://en.wikipedia.org/wiki/The_Other_Slavery">Wikipedia, The Other Slavery</a>（二手资料）</li><li><a href="https://en.wikipedia.org/wiki/Slavery_among_Native_Americans_in_the_United_States">Wikipedia, Slavery among Native Americans</a>（二手资料）</li></ul></div></div></section>
+<section class="view" id="v-abolitions"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">时间轴 · 从梭伦到2007年</span><h1>废除</h1><p class="lead">作为一项国家政策并推向全球的废奴，诞生于19世纪的大西洋社会。非洲、奥斯曼和阿拉伯地区的大多数废除是在英国或国际压力下实现的，有时非常晚。</p></div><div class="stack"><ol class="timeline"><li><span class="yr">公元前6世纪</span><span><strong>雅典</strong> · 梭伦禁止雅典人因债务沦为奴隶。</span></li><li><span class="yr">公元9年</span><span><strong>中国</strong> · 王莽废除奴隶制，公元12年恢复。</span></li><li><span class="yr">1102</span><span><strong>英格兰</strong> · 禁止奴隶贸易。</span></li><li><span class="yr">1334</span><span><strong>瑞典</strong> · 废除奴隶制。</span></li><li><span class="yr">1723-1730</span><span><strong>中国</strong> · 雍正解放大多数世袭贱民群体。</span></li><li><span class="yr">1794</span><span><strong>法国</strong> · 2月4日废除奴隶制；1802年波拿巴恢复奴隶贸易。</span></li><li><span class="yr">1801</span><span><strong>朝鲜</strong> · 解放官奴婢（nobi）。</span></li><li><span class="yr">1807</span><span><strong>英国</strong> · 废除奴隶贸易；皇家海军打击奴隶贸易直至1867年。</span></li><li><span class="yr">1816</span><span><strong>阿尔及尔</strong> · 埃克斯茅斯勋爵炮击阿尔及尔，欧洲奴隶获释。</span></li><li><span class="yr">1833</span><span><strong>英国</strong> · 废除奴隶制；向奴隶主支付2000万英镑。</span></li><li><span class="yr">1843</span><span><strong>英属印度</strong> · 终止对奴隶制的法律承认。</span></li><li><span class="yr">1848</span><span><strong>法国</strong> · 最终废除（Victor Schœlcher）。<span class="pill flag">待核实</span></span></li><li><span class="yr">1857</span><span><strong>奥斯曼帝国</strong> · 禁止黑人奴隶贸易，长期执行不力。</span></li><li><span class="yr">1861</span><span><strong>俄国</strong> · 废除农奴制。</span></li><li><span class="yr">1865</span><span><strong>美国</strong> · 第十三修正案。<span class="pill flag">待核实</span></span></li><li><span class="yr">1873</span><span><strong>希瓦</strong> · 俄国征服后废除。</span></li><li><span class="yr">1888</span><span><strong>巴西</strong> · 《黄金法》：美洲最后一次废除。<span class="pill flag">待核实</span></span></li><li><span class="yr">1894</span><span><strong>朝鲜</strong> · 甲午改革。</span></li><li><span class="yr">1897</span><span><strong>桑给巴尔</strong> · 废除，1909年扩展至妾。</span></li><li><span class="yr">1901</span><span><strong>北尼日利亚</strong> · 索科托终止奴隶的法律地位。</span></li><li><span class="yr">1909-1910</span><span><strong>中国</strong> · 正式废除。</span></li><li><span class="yr">1915</span><span><strong>暹罗</strong> · 继1905年法律之后在法律上终结。</span></li><li><span class="yr">1929</span><span><strong>伊朗、约旦</strong> · 废除。</span></li><li><span class="yr">1942</span><span><strong>埃塞俄比亚</strong> · 海尔·塞拉西废除。</span></li><li><span class="yr">1949-1952</span><span><strong>科威特、卡塔尔</strong> · 废除。</span></li><li><span class="yr">1962</span><span><strong>沙特阿拉伯、也门</strong> · 废除。</span></li><li><span class="yr">1970</span><span><strong>阿曼</strong> · 苏丹卡布斯治下废除。</span></li><li><span class="yr">1981</span><span><strong>毛里塔尼亚</strong> · 以法令废除，无刑事处罚。</span></li><li><span class="yr">2007</span><span><strong>毛里塔尼亚</strong> · 奴隶制成为刑事罪行。</span></li></ol></div><div class="stack"><h2>应当并列看待的两点事实</h2><div class="debate"><div><h3>一场诞生于西方的运动</h3><p>英国为打击奴隶贸易投入了大量资源：1808年至1867年间，西非分舰队截获约1,600艘船，解放约15万非洲人。Kaufmann和Pape认为这是“现代史上代价最高昂的国际道德行动，远超其他”。</p></div><div><h3>补偿给了主人，而非受害者</h3><p>英国和法国的废奴都补偿了奴隶主，从未补偿奴隶。在海地，是前奴隶向殖民者支付赔款，直至1921-1922年。打击奴隶贸易也被用来为殖民非洲辩护。</p></div></div></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a>（二手资料）</li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">BnF Heritage</a></li><li>1848年、1865年和1888年这些日期：通用参照点，有待以原始资料核实。</li></ul></div></div></section>
+<section class="view" id="v-debat"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">史学史与记忆</span><h1>为何西方记忆聚焦于大西洋奴隶贸易</h1><p class="lead">既然奴隶制是普遍存在的，为何法国、英国或美国的公共讨论几乎只围绕大西洋奴隶贸易？历史学家提出了若干理由，并就比较的价值存在分歧。</p></div><div class="stack read"><h2>四个理由</h2><p><strong>后代是公民。</strong>大西洋奴隶的后代生活在曾奴役他们的社会或由这些社会衍生而来的社会中（安的列斯群岛、美国、巴西、海地），并在那里提出记忆与赔偿的诉求：加勒比共同体（CARICOM）的十点计划（2014年），非洲联盟的2025“赔偿年”。东方奴隶贸易留下的可见离散群体很少。</p><p><strong>国家就其自身罪行立法。</strong>2001年5月21日的《托比拉法》（loi Taubira）承认“自15世纪起实施的”跨大西洋奴隶贸易、印度洋奴隶贸易和奴隶制为反人类罪；它既未提及跨撒哈拉奴隶贸易，也未提及非洲内部的奴隶贸易。</p><p><strong>这是记录最完备的奴隶贸易。</strong>它是唯一一种在公开数据库中被逐次航行重建的奴隶贸易。</p><p><strong>民主国家的自我批判传统</strong>常被援引，但没有任何专门研究证实这一点：这只是一种假设。</p></div><div class="stack"><h2>比较还是强调特殊性：最有力的论点</h2><div class="debate"><div><h3>主张全球史</h3><p>Olivier Pétré-Grenouilleau（佩特雷-格勒努约）（<em>Les Traites négrières</em>，《黑奴贸易》，2004年）提出，大西洋奴隶贸易运送约1100万人，东方奴隶贸易1700万人，非洲内部奴隶贸易1400万人。奴隶制是一种近乎普遍的制度，非洲国家也曾是参与者，而以欧洲为中心的历史反而仍是欧洲中心主义的。他拒绝任何“苦难的里氏震级”，并认为这些奴隶贸易不是种族灭绝，因为其目的在于剥削而非灭绝。</p></div><div><h3>主张大西洋的特殊性</h3><p>大西洋体系在性质上有所不同：奴隶是动产，其价值占一座种植园的30%至60%；身份世袭并依肤色指定；加勒比地区奴隶人口每十年自然减少20%；而这一切发生在宣扬自由与平等的社会的核心。其影响延续至今：种族主义、海地那样的债务、不平等。</p></div></div></div><div class="stack read"><h2>Pétré-Grenouilleau事件</h2><p>2005年，“安的列斯-圭亚那-留尼汪人集体”（Collectif des Antillais-Guyanais-Réunionnais）援引《托比拉法》起诉这位历史学家，后于2006年初撤诉。诉讼针对的是他拒绝使用“种族灭绝”一词，而非他的比较数字。时任奴隶制记忆委员会成员的Françoise Vergès认为该诉讼“不可接受”。由近600名教师和研究人员签名的“历史的自由”（Liberté pour l'histoire）呼吁书随即要求立法者不再对历史作出定性。</p></div><div class="stack read"><h2>共同基础</h2><p>Orlando Patterson（帕特森）（<em>Slavery and Social Death</em>，《奴隶制与社会性死亡》，1982年）比较了66个社会，在界定奴隶制时没有把种族作为标准。双方阵营都引用他：这一制度是普遍的，但在大西洋世界又叠加了种族化。此外，研究朝鲜、暹罗或斯巴达的专家指出，许多制度并不符合“物化奴隶”的定义，这使纯粹基于数字的比较变得相对化。</p><p>社会学家Jean-Michel Chaumont，<em>La Concurrence des victimes</em>（《受害者的竞争》，1997年）的作者，告诫人们警惕不同记忆之间争夺独特性的竞赛。</p></div><div class="callout blue read"><strong>本网站的编辑立场</strong><p>不对哪种奴隶贸易“比其他更恶劣”作出裁决。每个制度都按标准逐项描述，附有注明出处的数字、相关争论以及各方参与者：欧洲、阿拉伯和非洲商人，鞑靼和奥斯曼国家，也包括起义、内部争论和废奴运动。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia, loi Taubira</a>（法律文本待在Légifrance上核实）</li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">Pétré-Grenouilleau接受《星期日报》（JDD）采访（2005年），由Herodote.net转载</a>（立场鲜明的科普网站）</li><li><a href="https://www.timeshighereducation.com/node/92737">Times Higher Education，关于该事件</a></li><li><a href="https://www.college-de-france.fr/fr/agenda/conferencier-invite/la-concurrence-des-victimes-25-ans-plus-tard/extension-du-domaine-de-la-lutte">Jean-Michel Chaumont，法兰西公学院，2022年</a></li><li><a href="https://scholar.harvard.edu/sites/scholar.harvard.edu/files/vbrown/files/brown-socialdeath.pdf">Vincent Brown, “Social Death and Political Life”, AHR, 2009</a></li></ul></div></div></section>
+<section class="view" id="v-aujourdhui"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">现代奴役 · 2021</span><h1>当今的奴隶制</h1><p class="lead">奴隶制虽在各地均被禁止，却并未消失。据国际劳工组织统计，2021年有5000万人处于“现代奴役”状态。</p></div><div class="figures"><div class="fig"><span class="n">5000万</span><span class="l">处于现代奴役中的人</span><span class="s">2021年某一天的数字，比2016年多1000万。</span></div><div class="fig"><span class="n">2800万</span><span class="l">强迫劳动</span><span class="s">86%在私营部门，14%由国家强加。</span></div><div class="fig"><span class="n">2200万</span><span class="l">强迫婚姻</span><span class="s">65%在亚太地区。</span></div><div class="fig"><span class="n">330万</span><span class="l">从事强迫劳动的儿童</span><span class="s">移民面临的风险是其他人的三倍以上。</span></div></div><div class="stack read"><h2>在哪里？</h2><p>按受影响人口比例计算，2023年《全球奴役指数》中排名前列的是朝鲜、厄立特里亚和毛里塔尼亚。阿拉伯国家的强迫婚姻率最高。二十国集团国家每年进口约4680亿美元存在强迫劳动风险的商品，其中美国占1700亿美元。</p></div><div class="callout read"><strong>为何这一数字不能与奴隶贸易相比</strong><p>这5000万是某一天测得的存量。大西洋的1250万或东方奴隶贸易的800万至1700万是三到十二个世纪的累计总数。因此，说“今天的奴隶比整个大西洋奴隶贸易时期多四倍”是错误的。此外，“现代奴役”包括强迫婚姻和不涉及法律所有权的情形，而历史上的奴隶制大多是一种可传承、可买卖的法律身份。</p></div><div class="stack read"><h2>资料来源</h2><ul class="src"><li><a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0">国际劳工组织，2022年9月新闻稿</a></li><li><a href="https://alliance87.org/sites/default/files/2023-06/Global%20Estimates%20of%20Modern%20Slavery%20Forced%20Labour%20and%20Forced%20Marriage.pdf">国际劳工组织、Walk Free与国际移民组织，Global Estimates of Modern Slavery, 2022</a></li><li><a href="https://cdn.walkfree.org/content/uploads/2023/05/24144628/GSI-2023-Executive-Summary.pdf">Walk Free, Global Slavery Index 2023</a></li></ul></div></div></section>
+<!-- METHODE -->
+<section class="view" id="v-methode">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">方法与资料来源</span>
+      <h1>数字是如何得出的</h1>
+      <p class="lead">奴隶制的规模很少是精确统计的结果。它们是重建的产物，其可靠程度取决于现存档案。</p>
+      <p><strong>大西洋奴隶贸易</strong>在SlaveVoyages数据库（Eltis与Richardson）中被逐次航行重建，缺漏部分以插补法补足。这是度量得最好的奴隶贸易。</p>
+      <p><strong>东方奴隶贸易</strong>依据旅行者记述、不完整的登记和推算（Austen、Lovejoy、Manning）。不同作者之间的差距可达三倍。</p>
+      <p><strong>鞑靼人和巴巴里的掠袭</strong>是根据个别时点的人数通过回溯计算估计的，这种方法存在争议。</p>
+      <p><strong>占人口比例</strong>（罗马、朝鲜、索科托、暹罗）来自人口普查或观察者的估计，并取决于所采用的奴隶制定义。</p>
+    </div>
+    <div class="stack read">
+      <h2>可靠性标签</h2>
+      <p><span class="pill flag">有争议</span> 专家之间存在争议的区间。<span class="pill flag">二手资料</span> 通过综述得知、并归于所列历史学家的数字。<span class="pill flag">待核实</span> 在本原型中尚未以原始资料核对的数据。</p>
+    </div>
+    <div class="stack read">
+      <h2>参考著作</h2>
+      <ul class="src">
+        <li>Olivier Pétré-Grenouilleau，<em>Les traites négrières. Essai d'histoire globale</em>（《黑奴贸易：全球史论》），Gallimard，2004年。</li>
+        <li>Paul Lovejoy，<em>Transformations in Slavery</em>（《奴隶制的转变》），第3版，Cambridge UP，2012年。</li>
+        <li>Orlando Patterson，<em>Slavery and Social Death</em>（《奴隶制与社会性死亡》），Harvard UP，1982年。</li>
+        <li>David Eltis与David Richardson，<em>Atlas of the Transatlantic Slave Trade</em>（《跨大西洋奴隶贸易地图集》），Yale UP，2010年；<a href="https://www.slavevoyages.org">slavevoyages.org</a>。</li>
+        <li>Andrés Reséndez，<em>The Other Slavery</em>（《另一种奴隶制》），2016年。</li>
+        <li>国际劳工组织、Walk Free、国际移民组织，<a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0"><em>Global Estimates of Modern Slavery</em></a>，2022年。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">奴隶制图谱 · 各页面均附有详细资料来源。</div></footer>
+
+<script>
+const D = [
+ {id:"meso",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"美索不达米亚",region:"古代",start:-2100,end:-539,per:"公元前3千纪至前1千纪",vol:"无整体估计",src:"战争、债务、购买",her:"未确定",race:"否",aff:"因债务为奴者三年后获释（汉谟拉比，第117条）",fin:"—",flags:["二手资料"]},
+ {id:"egy",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"古埃及",region:"古代",start:-3000,end:-30,per:"公元前3千纪 – 公元前30年",vol:"无估计；金字塔由领取报酬或被征调的工人建造",src:"战争、债务、卖身或出卖子女",her:"不一",race:"否",aff:"婚姻、神庙服役",fin:"—",flags:["二手资料"]},
+ {id:"ath",page:"grece",vmax:0.08,vtype:"eff",pmax:null,name:"雅典",region:"古代",start:-600,end:-300,per:"公元前6世纪至前4世纪",vol:"2万至8万名奴隶",src:"战争、海盗、贸易（主要为非希腊人）",her:"oui",race:"否（族群）",aff:"公元前4世纪较常见",fin:"梭伦禁止雅典人因债务沦为奴隶",flags:["有争议"]},
+ {id:"spa",page:"grece",vmax:0.224,vtype:"eff",pmax:null,name:"斯巴达（黑劳士）",region:"古代",start:-700,end:-146,per:"公元前8世纪至前2世纪",vol:"17万至22.4万，远多于公民",src:"征服拉科尼亚和美塞尼亚、出生",her:"oui",race:"否",aff:"服兵役、赎身",fin:"美塞尼亚于公元前369年获得解放",flags:["二手资料"]},
+ {id:"rome",page:"rome",vmax:3,vtype:"eff",pmax:15,name:"罗马",region:"古代",start:-200,end:476,per:"公元前2世纪 – 公元5世纪",vol:"意大利：100万-150万（Scheidel）至300万（Brunt）；帝国：10%-15%",src:"战争、出生（≈ 3/4）、弃婴、海盗",her:"oui",race:"否",aff:"常见，可获得公民权",fin:"逐渐转向隶农制和农奴制",flags:["有争议"]},
+ {id:"chine",page:"chine",vmax:2,vtype:"eff",pmax:null,name:"中国",region:"亚洲",start:-1600,end:1910,per:"商 – 1909/1910年",vol:"比例很低；清朝入关时≈ 200万",src:"刑罚、战争、债务、出卖子女",her:"部分",race:"否",aff:"皇帝的解放令（1723-1730年）",fin:"1909-1910年；相关做法延续至1949年",flags:["二手资料"]},
+ {id:"coree",page:"coree",vmax:null,vtype:null,pmax:40,name:"朝鲜（nobi）",region:"亚洲",start:918,end:1894,per:"918 – 1894",vol:"≥ 人口的30%（15-17世纪），南部高达40%",src:"债务、饥荒、出生",her:"oui",race:"否",aff:"赎身、服兵役",fin:"1801年、1886年、1894年",flags:["二手资料","有争议"]},
+ {id:"inde",page:"inde",vmax:9,vtype:"eff",pmax:null,name:"印度",region:"亚洲",start:1206,end:1861,per:"德里苏丹国 – 1861年",vol:"约1840年，依定义不同为110万至800万-900万",src:"战争、欠税、低种姓的农业奴役",her:"oui",race:"否（与种姓重叠）",aff:"未确定",fin:"1843年，1861年《刑法典》",flags:["有争议"]},
+ {id:"siam",page:"siam",vmax:null,vtype:null,pmax:33,name:"暹罗",region:"亚洲",start:1600,end:1915,per:"17世纪 – 1915年",vol:"约1854年占人口的1/4至1/3（Pallegoix）",src:"以债务为主，战争、出生",her:"可能",race:"否",aff:"依法可赎身",fin:"1874 → 1905 → 1915",flags:[]},
+ {id:"asiec",page:"asie-centrale",vmax:1,vtype:"flux",pmax:null,name:"希瓦与布哈拉",region:"亚洲",start:1500,end:1873,per:"16世纪 – 1873年",vol:"≈ 100万波斯人被奴役（19世纪上半叶）",src:"土库曼人和哈萨克人的袭击",her:"未确定",race:"宗教（什叶派、基督徒）",aff:"未确定",fin:"1873年，迫于俄国压力",flags:["待核实"]},
+ {id:"orient",vmax:25,vtype:"flux",pmax:null,name:"东方奴隶贸易",region:"非洲与穆斯林世界",start:650,end:1900,per:"650 – 1900年（及以后）",vol:"800万（Alencastro）至1700万（Austen）、2500万（Bairoch）；撒哈拉：742万（Lovejoy）",src:"掠袭、战争、从非洲国家购买",her:"不一",race:"以宗教为主；肤色偏见存在争议",aff:"常见，融入社会",fin:"依国家不同，1908年至1981年",flags:["有争议"],page:"traites-orientales"},
+ {id:"afr",page:"afrique",vmax:2.5,vtype:"eff",pmax:50,name:"非洲社会（索科托、达荷美……）",region:"非洲与穆斯林世界",start:1600,end:1942,per:"17世纪 – 1942年（埃塞俄比亚）",vol:"约1900年的索科托：100万至250万，占人口的1/4至1/2",src:"战争、掠袭、贡赋、债务",her:"常见",race:"否",aff:"不一",fin:"1901年（北尼日利亚），1942年（埃塞俄比亚），1981年（毛里塔尼亚）",flags:["二手资料"]},
+ {id:"eumed",page:"europe-medievale",vmax:null,vtype:null,pmax:10,name:"中世纪欧洲与维京人",region:"欧洲与地中海",start:800,end:1334,per:"9世纪 – 14世纪",vol:"1086年≈ 英格兰人口的10%",src:"战争、维京人掠袭",her:"oui",race:"否（宗教）",aff:"向农奴制过渡",fin:"1102年（英格兰），1334年（瑞典）",flags:[]},
+ {id:"medit",page:"europe-medievale",vmax:null,vtype:null,pmax:7.4,name:"威尼斯、热那亚、伊比利亚",region:"欧洲与地中海",start:1250,end:1798,per:"13世纪 – 18世纪",vol:"1565年的塞维利亚：≈ 人口的7.4%",src:"黑海奴隶贸易、战争、非洲",her:"oui",race:"宗教，后来日益以非洲出身为准",aff:"可能",fin:"马耳他1798年",flags:["二手资料"]},
+ {id:"otto",page:"ottomans",vmax:null,vtype:null,pmax:20,name:"奥斯曼帝国",region:"欧洲与地中海",start:1350,end:1908,per:"14世纪 – 1908年",vol:"≈ 君士坦丁堡人口的1/5（16-17世纪）",src:"鞑靼人袭击、德夫希尔梅、购自高加索和非洲",her:"否（妾所生子女）",race:"价格与职能依出身而定",aff:"常见，可能实现社会上升",fin:"1830-1908年，很大程度上有名无实",flags:["二手资料"]},
+ {id:"tatar",page:"tatars",vmax:5,vtype:"flux",pmax:null,name:"克里米亚鞑靼人的掠袭",region:"欧洲与地中海",start:1441,end:1783,per:"1441 – 1783",vol:"200万（İnalcık，1500-1700年）至500万（Charnysh与Lall）",src:"在波兰-立陶宛和莫斯科公国的掠袭",her:"—",race:"宗教（基督徒）",aff:"赎买",fin:"1783年俄国吞并克里米亚",flags:["有争议"]},
+ {id:"barb",vmax:1.25,vtype:"flux",pmax:null,name:"巴巴里海盗",region:"欧洲与地中海",start:1530,end:1830,per:"1530 – 1830",vol:"100万至125万（Davis）；有据可查的人数为2.5万-3.5万",src:"海上劫掠、沿海掠袭",her:"否",race:"宗教（基督徒）",aff:"赎买、改宗",fin:"1816年、1830年",flags:["有争议"],page:"barbaresques"},
+ {id:"russie",page:"russie",vmax:null,vtype:null,pmax:37.7,name:"俄国（kholops、农奴）",region:"欧洲与地中海",start:1450,end:1861,per:"1450 – 1861",vol:"Kholops ≈ 10%（Hellie）；1857年私有农奴占37.7%",src:"卖身、债务；依法律成为农奴（1649年）",her:"oui",race:"否",aff:"农奴中罕见",fin:"1861年（赎买延续至1907年）",flags:[]},
+ {id:"azt",page:"ameriques",vmax:null,vtype:null,pmax:null,name:"阿兹特克人",region:"美洲",start:1325,end:1521,per:"14世纪 – 16世纪",vol:"无估计",src:"刑罚、战争、债务、卖身",her:"否",race:"否",aff:"是；子女生而自由",fin:"西班牙征服",flags:["二手资料"]},
+ {id:"nwc",page:"ameriques",vmax:null,vtype:null,pmax:25,name:"西北海岸",region:"美洲",start:1500,end:1880,per:"前殖民时期 – 19世纪",vol:"在某些群体中多达人口的1/4",src:"袭击、群体间购买",her:"未确定",race:"否",aff:"未确定",fin:"殖民化",flags:[]},
+ {id:"amind",page:"ameriques",vmax:5,vtype:"flux",pmax:null,name:"对美洲原住民的奴役",region:"美洲",start:1492,end:1900,per:"1492 – 约1900年",vol:"250万至500万（Reséndez，宽泛定义）",src:"战争、掠袭、委托监护制、债务劳役",her:"不一",race:"是",aff:"不一",fin:"1542年西班牙法律；残余延续",flags:["有争议"]},
+ {id:"atl",vmax:12.5,vtype:"flux",pmax:null,name:"大西洋奴隶贸易与殖民地",region:"美洲",start:1501,end:1888,per:"1501 – 1888",vol:"装船1250万，登岸1070万；法国138万",src:"从非洲国家和商人处购买、战争、掠袭",her:"oui",race:"是（肤色）",aff:"少；在美国极少",fin:"英国1833年，法国1848年，美国1865年，巴西1888年",flags:["待核实"],page:"traite-atlantique"}
+];
+const isRace = r => ["amind","atl"].includes(r.id);
+
+/* 时间轴比例：-3000→0 占22%，0→1500 占33%，1500→2000 占45% */
+function x(y){
+  if(y<0) return 22*(y+3000)/3000;
+  if(y<1500) return 22+33*y/1500;
+  return 55+45*(Math.min(y,2000)-1500)/500;
+}
+function fmt(y){return y<0? "前"+(-y) : String(y);}
+
+function buildFrise(){
+  const f=document.getElementById("frise");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const row=document.createElement("div"); row.className="frow";
+    const n=document.createElement("span"); n.className="name"; n.textContent=r.name; n.title=r.name;
+    const t=document.createElement("div"); t.className="track";
+    const b=document.createElement("button"); b.type="button"; b.className="bar"+(isRace(r)?" race":"");
+    b.style.left=x(r.start)+"%"; b.style.width=Math.max(.6,x(r.end)-x(r.start))+"%";
+    b.setAttribute("aria-label",r.name+", "+r.per); b.title=r.name+" · "+r.per;
+    b.addEventListener("click",()=>{ document.getElementById("f-q").value=r.name; render(); location.hash="comparer"; });
+    t.appendChild(b); row.append(n,t); f.appendChild(row);
+  });
+  const ticks=document.getElementById("ticks");
+  [-3000,-2000,-1000,0,500,1000,1500,1700,1800,1900,2000].forEach(y=>{
+    const s=document.createElement("span"); s.style.left=x(y)+"%"; s.textContent=y===0?"0":fmt(y); ticks.appendChild(s);
+  });
+}
+function buildCards(){
+  const c=document.getElementById("cards");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const a=document.createElement("a"); a.className="card"+(r.page?" live":"");
+    a.href=r.page? "#"+r.page : "#comparer";
+    if(!r.page) a.addEventListener("click",()=>{document.getElementById("f-q").value=r.name; render();});
+    a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"阅读页面":"页面即将推出 · 查看表格"}</span>`;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    c.appendChild(a);
+  });
+}
+
+let sortKey=null, sortDir=1;
+function render(){
+  const q=document.getElementById("f-q").value.trim().toLowerCase();
+  const reg=document.getElementById("f-region").value;
+  const her=document.getElementById("f-her").checked, race=document.getElementById("f-race").checked;
+  let rows=D.filter(r=>(!reg||r.region===reg)&&(!her||r.her==="oui")&&(!race||isRace(r))&&(!q||(r.name+" "+r.vol+" "+r.src+" "+r.region).toLowerCase().includes(q)));
+  const desc=(fa)=>(a,b)=>{const x=fa(a),y=fa(b); if(x==null&&y==null) return a.start-b.start; if(x==null) return 1; if(y==null) return -1; return y-x;};
+  const mode=document.getElementById("f-sort").value;
+  if(sortKey==="name") rows.sort((a,b)=>a.name.localeCompare(b.name,"zh")*sortDir);
+  else if(sortKey) rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+  else if(mode==="vol") rows.sort(desc(r=>r.vmax));
+  else if(mode==="part") rows.sort(desc(r=>r.pmax));
+  else if(mode==="dur") rows.sort(desc(r=>r.end-r.start));
+  else if(mode==="end") rows.sort(desc(r=>r.end));
+  else rows.sort((a,b)=>a.start-b.start);
+  const note=document.getElementById("sortnote");
+  note.textContent = sortKey? "" : mode==="vol" ? "按每个区间的高端估计值排序。“流量”= 整个时期的累计总数；“存量”= 某一时刻存在的奴隶人数。二者不能直接比较。没有估计值的制度排在列表末尾。"
+    : mode==="part" ? "按某一日期奴隶人口所占的最高比例排序。没有估计值的制度排在列表末尾。" : "";
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      `<span class="civ"></span><br><span class="pill"></span>${r.vtype?`<span class="pill">${r.vtype==="flux"?"累计流量":"存量"}</span>`:""}${r.flags.map(f=>`<span class="pill flag">${f}</span>`).join("")}${r.page?` <a href="#${r.page}">阅读</a>`:""}`,
+      r.per, r.vol, r.src,
+      r.her==="oui"?'<span class="yes">是</span>':r.her,
+      isRace(r)?`<span class="yes"></span>`:r.race,
+      r.aff, r.fin
+    ];
+    cells.forEach((h,i)=>{const td=document.createElement("td"); if(i===1) td.className="num";
+      if(i===0){td.innerHTML=h; td.querySelector(".civ").textContent=r.name; td.querySelector(".pill").textContent=r.region;}
+      else if(i===5&&isRace(r)){td.innerHTML=h; td.querySelector(".yes").textContent=r.race;}
+      else if(i===4&&r.her==="oui"){td.innerHTML=h;}
+      else td.textContent=h;
+      tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent="显示"+rows.length+"个制度（共"+D.length+"个）";
+}
+function initFilters(){
+  const s=document.getElementById("f-region");
+  [...new Set(D.map(r=>r.region))].forEach(r=>{const o=document.createElement("option"); o.value=r; o.textContent=r; s.appendChild(o);});
+  ["f-q","f-region","f-her","f-race"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+  document.getElementById("f-sort").addEventListener("input",()=>{sortKey=null; render();});
+  document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.sort; sortDir = sortKey===k? -sortDir : 1; sortKey=k; render();}));
+}
+
+const CIV=[...new Set(D.map(r=>r.page))];
+const VIEWS=["accueil","comparer","civilisations","abolitions","debat","aujourdhui","methode",...CIV];
+function route(){
+  const h=location.hash.replace("#","");
+  const v=VIEWS.includes(h)?h:"accueil";
+  VIEWS.forEach(n=>document.getElementById("v-"+n).classList.toggle("active",n===v));
+  const navv=CIV.includes(v)?"civilisations":v;
+  document.querySelectorAll("nav.main a").forEach(a=>{ if(a.getAttribute("href")==="#"+navv) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+  window.scrollTo(0,0);
+}
+function buildCivGroups(){
+  const box=document.getElementById("civgroups"); const seen=new Set();
+  [...new Set(D.map(r=>r.region))].forEach(reg=>{
+    const g=document.createElement("div"); g.className="stack";
+    const h=document.createElement("h2"); h.textContent=reg; g.appendChild(h);
+    const c=document.createElement("div"); c.className="cards";
+    D.filter(r=>r.region===reg).sort((a,b)=>a.start-b.start).forEach(r=>{
+      if(seen.has(r.page)) return; seen.add(r.page);
+      const same=D.filter(x=>x.page===r.page);
+      const a=document.createElement("a"); a.className="card live"; a.href="#"+r.page;
+      a.innerHTML='<span class="per"></span><strong></strong><span class="soon">阅读页面</span>';
+      a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      c.appendChild(a);
+    });
+    g.appendChild(c); box.appendChild(g);
+  });
+}
+buildFrise(); buildCards(); buildCivGroups(); initFilters(); render(); route();
+window.addEventListener("hashchange",route);
+</script>
+</body>
+</html>

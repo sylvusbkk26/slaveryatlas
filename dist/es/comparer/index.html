@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparar los sistemas esclavistas · Atlas de la esclavitud</title>
+<meta name="description" content="Filtre por región, aísle los sistemas hereditarios o racializados, ordene por fecha. Las etiquetas «discutido», «fuente secundaria» y «por verificar»…">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="en" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="es" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="de" href="https://slaveryatlas.org/de/comparer/">
+<link rel="alternate" hreflang="zh-Hans" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="ru" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/en/comparer/">
+<meta property="og:title" content="Comparar los sistemas esclavistas · Atlas de la esclavitud">
+<meta property="og:description" content="Filtre por región, aísle los sistemas hereditarios o racializados, ordene por fecha. Las etiquetas «discutido», «fuente secundaria» y «por verificar»…">
+<meta property="og:url" content="https://slaveryatlas.org/es/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Slavery Atlas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/es/">Atlas de la esclavitud</a><nav class="main" aria-label="Navegación principal"><a href="/es/">Inicio</a><a href="/es/comparer/" aria-current="page">Comparar</a><a href="/es/civilisations/">Civilizaciones</a><a href="/es/abolitions/">Aboliciones</a><a href="/es/debat/">El debate</a><a href="/es/aujourdhui/">Hoy</a><a href="/es/methode/">Método</a></nav><nav class="langs" aria-label="Language"><a href="/fr/comparer/" lang="fr">FR</a><a href="/en/comparer/" lang="en">EN</a><a href="/es/comparer/" lang="es" aria-current="true">ES</a><a href="/de/comparer/" lang="de">DE</a><a href="/zh/comparer/" lang="zh-Hans">中文</a><a href="/ru/comparer/" lang="ru">RU</a></nav></div></header>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Herramienta</span>
+      <h1>Comparar los sistemas esclavistas</h1>
+      <p class="lead">Filtre por región, aísle los sistemas hereditarios o racializados, ordene por fecha. Las etiquetas «discutido», «fuente secundaria» y «por verificar» indican la solidez de cada cifra.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Buscar<input type="search" id="f-q" placeholder="Roma, nobi, Dahomey…"></label>
+        <label for="f-region">Región<select id="f-region"><option value="">Todas</option></select></label>
+        <label for="f-sort">Ordenar por<select id="f-sort">
+          <option value="vol">Volumen estimado (descendente)</option>
+          <option value="part">Proporción de la población (descendente)</option>
+          <option value="dur">Duración (descendente)</option>
+          <option value="end">Final más reciente primero</option>
+          <option value="start">Cronológico (más antiguo primero)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Solo hereditarios</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Solo con criterio racial</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">Sistema ↕</button></th>
+            <th><button type="button" data-sort="start">Periodo ↕</button></th>
+            <th>Volúmenes o proporción de la población</th>
+            <th>Cómo se llegaba a ser esclavo</th>
+            <th>Hereditario</th>
+            <th>Criterio racial</th>
+            <th>Manumisión</th>
+            <th><button type="button" data-sort="end">Final ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Esclavitud moderna: una cifra de otra naturaleza</strong>
+        <p>La OIT, Walk Free y la OIM estiman en 50 millones el número de personas en situación de esclavitud moderna en 2021 (28 M en trabajo forzoso, 22 M en matrimonio forzado). Es un número de personas medido en un día concreto: no se puede comparar con los 12,5 millones de la trata atlántica, que son un total acumulado a lo largo de 375 años.</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">Atlas de la esclavitud · Fuentes detalladas en cada página.</div></footer>
+<script src="/assets/app.es.js"></script>
+</body>
+</html>

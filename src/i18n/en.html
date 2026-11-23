@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slavery Atlas</title>
+<meta name="description" content="A comparative history of slavery by civilization and era: numbers, legal status, abolitions, and historians' debates.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : atlas d'archives — encre bleu de fer sur papier gris froid, ocre pour les chiffres, rouge sombre pour les mises en garde.
+   Layout : bandeau de navigation fixe, colonne de lecture ~68ch, outils (frise, tableau) en pleine largeur. */
+:root{
+  --paper:#f3f4f2;
+  --panel:#ffffff;
+  --ink:#1b2431;
+  --muted:#5b6574;
+  --rule:#d5d9dd;
+  --accent:#1f4f7a;
+  --ochre:#a86a12;
+  --warn:#8e2b2b;
+  --chip:#e7ebef;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+    --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+  --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:600}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.read{max-width:68ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-lg{display:flex;flex-direction:column;gap:40px}
+
+/* Navigation */
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:.92rem;font-weight:500}
+nav.main a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.proto{background:var(--chip);color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px}
+.proto strong{color:var(--warn)}
+
+main{padding:40px 0 72px}
+section.view{display:none}
+section.view.active{display:block}
+
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);font-weight:600}
+.lead{font-size:1.15rem;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* Chiffres clés */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.fig .n{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--ochre);font-variant-numeric:tabular-nums;line-height:1.1}
+.fig .l{font-weight:600}
+.fig .s{font-size:.85rem;color:var(--muted)}
+
+/* Frise */
+.frise{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;overflow-x:auto}
+.frise-inner{min-width:760px;display:flex;flex-direction:column;gap:5px}
+.frow{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px}
+.frow .name{font-size:.84rem;text-align:right;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+.bar{position:absolute;top:2px;height:12px;border-radius:3px;background:var(--accent);opacity:.85;border:0;padding:0;cursor:pointer}
+.bar.race{background:var(--warn)}
+.bar:hover{opacity:1}
+.axis{display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* Cartes civilisations */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.live{border-left:4px solid var(--ochre)}
+.card .soon{font-size:.75rem;color:var(--muted)}
+.card.live .soon{color:var(--ochre);font-weight:600}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.principles div{border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+
+/* Comparer */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.filters select,.filters input[type=search]{font:inherit;font-size:.92rem;padding:7px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:170px}
+.filters .chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:.9rem;padding-bottom:7px}
+.count{font-size:.88rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--chip);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--ochre)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .civ{font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);margin:2px 4px 0 0;white-space:nowrap}
+.pill.oui{color:var(--warn)}
+.pill.flag{border:1px solid var(--rule);background:transparent}
+.yes{color:var(--warn);font-weight:600}
+
+/* Page modèle */
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fiche dd{margin:0;font-weight:500}
+.callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.callout.blue{border-left-color:var(--accent)}
+.debate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.debate>div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.scale{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px}
+.srow{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:10px;align-items:center;font-size:.86rem}
+.sbar{height:14px;background:var(--chip);border-radius:3px;position:relative;overflow:hidden}
+.sbar span{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.sbar span.range{background:var(--ochre);opacity:.55}
+.srow .v{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+ul.src{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.back{font-size:.88rem;text-decoration:none;font-weight:500}
+ol.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;position:relative;padding-left:16px}
+ol.timeline li::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ochre)}
+ol.timeline .yr{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+@media (max-width:560px){ ol.timeline li{grid-template-columns:1fr;gap:2px} }
+footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){
+  nav.main{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  nav.main a{white-space:nowrap}
+  .srow{grid-template-columns:1fr auto}
+  .srow .sbar{grid-column:1 / -1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#accueil">Slavery Atlas</a>
+    <nav class="main" aria-label="Main navigation">
+      <a href="#accueil">Home</a>
+      <a href="#comparer">Compare</a>
+      <a href="#civilisations">Civilizations</a>
+      <a href="#abolitions">Abolitions</a>
+      <a href="#debat">The debate</a>
+      <a href="#aujourdhui">Today</a>
+      <a href="#methode">Method</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section class="view" id="v-accueil">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Comparative history · from Hammurabi to the present</span>
+      <h1>Slavery, a history shared by every civilization</h1>
+      <p class="lead">Mesopotamia, Rome, China, Korea, the caliphates, African kingdoms, the Ottoman Empire, the Crimean Tatars, the Barbary corsairs, the Aztecs, the European powers: nearly every major society has practiced slavery. This site sets these systems side by side, with their numbers, their rules and how they ended, so that anyone can compare them on the evidence.</p>
+    </div>
+
+    <div class="figures" aria-label="Key figures">
+      <div class="fig"><span class="n">12.5 M</span><span class="l">Transatlantic slave trade</span><span class="s">Africans embarked from 1501 to 1875, including 1.38 M under the French flag (SlaveVoyages database).</span></div>
+      <div class="fig"><span class="n">8 to 17 M</span><span class="l">Oriental slave trades</span><span class="s">Sahara, Red Sea, Indian Ocean, from about 650 to 1900. Highly uncertain estimates (Alencastro, Austen).</span></div>
+      <div class="fig"><span class="n">2 to 5 M</span><span class="l">Crimean Tatar raids</span><span class="s">Captives taken in Poland-Lithuania and Muscovy, 1441-1774 (İnalcık, Charnysh and Lall).</span></div>
+      <div class="fig"><span class="n">1981</span><span class="l">Last abolition</span><span class="s">Mauritania, by decree; slavery was not made a criminal offense there until 2007. Saudi Arabia and Yemen: 1962.</span></div>
+    </div>
+
+    <div class="stack">
+      <h2>Timeline of slave systems</h2>
+      <p class="muted read">Each bar spans the period during which the system existed. In red, the systems in which slave status was assigned by racial origin. Click a bar to open the comparison table.</p>
+      <div class="frise" role="group" aria-label="Timeline">
+        <div class="frise-inner" id="frise"></div>
+        <div class="axis"><span></span><div class="ticks" id="ticks"></div></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Status based on war, debt, birth or religion</span><span><i style="background:var(--warn)"></i>Status assigned by racial origin</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">Non-linear scale: antiquity is compressed for readability.</p>
+    </div>
+
+    <div class="stack">
+      <h2>By civilization</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="stack">
+      <h2>How this site compares</h2>
+      <div class="principles">
+        <div><h3>Criterion by criterion</h3><p class="muted">Volume, duration, share of the population, legal status, hereditary transmission, manumission, end. No single criterion is enough to rank a system.</p></div>
+        <div><h3>Figures that don't add up</h3><p class="muted">A flow over three centuries, a stock on a given day and a share of the population are three different measures. Every figure says which one it is.</p></div>
+        <div><h3>Every estimate attributed</h3><p class="muted">Ranges are credited to the historian who proposes them, and disputed figures are flagged as such.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="view" id="v-comparer">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Tool</span>
+      <h1>Compare slave systems</h1>
+      <p class="lead">Filter by region, isolate hereditary or racialized systems, sort by date. The labels "disputed," "secondary source" and "to be verified" indicate how solid each figure is.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Search<input type="search" id="f-q" placeholder="Rome, nobi, Dahomey…"></label>
+        <label for="f-region">Region<select id="f-region"><option value="">All</option></select></label>
+        <label for="f-sort">Sort by<select id="f-sort">
+          <option value="vol">Estimated volume (descending)</option>
+          <option value="part">Share of the population (descending)</option>
+          <option value="dur">Duration (descending)</option>
+          <option value="end">Most recent end first</option>
+          <option value="start">Chronological (oldest first)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Hereditary only</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Racial criterion only</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">System ↕</button></th>
+            <th><button type="button" data-sort="start">Period ↕</button></th>
+            <th>Volumes or share of the population</th>
+            <th>How people became enslaved</th>
+            <th>Hereditary</th>
+            <th>Racial criterion</th>
+            <th>Manumission</th>
+            <th><button type="button" data-sort="end">End ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Modern slavery: a figure of a different kind</strong>
+        <p>The ILO, Walk Free and the IOM estimate that 50 million people were living in modern slavery in 2021 (28 M in forced labor, 22 M in forced marriage). This is a stock measured on a given day: it cannot be compared with the 12.5 million of the transatlantic slave trade, which is a cumulative total over 375 years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARY -->
+<section class="view" id="v-barbaresques">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Mediterranean · 1530-1830</span>
+      <h1>The Barbary corsairs and European slaves</h1>
+      <p class="lead">For three centuries, corsairs from Algiers, Tunis, Tripoli and Salé captured Christian sailors, fishermen and villagers at sea and along the coasts of Europe, who were then sold or held for ransom in the Maghreb.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Period</dt><dd>c. 1530 to 1830</dd></div>
+      <div><dt>Estimated volume</dt><dd>1 to 1.25 M (Davis, disputed extrapolation)</dd></div>
+      <div><dt>Attested numbers</dt><dd>25,000 to 35,000 in the 17th c.</dd></div>
+      <div><dt>Enslavement</dt><dd>Privateering at sea, coastal raids</dd></div>
+      <div><dt>Hereditary</dt><dd>No</dd></div>
+      <div><dt>Criterion</dt><dd>Religious (Christians)</dd></div>
+      <div><dt>Way out</dt><dd>Ransom, conversion, escape</dd></div>
+      <div><dt>End</dt><dd>1816 (Algiers bombarded), 1830 (French conquest)</dd></div>
+    </dl>
+
+    <div class="stack read">
+      <h2>An economy of privateering and ransom</h2>
+      <p>The Barbary regencies, more or less autonomous vassals of the Ottoman Empire, made privateering a state enterprise. Captives were put to work in the galleys, on public works or in households, and many were sold back to their families or to religious orders. The Trinitarians (founded in 1198) and the Mercedarians (traditionally 1218) raised funds throughout Christendom to ransom captives.</p>
+      <p>Algiers alone held more than 30,000 European slaves around 1650. The raids struck Italy, Spain and Provence, but also Ireland, England and Iceland.</p>
+      <p>The end came from outside. In 1816, Lord Exmouth's Anglo-Dutch fleet bombarded Algiers and secured the release of about 1,200 slaves (the figure varies by source). The French conquest of Algiers in 1830 put an end to privateering.</p>
+    </div>
+
+    <div class="stack">
+      <h2>How many? Davis's figure and its critics</h2>
+      <div class="scale" aria-label="Orders of magnitude compared">
+        <div class="srow"><span>Attested stocks (17th c.)</span><div class="sbar"><span style="left:0;width:2.8%"></span></div><span class="v">25,000-35,000</span></div>
+        <div class="srow"><span>Barbary, estimated total</span><div class="sbar"><span style="left:0;width:80%"></span><span class="range" style="left:80%;width:20%"></span></div><span class="v">1-1.25 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Bars to scale on 0-1.25 million. The ochre portion represents the upper uncertainty of the estimate.</p>
+      <div class="debate">
+        <div>
+          <h3>Robert C. Davis's estimate</h3>
+          <p>In <em>Christian Slaves, Muslim Masters</em> (2003), Davis estimates that "almost certainly a million and quite possibly as many as a million and a quarter" Europeans were enslaved between 1530 and 1780. He starts from observed numbers and assumes that a quarter had to be replaced every year (deaths, ransoms, conversions), or about 8,500 captures a year.</p>
+          <p>He also argues that between 1500 and 1650, more European Christians were probably taken to Barbary than Africans to the Americas.</p>
+        </div>
+        <div>
+          <h3>The critics</h3>
+          <p>Peter Earle considers that extrapolating from the most intense period (1580-1680) inflates the total. John Wright stresses the fragility of the retrospective calculation. Ehud Toledano faults the absence of Ottoman sources, and Jarbel Rodriguez the conflation of ransomable captives with slaves.</p>
+          <p>Davis himself acknowledges that his method is the only one possible with the available archives, not the best one.</p>
+        </div>
+      </div>
+      <div class="callout blue read">
+        <strong>Key takeaway for comparison</strong>
+        <p>Europeans, too, were the victims of large-scale slave trades, here and in the Tatar raids (2 to 5 million captives). Davis's figure is a high order of magnitude, not a count. Over their full duration, the two trades differ by an order of magnitude: 1 to 1.25 M for Barbary, 12.5 M for the Atlantic. Barbary captives could be ransomed, and their status did not pass to their children.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li>Robert C. Davis, <em>Christian Slaves, Muslim Masters</em>, Palgrave Macmillan, 2003. Overview: <a href="https://news.osu.edu/when-europeans-were-slaves--research-suggests-white-slavery-was-much-more-common-than-previously-believed/">Ohio State University News, 2004</a>.</li>
+        <li>Debate and critiques: <a href="https://mg.co.za/article/2004-03-11-book-reopens-arguments-about-slave-raids-on-europe/">Mail &amp; Guardian, 2004</a>; <a href="https://en.wikipedia.org/wiki/Barbary_slave_trade">Wikipedia, Barbary slave trade</a> (secondary source).</li>
+        <li>Redemptive orders: <a href="https://en.wikipedia.org/wiki/Mercedarians">Wikipedia, Mercedarians</a> (secondary source).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CIVILIZATIONS -->
+<section class="view" id="v-civilisations">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">By civilization</span>
+      <h1>All civilizations</h1>
+      <p class="lead">Every page follows the same template: period, volumes, how people became enslaved, whether the status was hereditary, manumission, the end of slavery, debates and sources.</p>
+    </div>
+    <div class="stack-lg" id="civgroups"></div>
+  </div>
+</section>
+<!-- TRANSATLANTIC SLAVE TRADE -->
+<section class="view" id="v-traite-atlantique">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Atlantic · 1501-1888</span>
+      <h1>The transatlantic slave trade and colonial slavery</h1>
+      <p class="lead">From 1501 to 1875, European and American ships carried about 12.5 million Africans to the Americas, most of them purchased from African states and merchants. They were enslaved on the plantations of Brazil, the Caribbean and the southern United States.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Period</dt><dd>1501 to 1875 (trade); slavery until 1888</dd></div>
+      <div><dt>Embarked</dt><dd>12.5 M (SlaveVoyages)</dd></div>
+      <div><dt>Landed alive</dt><dd>≈ 10.7 M</dd></div>
+      <div><dt>Mortality at sea</dt><dd>≈ 12 to 16%</dd></div>
+      <div><dt>Enslavement</dt><dd>Purchase from African states and merchants, war, raids</dd></div>
+      <div><dt>Hereditary</dt><dd>Yes</dd></div>
+      <div><dt>Criterion</dt><dd>Racial (skin color)</dd></div>
+      <div><dt>End</dt><dd>Britain 1833, France 1848, United States 1865, Brazil 1888</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>Who carried the captives?</h2>
+      <div class="scale" aria-label="Africans embarked by flag">
+        <div class="srow"><span>Portugal and Brazil</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">5.85 M</span></div>
+        <div class="srow"><span>Great Britain</span><div class="sbar"><span style="left:0;width:55.7%"></span></div><span class="v">3.26 M</span></div>
+        <div class="srow"><span>France</span><div class="sbar"><span style="left:0;width:23.6%"></span></div><span class="v">1.38 M</span></div>
+        <div class="srow"><span>Spain and Uruguay</span><div class="sbar"><span style="left:0;width:18.2%"></span></div><span class="v">1.06 M</span></div>
+        <div class="srow"><span>Netherlands</span><div class="sbar"><span style="left:0;width:9.5%"></span></div><span class="v">0.55 M</span></div>
+        <div class="srow"><span>United States</span><div class="sbar"><span style="left:0;width:5.2%"></span></div><span class="v">0.31 M</span></div>
+        <div class="srow"><span>Denmark and the Baltic</span><div class="sbar"><span style="left:0;width:1.9%"></span></div><span class="v">0.11 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Africans embarked from 1501 to 1875, by the ship's flag. Source: SlaveVoyages database, estimates.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>France: Nantes, Saint-Domingue and the Code noir</h2>
+      <p>France fitted out 4,118 slaving voyages, 44% of them from Nantes, ahead of Le Havre, La Rochelle, Saint-Malo and Honfleur. The Code noir of 1685 provided the legal framework for slavery in its colonies and defined the slave there as movable property.</p>
+      <p>In 1789, Saint-Domingue had more than 450,000 slaves for about 30,000 whites and 30,000 free people of color, and dominated world sugar production. According to Hilliard d'Auberteuil, a writer of the period, more than 800,000 Africans had been brought there between 1680 and 1776, and only 290,000 were still alive.</p>
+      <p>After independence, the ordinance of 1825 imposed on Haiti an indemnity of 150 million francs for the benefit of the former colonists, reduced to 90 million in 1838. Together with the associated loans, Haiti kept paying it off until 1921-1922.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>A striking demographic contrast</strong>
+      <p>Only about 388,000 Africans landed directly in North America, yet the United States had nearly 4 million slaves in 1860: the enslaved population there grew by about 25% per decade. In Brazil and the Caribbean, it shrank by about 20% per decade (Michael Tadman). The sugar regime could sustain itself only through a continuous influx of new captives.</p>
+    </div>
+
+    <div class="stack">
+      <h2>What historians consider distinctive about this system</h2>
+      <div class="debate">
+        <div>
+          <h3>A unique combination</h3>
+          <p>No single criterion sets the transatlantic slave trade apart: other trades lasted longer or were of comparable volume. It is the combination that makes it distinctive. Slave status was hereditary and assigned by skin color. The export plantation was integrated into European capitalism. The flow was concentrated over about 350 years, and the descendants of the enslaved and of the enslavers are fellow citizens today.</p>
+        </div>
+        <div>
+          <h3>Slavery and capitalism</h3>
+          <p>Eric Williams (1944) argued that the profits of slavery helped finance the Industrial Revolution. Stanley Engerman puts them at less than 5% of the British economy, and Seymour Drescher shows that the system was not in decline when Britain abolished it. Joseph Inikori, by contrast, argues for the weight of Atlantic commerce as a whole.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>The abolitions</h2>
+      <p>France abolished slavery on February 4, 1794; Bonaparte reinstated the slave trade in 1802, and final abolition came in 1848. Britain banned the slave trade in 1807 and slavery in 1833, paying £20 million to the owners; the enslaved received nothing.</p>
+      <p>From 1808 to 1867, the Royal Navy's West Africa Squadron captured about 1,600 slave ships and freed about 150,000 Africans, at the cost of nearly 1,600 sailors' lives. Chaim Kaufmann and Robert Pape see it as "by far the most costly international moral action in modern history."</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages, estimates</a> (Eltis and Richardson).</li>
+        <li>Henry Louis Gates Jr., <a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">"How many slaves landed in the US?"</a>, PBS.</li>
+        <li>BnF Heritage, <a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">"Slave trade"</a> and <a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">"Haiti's independence debt"</a>.</li>
+        <li>UCL, <a href="https://www.ucl.ac.uk/lbs/project/context/">Legacies of British Slavery</a>.</li>
+        <li>Kaufmann and Pape, <a href="https://www.cambridge.org/core/journals/international-organization/article/abs/explaining-costly-international-moral-action-britains-sixtyyear-campaign-against-the-atlantic-slave-trade/C13419C7C80556BF07280DAAFDC2C9DD"><em>International Organization</em>, 1999</a>.</li>
+        <li>Demography and the Williams debate: <a href="https://en.wikipedia.org/wiki/Atlantic_slave_trade">Wikipedia, Atlantic slave trade</a> and <a href="https://en.wikipedia.org/wiki/Capitalism_and_Slavery">Capitalism and Slavery</a> (secondary source).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ORIENTAL SLAVE TRADES -->
+<section class="view" id="v-traites-orientales">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Sahara, Red Sea, Indian Ocean · 650-1900</span>
+      <h1>The Oriental slave trades</h1>
+      <p class="lead">For nearly twelve centuries, African captives were carried across the Sahara, through the Red Sea and from the Swahili coast to North Africa, Arabia, the Gulf, Persia and India. It is the longest of the great slave trades, and the most poorly measured.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Period</dt><dd>c. 650 to 1900; abolitions until 1962-1981</dd></div>
+      <div><dt>Estimated volume</dt><dd>8 to 17 M, up to 25 M depending on the author</dd></div>
+      <div><dt>Sahara alone</dt><dd>7.42 M (Lovejoy)</dd></div>
+      <div><dt>Enslavement</dt><dd>Raids, war, purchase from African states</dd></div>
+      <div><dt>Hereditary</dt><dd>Variable; children of concubines often free</dd></div>
+      <div><dt>Criterion</dt><dd>Mainly religious; color prejudice debated</dd></div>
+      <div><dt>Uses</dt><dd>Domestic service, harem, army, some plantations</dd></div>
+      <div><dt>End</dt><dd>Saudi Arabia and Yemen 1962, Oman 1970, Mauritania 1981</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>How many? Estimates that vary threefold</h2>
+      <div class="scale" aria-label="Estimates of the Oriental slave trades by author">
+        <div class="srow"><span>Alencastro</span><div class="sbar"><span style="left:0;width:32%"></span></div><span class="v">≈ 8 M</span></div>
+        <div class="srow"><span>Segal</span><div class="sbar"><span style="left:0;width:46%"></span><span class="range" style="left:46%;width:10%"></span></div><span class="v">11.5-14 M</span></div>
+        <div class="srow"><span>M'Bokolo (1998)</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 M</span></div>
+        <div class="srow"><span>Austen, adopted by Pétré-Grenouilleau</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 M</span></div>
+        <div class="srow"><span>Bairoch</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">≈ 25 M</span></div>
+        <div class="srow"><span>Transatlantic trade, for reference</span><div class="sbar"><span style="left:0;width:50%;background:var(--warn)"></span></div><span class="v">12.5 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Bars to scale on 0-25 million. The Oriental slave trades span about 1,250 years, the transatlantic trade about 375 years.</p>
+      <div class="callout read">
+        <strong>Why such a gap</strong>
+        <p>For the centuries from 650 to 1400, the figures "can only be guessed," as the historian Klas Rönnbäck points out: the gap stems mainly from assumptions about the Middle Ages, for which there is almost no data. The transatlantic trade, by contrast, has been reconstructed ship by ship. The figures in the "tens or hundreds of millions" that circulate are considered grossly inflated by specialists.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>A domestic, military and more female trade</h2>
+      <p>The transatlantic trade deported about two men for every woman. The Oriental trades sought more women, for concubinage and domestic labor. Men served as servants, soldiers or laborers. A minority of boys were castrated to become eunuchs; the mortality of the operation is described as high, but no reliable percentage has been established.</p>
+      <p>The Muslim world also turned former slaves into an elite: the Mamluks, converted slave soldiers, ruled Egypt from 1250 to 1517.</p>
+      <p>Plantations remained rare, with two exceptions. The Zanj Rebellion (869-883, near Basra) mobilized more than 50,000 slaves from the salt marshes. In the 19th century, Zanzibar's clove plantations relied on slaves who made up as much as two-thirds of the population.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>Why so few descendants?</strong>
+      <p>There are few visible African diasporas in the Middle East. Historians explain this by the castration of some of the men, the high proportion of women and the integration of concubines' children, who were often free. The relative weight of these factors has not been quantified. This contrast with the Americas also partly explains why this trade weighs less heavily in collective memory.</p>
+    </div>
+
+    <div class="stack">
+      <h2>The debate over the "veiled genocide"</h2>
+      <div class="debate">
+        <div>
+          <h3>Tidiane N'Diaye</h3>
+          <p>In <em>Le Génocide voilé</em> (2008), the French-Senegalese anthropologist puts the number deported to the East at 17 million and speaks of genocide. He contrasts about 1 million descendants with 70 million for the transatlantic trade. His orders of magnitude are close to the literature, but these last two figures are unsourced.</p>
+        </div>
+        <div>
+          <h3>The critics</h3>
+          <p>In a 2010 review, Moritz Behrendt criticizes him for relying almost exclusively on European explorers, for treating very different systems as a single bloc, and for calling the trade "Arab-Muslim" without calling the Atlantic trade "European-Christian." N'Diaye's claim that three-quarters of those castrated died is not supported by any academic source we have found.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Late abolitions</h2>
+      <p>In the Ottoman Empire, enslaved women were still being sold in 1908. Formal abolitions then followed one another: Iran and Jordan 1929, Bahrain 1937, Kuwait 1949, Qatar 1952, Saudi Arabia and Yemen 1962, Oman 1970, Mauritania 1981. In 1948, the Anti-Slavery Society estimated the number of slaves in the Arabian Peninsula at about 1 million. Almost all of these abolitions were obtained under British or international pressure.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, 3rd ed., 2012: <a href="https://www.bu.edu/africa/files/2023/11/Slave-Trade-Tables.docx.pdf">tables, Boston University</a>.</li>
+        <li>Klas Rönnbäck, <a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">"Slave trades out of Africa"</a>, African Economic History Network.</li>
+        <li>Comparative estimates: <a href="https://human.libretexts.org/Courses/Lumen_Learning/Book:_History_of_World_Civilization_II-2_(Lumen)/04:_2:_African_Slave_Trade/04.2:_TransSaharan_Slave_Trade">LibreTexts</a> (secondary source).</li>
+        <li>Moritz Behrendt, <a href="https://qantara.de/node/10064">review of <em>Le Génocide voilé</em></a>, Qantara.de, 2010.</li>
+        <li>Abolitions and the Zanj: <a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (secondary source).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-mesopotamie-egypte"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Antiquity · 3rd-1st millennium BCE</span><h1>Mesopotamia and ancient Egypt</h1><p class="lead">The oldest known law codes already regulate slavery. In Mesopotamia as in Egypt, people became slaves through war, through debt, or by selling themselves to survive destitution.</p></div><dl class="fiche"><div><dt>Period</dt><dd>3rd-1st mill. BCE</dd></div><div><dt>Volume</dt><dd>No reliable estimate</dd></div><div><dt>Enslavement</dt><dd>War, debt, sale of oneself or of children</dd></div><div><dt>Hereditary</dt><dd>Not established</dd></div><div><dt>Racial criterion</dt><dd>None</dd></div><div><dt>Key text</dt><dd>Code of Hammurabi, c. 1753 BCE</dd></div></dl><div class="stack read"><h2>The Code of Hammurabi</h2><p>The Code distinguishes three categories of people: the <em>awīlum</em> (fully free man), the <em>muškēnum</em>, and the <em>wardum</em> or <em>amtum</em>, the male or female slave. The slave is property sold with guarantees: laws 278 to 281 govern warranties of sale, laws 15 to 20 punish harboring fugitives, and law 282 provides that a slave who denies his master shall have his ear cut off.</p><p>One often-cited rule, law 117, supposedly freed a person sold for debt after three years. It remains to be verified in a scholarly translation. No estimate of the share of slaves in the Mesopotamian population exists.</p></div><div class="stack read"><h2>Egypt: servants more than slaves</h2><p>The Egyptian terms translated as "slave" refer rather to workers or servants. Slaves could own property and enjoyed certain protections. The New Kingdom saw a rise in the enslavement of foreign captives from Nubia, Libya and Asia.</p><p>Slavery was not the dominant mode of production in Egypt.</p></div><div class="callout blue read"><strong>The pyramids were not built by slaves</strong><p>Egyptologists agree: the great pyramids were built by conscripted or paid laborers. Herodotus's figure of "100,000 slaves" is unsupported.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">Wikipedia, Code of Hammurabi</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Egypt">Wikipedia, Slavery in ancient Egypt</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-grece"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Antiquity · 8th-2nd c. BCE</span><h1>Greece: Athens and the helots of Sparta</h1><p class="lead">Athenian democracy rested in part on the labor of slaves, most of them non-Greeks. Sparta dominated a population of helots far larger than its own citizen body.</p></div><dl class="fiche"><div><dt>Athens</dt><dd>20,000 to 80,000 slaves (disputed)</dd></div><div><dt>Sparta</dt><dd>170,000 to 224,000 helots</dd></div><div><dt>Enslavement</dt><dd>War, piracy, trade; conquest for the helots</dd></div><div><dt>Hereditary</dt><dd>Yes</dd></div><div><dt>Criterion</dt><dd>Ethnic (non-Greeks), not racial</dd></div><div><dt>Manumission</dt><dd>Frequent in Athens in the 4th c.</dd></div></dl><div class="stack"><h2>Athens: a hotly disputed figure</h2><div class="scale"><div class="srow"><span>Low modern estimate</span><div class="sbar"><span style="left:0;width:5.0%"></span></div><span class="v">≈ 20,000</span></div><div class="srow"><span>High modern estimate</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">80,000 or more</span></div><div class="srow"><span>Ancient census (doubtful)</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">400,000</span></div></div><p class="muted" style="font-size:.82rem">Bars to scale on 0-400,000. The figure of 400,000, transmitted by Athenaeus, is rejected by most scholars.</p></div><div class="stack read"><h2>Athens</h2><p>The census of Demetrius of Phalerum (317-307 BCE) counts 21,000 citizens, 10,000 metics and 400,000 slaves, a figure most historians doubt. Modern estimates range from about 20,000 to 80,000 or more. The silver mines of Laurion are thought to have employed about 30,000 slaves.</p><p>Slaves came from war, piracy and trade, and were mostly "barbarians": on one list of 32 confiscated slaves, 13 were Thracian. In the 6th century, Solon banned the debt slavery of Athenians. Aristotle theorized the slave as a "living tool" and formulated the doctrine of slavery "by nature."</p></div><div class="stack read"><h2>The helots of Sparta</h2><p>Collectively owned by the state and bound to the land, the helots of Laconia and Messenia handed over a share of their harvests. According to Aristotle, the ephors declared war on them every year, so that the <em>krypteia</em> could kill them without religious pollution. Thucydides reports the disappearance of about 2,000 helots who had been promised their freedom.</p><p>Messenia was liberated by Epaminondas in 369 BCE.</p></div><div class="callout blue read"><strong>Slaves or serfs?</strong><p>The ancients themselves were uncertain: Critias called the helots "slaves to the utmost degree," Pollux placed them "between the free and the slaves." The historian Jean Ducat speaks of serfdom.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Greece">Wikipedia, Slavery in ancient Greece</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Helots">Wikipedia, Helots</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-rome"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Antiquity · 2nd c. BCE – 5th c. CE</span><h1>Rome, a slave society</h1><p class="lead">Rome was one of the great slave societies of history: millions of war captives labored on its estates, in its mines and in its households. But a freed slave could become a citizen.</p></div><dl class="fiche"><div><dt>Period</dt><dd>2nd c. BCE – 5th c. CE</dd></div><div><dt>Italy</dt><dd>1 to 1.5 M (Scheidel) to 3 M (Brunt)</dd></div><div><dt>Empire (260-425)</dt><dd>≈ 10 to 15% of the population</dd></div><div><dt>Enslavement</dt><dd>War, birth, exposed children, piracy</dd></div><div><dt>Hereditary</dt><dd>Yes</dd></div><div><dt>Racial criterion</dt><dd>None</dd></div><div><dt>Manumission</dt><dd>Frequent, conferred citizenship</dd></div><div><dt>End</dt><dd>Gradual shift to the colonate and serfdom</dd></div></dl><div class="stack"><h2>How many slaves in Italy?</h2><div class="scale"><div class="srow"><span>Keith Hopkins (28 BCE)</span><div class="sbar"><span style="left:0;width:26.7%"></span></div><span class="v">0.8 M</span></div><div class="srow"><span>Walter Scheidel</span><div class="sbar"><span style="left:0;width:33.3%"></span><span class="range" style="left:33.3%;width:16.7%"></span></div><span class="v">1-1.5 M</span></div><div class="srow"><span>Julius Beloch</span><div class="sbar"><span style="left:0;width:66.7%"></span></div><span class="v">≈ 2 M</span></div><div class="srow"><span>Peter Brunt</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 3 M</span></div></div><p class="muted" style="font-size:.82rem">Bars to scale on 0-3 million. Numbers at a given moment, not flows.</p></div><div class="stack read"><h2>A population sustained by war and birth</h2><p>According to Walter Scheidel, building up Italy's slave population required 2 to 4 million imported slaves over the last two centuries BCE. About three-quarters of Italian slaves, however, are thought to have been born into slavery.</p><p>Legally, the slave was a thing (<em>res</em>), without legal personality, whose testimony was admissible only under torture. The revolt of Spartacus (73-71 BCE) is its most famous episode.</p></div><div class="callout blue read"><strong>Rome resembles Brazil, not the United States</strong><p>The ratio of imports to the enslaved population (about 3 to 1) puts Rome closer to slaveholding Brazil than to the southern United States, where the enslaved population grew from 1.2 million in 1810 to nearly 4 million in 1860 with only 600,000 to 650,000 imports (Scheidel).</p></div><div class="stack read"><h2>A real way out</h2><p>Formal manumission generally conferred Roman citizenship, and the children of freedmen were born free. It was so common that Augustus had to cap it with the <em>lex Fufia Caninia</em> (2 BCE) and the <em>lex Aelia Sentia</em> (4 CE). This is a major contrast with the racial slavery of the Americas.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.cambridge.org/core/journals/journal-of-roman-studies/article/human-mobility-in-roman-italy-ii-the-slave-population/72D80C5839817A1F4C456A33C9F62E7A">Walter Scheidel, "The slave population," Journal of Roman Studies, 2005</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Rome">Wikipedia, Slavery in ancient Rome</a> (secondary source; figure for the Empire probably from Kyle Harper, to be verified)</li></ul></div></div></section>
+<section class="view" id="v-chine"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Asia · Shang – 1910</span><h1>China: a minority but millennia-old servitude</h1><p class="lead">Slavery runs through the whole of Chinese history, from captives sacrificed under the Shang to girls sold as domestic servants in the 20th century, without ever becoming the foundation of the economy.</p></div><dl class="fiche"><div><dt>Period</dt><dd>Shang – 1909/1910</dd></div><div><dt>Volume</dt><dd>Small share; ≈ 2 M at the Qing conquest</dd></div><div><dt>Enslavement</dt><dd>Punishment, war, debt, sale of children</dd></div><div><dt>Hereditary</dt><dd>For some groups</dd></div><div><dt>Racial criterion</dt><dd>No</dd></div><div><dt>End</dt><dd>1909-1910; practices until 1949</dd></div></dl><div class="stack read"><h2>From the Han to the Qing</h2><p>Under the Han, slaves made up only "a very small part of the population," and ownership was capped: 200 for kings and dukes, 30 for officials. The usurper Wang Mang abolished slavery in 9 CE, then restored it in 12.</p><p>Tang law forbade enslaving free people, but allowed it for criminals, foreigners and orphans, classed among the "base people" who were legally equated with livestock. At the Manchu conquest, the Qing counted about 2 million slaves. The Yongzheng Emperor freed most hereditary servile groups between 1723 and 1730.</p></div><div class="callout read"><strong>A late and incomplete abolition</strong><p>Slavery was officially abolished in 1909 (1910 according to some sources), but the practice persisted until 1949, notably with the <em>mui tsai</em>, girls sold as domestic servants.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_China">Wikipedia, Slavery in China</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-coree"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Asia · 918 – 1894</span><h1>Korea: the nobi, up to 40% of the population</h1><p class="lead">Under the Joseon dynasty, Korea had one of the highest proportions of enslaved people in the world. But the nature of this system, closer to serfdom in the view of many historians, remains debated.</p></div><dl class="fiche"><div><dt>Period</dt><dd>918 – 1894</dd></div><div><dt>Share of the population</dt><dd>≥ 30% (15th-17th c.), up to 40% in the south</dd></div><div><dt>In 1858</dt><dd>≈ 1.5%</dd></div><div><dt>Enslavement</dt><dd>Debt, famine, birth</dd></div><div><dt>Hereditary</dt><dd>Yes</dd></div><div><dt>Racial criterion</dt><dd>No (Korean nobi)</dd></div><div><dt>End</dt><dd>1801, 1886-1887, 1894</dd></div></dl><div class="stack"><h2>The nobi's share of the population</h2><div class="scale"><div class="srow"><span>Before the Joseon</span><div class="sbar"><span style="left:0;width:25.0%"></span></div><span class="v">≤ 10%</span></div><div class="srow"><span>15th-17th c.</span><div class="sbar"><span style="left:0;width:75.0%"></span><span class="range" style="left:75.0%;width:25.0%"></span></div><span class="v">30-40%</span></div><div class="srow"><span>1858</span><div class="sbar"><span style="left:0;width:3.8%"></span></div><span class="v">≈ 1.5%</span></div></div><p class="muted" style="font-size:.82rem">Bars to scale on 0-40%. Sources: Kye (2021), Kim Sun Joo (2023), Kim (2003).</p></div><div class="stack read"><h2>A hereditary status</h2><p>Nobi status was passed on by birth and was fed by debt and by self-sale in times of famine. A Seoul register from 1663 counts 73% nobi among registered residents, but it is a local sample.</p><p>State nobi were freed in 1801. Hereditary status was abolished in 1886-1887, and the system disappeared in 1894 with the Gabo Reform.</p></div><div class="stack"><h2>Slaves or serfs?</h2><div class="debate"><div><h3>The numerical criterion</h3><p>With 30 to 40% of the population, Joseon Korea ranks among the great slave societies, on a par with the southern United States or Rome.</p></div><div><h3>Rights and integration</h3><p>Nobi could hold property and land, and those who lived outside the master's home had their own households. Kim speaks of "serfdom developed under slavery," James Palais considers them closer to serfs, and Rhee and Yang consider the word "slave" inappropriate.</p></div></div></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Korea">Wikipedia, Slavery in Korea</a> (secondary source, summarizing Kye 2021, Kim 2023, Palais 1998)</li></ul></div></div></section>
+<section class="view" id="v-inde"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Asia · 13th c. – 1861</span><h1>India: sultanates, agrarian servitude and British abolition</h1><p class="lead">On the subcontinent, slavery took the form of war captives under the sultanates, of exports to Central Asia, and of a hereditary agrarian servitude that fell on the lower castes.</p></div><dl class="fiche"><div><dt>Period</dt><dd>Delhi Sultanate – 1861</dd></div><div><dt>Around 1840</dt><dd>1.1 M to 8-9 M depending on the definition</dd></div><div><dt>Enslavement</dt><dd>War, tax default, agrarian servitude</dd></div><div><dt>Hereditary</dt><dd>Yes (agrarian servitude)</dd></div><div><dt>Criterion</dt><dd>Overlaps with caste, not racial</dd></div><div><dt>End</dt><dd>1843, Penal Code of 1861</dd></div></dl><div class="stack read"><h2>Figures from the chronicles</h2><p>The chronicles of the Delhi Sultanate put forward figures that are probably inflated: 50,000 young slaves under Alauddin Khalji, 180,000 under Firuz Shah Tughluq. The historian Scott Levi links the export of Hindus to Central Asia to the building of the Sultanate and Mughal states. In the 17th century, the Dutch East India Company also exported 150 to 400 slaves a year from Arakan and Bengal.</p></div><div class="callout blue read"><strong>Why estimates vary eightfold</strong><p>For the 1840s, estimates range from about 1.1 million to 8-9 million (Bartle Frere, 1841). It all depends on the definition: should the bonded agricultural laborers of the lower castes, such as the Pulayar or the Paraiyar, be counted as slaves?</p></div><div class="stack read"><h2>Abolition "by denial"</h2><p>British India withdrew legal recognition of slavery in 1843, then in practice criminalized it through the Penal Code of 1861. The historian Indrani Chatterjee speaks of "abolition by denial," because agrarian servitude largely survived.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_India">Wikipedia, Slavery in India</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-siam"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Southeast Asia · 17th c. – 1915</span><h1>Siam and the archipelago: debt and raids</h1><p class="lead">In Siam, slavery was mainly debt bondage, from which people could buy their way out. In the Philippine archipelago, the fleets of Sulu raided the coasts of all Southeast Asia.</p></div><dl class="fiche"><div><dt>Siam around 1854</dt><dd>1/4 to 1/3 of the population (Pallegoix)</dd></div><div><dt>Sulu, 1770-1870</dt><dd>200,000 to 300,000 enslaved</dd></div><div><dt>Enslavement</dt><dd>Debt, war, maritime raids</dd></div><div><dt>Hereditary</dt><dd>Possible</dd></div><div><dt>Racial criterion</dt><dd>No</dd></div><div><dt>End in Siam</dt><dd>1874 → 1905 → 1915</dd></div></dl><div class="stack read"><h2>Siam: a redeemable servitude</h2><p>Around 1854, Bishop Pallegoix estimated that a quarter to a third of the roughly 6 million inhabitants were debt slaves. This is an observer's estimate, not a census.</p><p>Masters could neither kill nor maim their slaves, who could own property, inherit, enter into contracts, go to court and buy their freedom. The historian Cruikshank considers the Western model of slavery ill-suited to this system.</p></div><div class="stack read"><h2>Chulalongkorn's gradual abolition</h2><p>King Chulalongkorn carried out abolition in stages. The decree of 1874 freed children born into slavery after 1868 at age 21. The abolition act dates from 1905, the Penal Code of 1908 criminalized the sale of persons, and slavery legally ended in 1915.</p></div><div class="stack read"><h2>The Sulu raids</h2><p>The Iranun and Banguingui fleets of the sultanates of Sulu and Maguindanao are thought to have enslaved 200,000 to 300,000 people between 1770 and 1870, raiding as far as the Strait of Malacca, Java and southern China. The Malay word <em>lanun</em>, "pirate," comes from the name of the Iranun.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf">R. B. Cruikshank, "Slavery in Nineteenth Century Siam," Journal of the Siam Society, 1975</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Thailand">Wikipedia, Slavery in Thailand</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Philippines">Wikipedia, Slavery in the Philippines</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-asie-centrale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Central Asia · 16th c. – 1873</span><h1>Khiva and Bukhara, slave markets</h1><p class="lead">Until the Russian conquest, the khanates of Khiva and Bukhara were major slave markets, supplied by Turkmen and Kazakh raids against Persians and Russian settlers.</p></div><dl class="fiche"><div><dt>Period</dt><dd>16th c. – 1873</dd></div><div><dt>Volume</dt><dd>≈ 1 M Persians (1st half of 19th c.), poorly sourced</dd></div><div><dt>Enslavement</dt><dd>Turkmen and Kazakh raids</dd></div><div><dt>Criterion</dt><dd>Religious: Shiites and Christians</dd></div><div><dt>End</dt><dd>1873, under Russian pressure</dd></div></dl><div class="stack read"><h2>Religion as a boundary</h2><p>Since Islam forbade the enslavement of Muslims, the Sunni khanates treated Shiite Persians as lawful targets, as they did Christians. The missionary Joseph Wolff counted 200,000 Persian slaves in Bukhara in the 1840s.</p></div><div class="callout read"><strong>Fragile figures</strong><p>The figure of about 1 million enslaved Persians and Wolff's figure rest on travelers' accounts. They should be taken as orders of magnitude.</p></div><div class="stack read"><h2>The end</h2><p>Russian slaves were freed in 1840 under pressure from St. Petersburg. The Russian conquest of Khiva in 1873 triggered a slave revolt and the abolition demanded by General Kaufman.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Khivan_slave_trade">Wikipedia, Khivan slave trade</a> (secondary source)</li><li>Jeff Eden, <em>Slavery and Empire in Central Asia</em>, Cambridge UP, 2018 (<a href="https://dash.harvard.edu/bitstream/handle/1/33493418/EDEN-DISSERTATION-2016.pdf">dissertation</a>)</li></ul></div></div></section>
+<section class="view" id="v-afrique"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Africa · 17th c. – 1981</span><h1>African slave societies</h1><p class="lead">Slavery existed in Africa before the slave trades and even intensified there in the 19th century. States such as the Sokoto Caliphate or the Kingdom of Dahomey were among the great slave societies of their time.</p></div><dl class="fiche"><div><dt>Sokoto around 1900</dt><dd>1 to 2.5 M slaves, 1/4 to 1/2 of the population</dd></div><div><dt>Ethiopia around 1932</dt><dd>≥ 2 M slaves (Anti-Slavery Society)</dd></div><div><dt>Enslavement</dt><dd>War, raids, tribute, debt</dd></div><div><dt>Hereditary</dt><dd>Often</dd></div><div><dt>Racial criterion</dt><dd>No</dd></div><div><dt>End</dt><dd>1901 (Northern Nigeria), 1942 (Ethiopia), 1981 (Mauritania)</dd></div></dl><div class="stack read"><h2>The Sokoto Caliphate</h2><p>Founded in the early 19th century in what is now northern Nigeria, the caliphate had at least 1 million and perhaps 2.5 million slaves around 1900. Jan Hogendorn and Paul Lovejoy put their share at between a quarter and a half of a population of about 10 million. Sokoto thus ranks among the great modern slave societies, behind the United States of 1860 (about 4 million) and Brazil.</p><p>The British administrator Lugard abolished the legal status of slavery in 1901, without compensation.</p></div><div class="stack read"><h2>Dahomey, a player in the transatlantic trade</h2><p>The slave trade provided most of Dahomey's royal revenue. King Ghezo signed a treaty ending exports only after the British blockade of 1851-1852, and exports resumed in 1857-1858. At court, a genuine debate pitted supporters of the trade against advocates of a shift to palm oil. The ports of Ouidah, Bonny and Luanda together shipped more than 2 million captives across the Atlantic.</p></div><div class="callout blue read"><strong>Do not generalize</strong><p>The share of "a quarter to a half" slaves applies to the great slave states of the 19th century, not to all of Africa.</p></div><div class="stack read"><h2>Ethiopia and Mauritania: the last abolitions</h2><p>Ethiopia was admitted to the League of Nations in 1923 on condition that it suppress slavery. The Italian laws of 1935-1936 freed about 420,000 slaves, and Haile Selassie abolished slavery on August 26, 1942.</p><p>In Mauritania, the French abolition of 1905 was not enforced. A 1981 decree abolished slavery without criminal penalties, and a 2007 law made it a crime. Current estimates diverge: 90,000 people according to the 2018 Global Slavery Index, 600,000 according to the BBC in 2017.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Sokoto_Caliphate">Wikipedia, Sokoto Caliphate</a> (secondary source, Hogendorn and Lovejoy)</li><li><a href="https://en.wikipedia.org/wiki/History_of_the_Kingdom_of_Dahomey">Wikipedia, Kingdom of Dahomey</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Ethiopia">Wikipedia, Slavery in Ethiopia</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Mauritania">Wikipedia, Slavery in Mauritania</a> (secondary source)</li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, "Slave trades out of Africa"</a></li></ul></div></div></section>
+<section class="view" id="v-europe-medievale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Europe · 9th – 18th c.</span><h1>Medieval Europe, the Vikings and the Mediterranean</h1><p class="lead">The word "slave" comes from "Slav": in the Middle Ages, captives from Eastern Europe were sold to the Islamic world and Byzantium. Slavery then declined in the West, but not in the Mediterranean.</p></div><dl class="fiche"><div><dt>Period</dt><dd>9th – 18th c.</dd></div><div><dt>England, 1086</dt><dd>≈ 10% of the population (Domesday Book)</dd></div><div><dt>Seville, 1565</dt><dd>≈ 7.4% of the population</dd></div><div><dt>Enslavement</dt><dd>War, Viking raids, Black Sea slave trade</dd></div><div><dt>Criterion</dt><dd>Religious, then increasingly African</dd></div><div><dt>End</dt><dd>1102 (England), 1334 (Sweden), Malta 1798</dd></div></dl><div class="stack read"><h2>Vikings and Slavs</h2><p>From the 9th to the 11th century, the Vikings captured Irish, Anglo-Saxons and Franks, and transported Slavic captives along the Volga and the Dnieper to the Abbasid Caliphate and Byzantium. Dublin became a major market. Oxford's "Dirhams for Slaves" project estimates that slaves were among the main exports of Northern Europe.</p><p>In the 10th century, Slavs were the group most present in the trade, hence the Latin <em>sclavus</em>, then the French <em>esclave</em> and the English "slave" (William Phillips).</p></div><div class="stack read"><h2>From decline in the West to the Mediterranean trade</h2><p>In Western Europe, slavery receded between the 10th and 12th centuries in favor of serfdom: the slave trade was banned in England in 1102, and Sweden abolished slavery in 1334.</p><p>The Mediterranean kept slaves into the early modern period. Venice and Genoa dominated the Black Sea slave trade from the 13th century onward, with Caffa in Crimea as the main market. At least 10,000 slaves were sold in Venice between 1414 and 1423. In 1565, Seville had 6,327 slaves for 85,538 inhabitants, most of them African.</p></div><div class="callout blue read"><strong>The link to the Atlantic</strong><p>The first Portuguese raid in sub-Saharan Africa dates from 1441. Iberian slavery forms the link between the medieval Mediterranean and the transatlantic slave trade.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_medieval_Europe">Wikipedia, Slavery in medieval Europe</a> (secondary source)</li><li><a href="https://historyireland.com/?p=10176">History Ireland</a></li><li><a href="https://krc.web.ox.ac.uk/node/309951">Oxford, Dirhams for Slaves</a></li></ul></div></div></section>
+<section class="view" id="v-ottomans"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Ottoman Empire · 14th c. – 1908</span><h1>The Ottoman Empire: soldiers, harem and household service</h1><p class="lead">In the Ottoman Empire, slavery was primarily political and domestic: elite soldiers, harem concubines, eunuchs and servants. At its height, a fifth of the population of Constantinople was enslaved.</p></div><dl class="fiche"><div><dt>Period</dt><dd>14th c. – 1908 (end of the system dated to 1924)</dd></div><div><dt>Constantinople</dt><dd>≈ 1/5 of the population (16th-17th c.)</dd></div><div><dt>Slave soldiers</dt><dd>≈ 100,000 kapıkulu in 1609</dd></div><div><dt>Enslavement</dt><dd>Tatar raids, devshirme, purchases from the Caucasus and Africa</dd></div><div><dt>Criterion</dt><dd>Prices and functions according to origin</dd></div><div><dt>Manumission</dt><dd>Frequent; upward mobility possible</dd></div></dl><div class="stack read"><h2>Slaves at the summit of the state</h2><p>The <em>kapıkulu</em>, slaves of the Porte, including the Janissaries recruited through the devshirme, a "blood tax" levied on Christian boys from the Balkans and Anatolia, numbered about 100,000 in 1609. Slaves could become viziers.</p></div><div class="stack read"><h2>The harem and the eunuchs</h2><p>Harem concubines were purchased, most often of Christian origin: Circassians, Abkhazians, Georgians. Black eunuchs came from sub-Saharan Africa, white eunuchs from the Balkans or the Caucasus. Prices varied by origin: a young white girl for domestic service cost about 3,000 kuruş, an African girl 1,500 to 2,500 (Madeline Zilfi).</p></div><div class="stack read"><h2>A largely nominal abolition</h2><p>A firman of 1830 on white slaves, a "cosmetic" closure of the Istanbul market in 1847, a ban on the Circassian and Georgian trade in 1854-1855, then on the trade in Black Africans in 1857, not enforced in Tripoli before the 1890s. Enslaved women were still being sold in 1908.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (secondary source)</li><li>Madeline Zilfi, <em>Women and Slavery in the Late Ottoman Empire</em>, Cambridge UP, 2010</li></ul></div></div></section>
+<section class="view" id="v-tatars"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Eastern Europe · 1441-1783</span><h1>The Crimean Tatar raids</h1><p class="lead">For more than three centuries, Tatar and Nogai horsemen raided Poland-Lithuania, Ukraine and Muscovy to supply the slave markets of Crimea and the Ottoman Empire. It was one of the largest slave trades of the early modern period, and one of the least known in the West.</p></div><dl class="fiche"><div><dt>Period</dt><dd>1441 – 1783</dd></div><div><dt>Estimated volume</dt><dd>2 to 5 M captives</dd></div><div><dt>Main market</dt><dd>Caffa, ≈ 20,000 sales a year around 1570</dd></div><div><dt>Enslavement</dt><dd>Raids</dd></div><div><dt>Criterion</dt><dd>Religious (Christians)</dd></div><div><dt>Way out</dt><dd>Ransom</dd></div><div><dt>End</dt><dd>Russian annexation of Crimea, 1783</dd></div></dl><div class="stack"><h2>How many captives?</h2><div class="scale"><div class="srow"><span>Baranowski (Poland-Lithuania alone)</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">≤ 1 M</span></div><div class="srow"><span>İnalcık and Kołodziejczyk (1500-1700)</span><div class="sbar"><span style="left:0;width:40.0%"></span></div><span class="v">≈ 2 M</span></div><div class="srow"><span>Charnysh and Lall, count</span><div class="sbar"><span style="left:0;width:72.8%"></span></div><span class="v">≥ 3.64 M</span></div><div class="srow"><span>Charnysh and Lall, with missing data</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 5 M</span></div></div><p class="muted" style="font-size:.82rem">Bars to scale on 0-5 million. Cumulative flows.</p></div><div class="stack read"><h2>A drain on Eastern Europe</h2><p>According to the study by Volha Charnysh and Ranjit Lall (<em>American Political Science Review</em>, 2026), at least 3.64 million people were captured between 1441 and 1774, and about 5 million if the missing data are estimated. That would represent more than a quarter of the population of Eastern Europe in 1400.</p><p>Orest Subtelny notes that some raids carried off as many as 30,000 people, but that the average was closer to 3,000. In Caffa, under Ottoman control from 1475, nearly 20,000 slaves were sold every year in the 1570s (Halil İnalcık).</p></div><div class="callout read"><strong>A new estimate, still open to discussion</strong><p>The Charnysh-Lall study is the most recent and the highest; it has not yet been debated by specialists. The historian Alan Fisher considers that no reliable total can be calculated, as the sources inflate the numbers.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Crimean-Nogai_Raids">Wikipedia, Crimean–Nogai slave raids</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (secondary source)</li><li>Charnysh and Lall, <em>American Political Science Review</em>, 2026 (publication to be confirmed)</li></ul></div></div></section>
+<section class="view" id="v-russie"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Russia · 1450-1861</span><h1>Russia: from kholops to serfs</h1><p class="lead">Russia knew slavery proper, <em>kholopstvo</em>, followed by mass serfdom that affected more than a third of the population in 1857. Russian serfs were freed in 1861, four years before American slaves.</p></div><dl class="fiche"><div><dt>Kholops</dt><dd>≈ 10% of the Muscovite population (Hellie)</dd></div><div><dt>Privately owned serfs, 1857</dt><dd>23.1 M out of 62.5 M (≈ 37.7%)</dd></div><div><dt>Enslavement</dt><dd>Self-sale, debt, capture; serfdom by law</dd></div><div><dt>Hereditary</dt><dd>Yes</dd></div><div><dt>Racial criterion</dt><dd>No</dd></div><div><dt>End</dt><dd>1679/1723 (kholops), 1861 (serfs)</dd></div></dl><div class="stack read"><h2>The kholops, Russians who sold themselves</h2><p>According to Richard Hellie, kholops made up about 10% of the Muscovite population. He sees it as "one of the most peculiar slave systems in the world," because the slaves were mostly Russians who had sold themselves. Agricultural kholops were merged into serfdom in 1679, household kholops in 1723.</p></div><div class="stack read"><h2>Serfdom</h2><p>Codified in 1649, serfdom bound peasants to the land and gave landowners near-total rights. Serfs could be transferred without the land, but kept protections over their property and their religion, and access to the courts. Alexander II abolished serfdom in 1861; former serfs often paid more than the market price for their land, and the redemption payments were not abolished until 1907.</p></div><div class="callout blue read"><strong>1861 and 1865: two abolitions, two systems</strong><p>The comparison between Russian serfdom and American slavery, pursued by Peter Kolchin, is illuminating but debated. Serfs, who shared the nationality and religion of their masters, were neither legally chattel nor assigned their status by race.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.historytoday.com/archive/slaves-not-serfs">History Today, "Slaves, not serfs"</a> (on Hellie)</li><li><a href="https://en.wikipedia.org/wiki/Serfdom_in_Russia">Wikipedia, Serfdom in Russia</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Kholop">Wikipedia, Kholop</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-ameriques"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← All civilizations</a><span class="eyebrow">Americas · 14th – 19th c.</span><h1>The Americas before and after Columbus</h1><p class="lead">Indigenous American societies had varied forms of servitude. Colonization then enslaved millions of Native Americans, and some Native nations themselves owned Black slaves.</p></div><dl class="fiche"><div><dt>Aztecs</dt><dd>Non-hereditary status, children born free</dd></div><div><dt>Northwest Coast</dt><dd>Up to 1/4 of the population enslaved</dd></div><div><dt>Enslaved Native Americans</dt><dd>2.5 to 5 M over four centuries (Reséndez)</dd></div><div><dt>Carolina, 1670-1715</dt><dd>24,000 to 51,000 exported (Gallay)</dd></div><div><dt>Criterion</dt><dd>None before 1492; then racial</dd></div><div><dt>End</dt><dd>Conquest; persisted into the 19th c.</dd></div></dl><div class="stack read"><h2>Aztecs and Incas</h2><p>Among the Aztecs, one became a <em>tlacotli</em> through punishment, war, debt or self-sale, for example during the famine of the 1450s. The slave could marry, own property and even own slaves, and his or her children were born free (Ross Hassig). But captives were sacrificed, and an "incorrigible" slave resold three times could be destined for sacrifice.</p><p>Among the Incas, the <em>yanakuna</em> formed a hereditary servitude, sometimes of high status; the word "slave" is a debated translation.</p></div><div class="stack read"><h2>The Northwest Coast</h2><p>On the Pacific coast of North America, slavery was embedded in hunter-fisher societies and in the potlatch. Leland Donald shows that this servitude fits a cross-cultural definition of slavery; in some groups, up to a quarter of the population was enslaved.</p></div><div class="stack read"><h2>The "other slavery"</h2><p>Andrés Reséndez (<em>The Other Slavery</em>, Bancroft Prize 2017) estimates that 2.5 to 5 million Native Americans were enslaved over four centuries. His broad definition encompasses the encomienda, the repartimiento, debt peonage and the forced labor that survived legal bans. Alan Gallay estimates that 24,000 to 51,000 Native Americans were exported from Carolina's ports between 1670 and 1715.</p><p>Finally, the "Five Tribes" (Cherokee, Creek, Choctaw, Chickasaw, Seminole) owned 4,500 to 5,000 Black slaves in Indian Territory around 1839.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Aztec_Empire">Wikipedia, Slavery in the Aztec Empire</a> (secondary source)</li><li><a href="https://www.ucpress.edu/books/aboriginal-slavery-on-the-northwest-coast-of-north-america/hardcover">Leland Donald, Aboriginal Slavery on the Northwest Coast, UC Press, 1997</a></li><li><a href="https://en.wikipedia.org/wiki/The_Other_Slavery">Wikipedia, The Other Slavery</a> (secondary source)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_among_Native_Americans_in_the_United_States">Wikipedia, Slavery among Native Americans</a> (secondary source)</li></ul></div></div></section>
+<section class="view" id="v-abolitions"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Timeline · from Solon to 2007</span><h1>The abolitions</h1><p class="lead">The abolition of slavery as state policy, pursued on a global scale, was born in Atlantic societies in the 19th century. Most African, Ottoman and Arab abolitions were obtained under British or international pressure, sometimes very late.</p></div><div class="stack"><ol class="timeline"><li><span class="yr">6th c. BCE</span><span><strong>Athens</strong> · Solon bans the debt slavery of Athenians.</span></li><li><span class="yr">9 CE</span><span><strong>China</strong> · Wang Mang abolishes slavery, restored in 12.</span></li><li><span class="yr">1102</span><span><strong>England</strong> · Slave trade banned.</span></li><li><span class="yr">1334</span><span><strong>Sweden</strong> · Slavery abolished.</span></li><li><span class="yr">1723-1730</span><span><strong>China</strong> · Yongzheng frees most hereditary servile groups.</span></li><li><span class="yr">1794</span><span><strong>France</strong> · Slavery abolished on February 4; the slave trade is reinstated by Bonaparte in 1802.</span></li><li><span class="yr">1801</span><span><strong>Korea</strong> · State nobi freed.</span></li><li><span class="yr">1807</span><span><strong>Great Britain</strong> · Slave trade abolished; the Royal Navy fights it until 1867.</span></li><li><span class="yr">1816</span><span><strong>Algiers</strong> · Bombarded by Lord Exmouth; European slaves freed.</span></li><li><span class="yr">1833</span><span><strong>Great Britain</strong> · Slavery abolished; £20 M paid to the owners.</span></li><li><span class="yr">1843</span><span><strong>British India</strong> · End of the legal recognition of slavery.</span></li><li><span class="yr">1848</span><span><strong>France</strong> · Final abolition (Victor Schœlcher). <span class="pill flag">to be verified</span></span></li><li><span class="yr">1857</span><span><strong>Ottoman Empire</strong> · Ban on the trade in Black Africans, long poorly enforced.</span></li><li><span class="yr">1861</span><span><strong>Russia</strong> · Serfdom abolished.</span></li><li><span class="yr">1865</span><span><strong>United States</strong> · 13th Amendment. <span class="pill flag">to be verified</span></span></li><li><span class="yr">1873</span><span><strong>Khiva</strong> · Abolition after the Russian conquest.</span></li><li><span class="yr">1888</span><span><strong>Brazil</strong> · Golden Law: the last abolition in the Americas. <span class="pill flag">to be verified</span></span></li><li><span class="yr">1894</span><span><strong>Korea</strong> · Gabo Reform.</span></li><li><span class="yr">1897</span><span><strong>Zanzibar</strong> · Abolition, extended to concubines in 1909.</span></li><li><span class="yr">1901</span><span><strong>Northern Nigeria</strong> · End of the legal status of slavery in Sokoto.</span></li><li><span class="yr">1909-1910</span><span><strong>China</strong> · Official abolition.</span></li><li><span class="yr">1915</span><span><strong>Siam</strong> · Legal end, following the 1905 act.</span></li><li><span class="yr">1929</span><span><strong>Iran, Jordan</strong> · Abolition.</span></li><li><span class="yr">1942</span><span><strong>Ethiopia</strong> · Abolition by Haile Selassie.</span></li><li><span class="yr">1949-1952</span><span><strong>Kuwait, Qatar</strong> · Abolition.</span></li><li><span class="yr">1962</span><span><strong>Saudi Arabia, Yemen</strong> · Abolition.</span></li><li><span class="yr">1970</span><span><strong>Oman</strong> · Abolition under Sultan Qaboos.</span></li><li><span class="yr">1981</span><span><strong>Mauritania</strong> · Abolition by decree, without criminal penalties.</span></li><li><span class="yr">2007</span><span><strong>Mauritania</strong> · Slavery becomes a crime.</span></li></ol></div><div class="stack"><h2>Two findings to keep side by side</h2><div class="debate"><div><h3>A movement born in the West</h3><p>The United Kingdom devoted considerable resources to fighting the slave trade: from 1808 to 1867, the West Africa Squadron captured about 1,600 ships and freed about 150,000 Africans. Kaufmann and Pape see it as "by far the most costly international moral action in modern history."</p></div><div><h3>Paid to the masters, not to the victims</h3><p>The British and French abolitions compensated the owners, never the enslaved. In Haiti, it was the former slaves who paid an indemnity to the colonists, until 1921-1922. The fight against the slave trade also served to justify the colonization of Africa.</p></div></div></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (secondary source)</li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">BnF Heritage</a></li><li>Dates of 1848, 1865 and 1888: standard reference dates, to be verified in a primary source.</li></ul></div></div></section>
+<section class="view" id="v-debat"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Historiography and memory</span><h1>Why Western memory focuses on the transatlantic slave trade</h1><p class="lead">If slavery was universal, why does public debate in France, the United Kingdom or the United States focus almost exclusively on the transatlantic slave trade? Historians put forward several reasons, and disagree on the value of comparison.</p></div><div class="stack read"><h2>Four reasons</h2><p><strong>The descendants are citizens.</strong> The descendants of Atlantic slaves live in the societies that enslaved them or that emerged from them (the Antilles, the United States, Brazil, Haiti), and press claims for remembrance and reparations there: CARICOM's ten-point plan (2014), the African Union's 2025 year of reparations. The Oriental slave trades left few visible diasporas.</p><p><strong>States legislate on their own crimes.</strong> France's Taubira law of May 21, 2001 recognizes as a crime against humanity the transatlantic slave trade, the Indian Ocean slave trade and slavery "perpetrated from the fifteenth century onward"; it names neither the trans-Saharan trades nor the intra-African trades.</p><p><strong>It is the best-documented slave trade.</strong> It is the only one reconstructed voyage by voyage in a public database.</p><p><strong>The self-critical tradition of democracies</strong> is often invoked, but no specific study establishes it: it is a hypothesis.</p></div><div class="stack"><h2>Comparing or singling out: the strongest arguments</h2><div class="debate"><div><h3>For a global history</h3><p>Olivier Pétré-Grenouilleau (<em>Les Traites négrières</em>, 2004) puts forward about 11 million deported across the Atlantic, 17 million for the Oriental slave trades and 14 million for the intra-African trades. Slavery is a near-universal institution, African states were active participants in it, and a history centered on Europe paradoxically remains Eurocentric. He rejects any "Richter scale of suffering" and holds that the slave trades were not genocides, because they aimed to exploit, not to exterminate.</p></div><div><h3>For Atlantic specificity</h3><p>The Atlantic system was qualitatively different: the slave as chattel, worth 30 to 60% of a plantation's value; a hereditary status assigned by color; natural decline of 20% per decade in the Caribbean; all of this at the heart of societies that proclaimed liberty and equality. Its effects persist: racism, debts such as Haiti's, inequality.</p></div></div></div><div class="stack read"><h2>The Pétré-Grenouilleau affair</h2><p>In 2005, the Collectif des Antillais-Guyanais-Réunionnais sued the historian under the Taubira law, then withdrew its complaint in early 2006. The complaint concerned his rejection of the word "genocide," not his comparative figures. Françoise Vergès, then a member of the Committee for the Memory of Slavery, called the lawsuit "unacceptable." The "Liberté pour l'histoire" (Freedom for History) appeal, signed by nearly 600 teachers and researchers, then called on lawmakers to stop passing judgment on history.</p></div><div class="stack read"><h2>Common ground</h2><p>Orlando Patterson (<em>Slavery and Social Death</em>, 1982) compares 66 societies and defines slavery without making race a criterion. His work serves both camps: the institution is universal, but racialization is added in the Atlantic. Specialists on Korea, Siam or Sparta point out, moreover, that many systems do not fit the definition of the slave as property, which puts purely numerical comparisons into perspective.</p><p>The sociologist Jean-Michel Chaumont, author of <em>La Concurrence des victimes</em> (1997), warns against the race for uniqueness among competing memories.</p></div><div class="callout blue read"><strong>This site's editorial line</strong><p>No verdict on which slave trade was "worse" than the others. Each system is described criterion by criterion, with its attributed figures, its debates and its actors on all sides: European, Arab and African merchants, Tatar and Ottoman states, but also revolts, internal debates and abolitionist movements.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia, Taubira law</a> (text to be verified on Légifrance)</li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">Interview with Pétré-Grenouilleau in the JDD (2005), reproduced by Herodote.net</a> (a popular-history site with an editorial stance)</li><li><a href="https://www.timeshighereducation.com/node/92737">Times Higher Education, on the affair</a></li><li><a href="https://www.college-de-france.fr/fr/agenda/conferencier-invite/la-concurrence-des-victimes-25-ans-plus-tard/extension-du-domaine-de-la-lutte">Jean-Michel Chaumont, Collège de France, 2022</a></li><li><a href="https://scholar.harvard.edu/sites/scholar.harvard.edu/files/vbrown/files/brown-socialdeath.pdf">Vincent Brown, "Social Death and Political Life," AHR, 2009</a></li></ul></div></div></section>
+<section class="view" id="v-aujourdhui"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Modern slavery · 2021</span><h1>Slavery today</h1><p class="lead">Banned everywhere, slavery has not disappeared. According to the International Labour Organization, 50 million people were living in "modern slavery" in 2021.</p></div><div class="figures"><div class="fig"><span class="n">50 M</span><span class="l">People in modern slavery</span><span class="s">On a given day in 2021, 10 M more than in 2016.</span></div><div class="fig"><span class="n">28 M</span><span class="l">Forced labor</span><span class="s">86% in the private sector, 14% imposed by states.</span></div><div class="fig"><span class="n">22 M</span><span class="l">Forced marriages</span><span class="s">65% in Asia-Pacific.</span></div><div class="fig"><span class="n">3.3 M</span><span class="l">Children in forced labor</span><span class="s">Migrants are more than three times as exposed.</span></div></div><div class="stack read"><h2>Where?</h2><p>The 2023 Global Slavery Index ranks North Korea, Eritrea and Mauritania highest for the share of the population affected. The Arab States have the highest rate of forced marriage. G20 countries import about $468 billion worth of goods at risk of forced labor each year, $170 billion of it by the United States.</p></div><div class="callout read"><strong>Why this figure cannot be compared with the slave trades</strong><p>The 50 million is a number measured on a given day. The 12.5 million of the Atlantic trade or the 8 to 17 million of the Oriental slave trades are cumulative totals over three to twelve centuries. Writing that there are "four times more slaves today than during the entire transatlantic slave trade" is therefore false. Moreover, "modern slavery" includes forced marriage and situations without legal ownership, whereas historical slavery was most often a legal status that could be inherited and sold.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0">ILO, press release, September 2022</a></li><li><a href="https://alliance87.org/sites/default/files/2023-06/Global%20Estimates%20of%20Modern%20Slavery%20Forced%20Labour%20and%20Forced%20Marriage.pdf">ILO, Walk Free and IOM, Global Estimates of Modern Slavery, 2022</a></li><li><a href="https://cdn.walkfree.org/content/uploads/2023/05/24144628/GSI-2023-Executive-Summary.pdf">Walk Free, Global Slavery Index 2023</a></li></ul></div></div></section>
+<!-- METHOD -->
+<section class="view" id="v-methode">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Method and sources</span>
+      <h1>How the figures are established</h1>
+      <p class="lead">The volumes of slavery are rarely counts. They are reconstructions, more or less solid depending on the available archives.</p>
+      <p><strong>The transatlantic slave trade</strong> is reconstructed voyage by voyage in the SlaveVoyages database (Eltis and Richardson), with imputations for the gaps. It is the best-measured slave trade.</p>
+      <p><strong>The Oriental slave trades</strong> rest on travelers' accounts, partial registers and extrapolations (Austen, Lovejoy, Manning). Estimates vary threefold from one author to another.</p>
+      <p><strong>The Tatar and Barbary raids</strong> are estimated by retrospective calculation from point-in-time numbers, a debated method.</p>
+      <p><strong>Population shares</strong> (Rome, Korea, Sokoto, Siam) come from censuses or observers' estimates, and depend on the definition of slavery adopted.</p>
+    </div>
+    <div class="stack read">
+      <h2>Reliability labels</h2>
+      <p><span class="pill flag">disputed</span> range contested among specialists. <span class="pill flag">secondary source</span> figure known through a synthesis and attributed to the named historian. <span class="pill flag">to be verified</span> data not checked against a primary source for this prototype.</p>
+    </div>
+    <div class="stack read">
+      <h2>Reference works</h2>
+      <ul class="src">
+        <li>Olivier Pétré-Grenouilleau, <em>Les traites négrières. Essai d'histoire globale</em>, Gallimard, 2004.</li>
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, 3rd ed., Cambridge UP, 2012.</li>
+        <li>Orlando Patterson, <em>Slavery and Social Death</em>, Harvard UP, 1982.</li>
+        <li>David Eltis and David Richardson, <em>Atlas of the Transatlantic Slave Trade</em>, Yale UP, 2010; <a href="https://www.slavevoyages.org">slavevoyages.org</a>.</li>
+        <li>Andrés Reséndez, <em>The Other Slavery</em>, 2016.</li>
+        <li>ILO, Walk Free, IOM, <a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0"><em>Global Estimates of Modern Slavery</em></a>, 2022.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Slavery Atlas · Detailed sources on every page.</div></footer>
+
+<script>
+const D = [
+ {id:"meso",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Mesopotamia",region:"Antiquity",start:-2100,end:-539,per:"3rd-1st mill. BCE",vol:"No overall estimate",src:"War, debt, purchase",her:"not established",race:"No",aff:"Release after 3 years for debt (Hammurabi, law 117)",fin:"—",flags:["secondary source"]},
+ {id:"egy",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Ancient Egypt",region:"Antiquity",start:-3000,end:-30,per:"3rd mill. BCE – 30 BCE",vol:"No estimate; the pyramids were built by paid or conscripted workers",src:"War, debt, sale of oneself or of children",her:"variable",race:"No",aff:"Marriage, temple service",fin:"—",flags:["secondary source"]},
+ {id:"ath",page:"grece",vmax:0.08,vtype:"eff",pmax:null,name:"Athens",region:"Antiquity",start:-600,end:-300,per:"6th-4th c. BCE",vol:"20,000 to 80,000 slaves",src:"War, piracy, trade (mostly non-Greeks)",her:"oui",race:"No (ethnic)",aff:"Frequent in the 4th c.",fin:"Solon bans the debt slavery of Athenians",flags:["disputed"]},
+ {id:"spa",page:"grece",vmax:0.224,vtype:"eff",pmax:null,name:"Sparta (helots)",region:"Antiquity",start:-700,end:-146,per:"8th-2nd c. BCE",vol:"170,000 to 224,000, far more than the citizens",src:"Conquest of Laconia and Messenia, birth",her:"oui",race:"No",aff:"Military service, purchase of freedom",fin:"Messenia liberated in 369 BCE",flags:["secondary source"]},
+ {id:"rome",page:"rome",vmax:3,vtype:"eff",pmax:15,name:"Rome",region:"Antiquity",start:-200,end:476,per:"2nd c. BCE – 5th c. CE",vol:"Italy: 1-1.5 M (Scheidel) to 3 M (Brunt); Empire: 10-15%",src:"War, birth (≈ 3/4), exposed children, piracy",her:"oui",race:"No",aff:"Frequent, conferred citizenship",fin:"Gradual shift to the colonate and serfdom",flags:["disputed"]},
+ {id:"chine",page:"chine",vmax:2,vtype:"eff",pmax:null,name:"China",region:"Asia",start:-1600,end:1910,per:"Shang – 1909/1910",vol:"Small share; ≈ 2 M at the Qing conquest",src:"Punishment, war, debt, sale of children",her:"partial",race:"No",aff:"Imperial emancipations (1723-1730)",fin:"1909-1910; practices until 1949",flags:["secondary source"]},
+ {id:"coree",page:"coree",vmax:null,vtype:null,pmax:40,name:"Korea (nobi)",region:"Asia",start:918,end:1894,per:"918 – 1894",vol:"≥ 30% of the population (15th-17th c.), up to 40% in the south",src:"Debt, famine, birth",her:"oui",race:"No",aff:"Purchase of freedom, military service",fin:"1801, 1886, 1894",flags:["secondary source","disputed"]},
+ {id:"inde",page:"inde",vmax:9,vtype:"eff",pmax:null,name:"India",region:"Asia",start:1206,end:1861,per:"Delhi Sultanate – 1861",vol:"1.1 M to 8-9 M around 1840 depending on the definition",src:"War, tax default, agrarian servitude of the lower castes",her:"oui",race:"No (overlaps with caste)",aff:"Not established",fin:"1843, Penal Code of 1861",flags:["disputed"]},
+ {id:"siam",page:"siam",vmax:null,vtype:null,pmax:33,name:"Siam",region:"Asia",start:1600,end:1915,per:"17th c. – 1915",vol:"1/4 to 1/3 of the population around 1854 (Pallegoix)",src:"Mainly debt, war, birth",her:"possible",race:"No",aff:"Purchase of freedom by right",fin:"1874 → 1905 → 1915",flags:[]},
+ {id:"asiec",page:"asie-centrale",vmax:1,vtype:"flux",pmax:null,name:"Khiva and Bukhara",region:"Asia",start:1500,end:1873,per:"16th c. – 1873",vol:"≈ 1 M Persians enslaved (1st half of 19th c.)",src:"Turkmen and Kazakh raids",her:"not established",race:"Religious (Shiites, Christians)",aff:"Not established",fin:"1873, under Russian pressure",flags:["to be verified"]},
+ {id:"orient",vmax:25,vtype:"flux",pmax:null,name:"Oriental slave trades",region:"Africa and the Muslim world",start:650,end:1900,per:"650 – 1900 (and beyond)",vol:"8 M (Alencastro) to 17 M (Austen), 25 M (Bairoch); Sahara: 7.42 M (Lovejoy)",src:"Raids, war, purchase from African states",her:"variable",race:"Mainly religious; color prejudice debated",aff:"Frequent, integration",fin:"1908 to 1981 depending on the country",flags:["disputed"],page:"traites-orientales"},
+ {id:"afr",page:"afrique",vmax:2.5,vtype:"eff",pmax:50,name:"African societies (Sokoto, Dahomey…)",region:"Africa and the Muslim world",start:1600,end:1942,per:"17th c. – 1942 (Ethiopia)",vol:"Sokoto around 1900: 1 to 2.5 M, 1/4 to 1/2 of the population",src:"War, raids, tribute, debt",her:"often",race:"No",aff:"Variable",fin:"1901 (Northern Nigeria), 1942 (Ethiopia), 1981 (Mauritania)",flags:["secondary source"]},
+ {id:"eumed",page:"europe-medievale",vmax:null,vtype:null,pmax:10,name:"Medieval Europe and the Vikings",region:"Europe and the Mediterranean",start:800,end:1334,per:"9th – 14th c.",vol:"≈ 10% of the English population in 1086",src:"War, Viking raids",her:"oui",race:"No (religious)",aff:"Transition to serfdom",fin:"1102 (England), 1334 (Sweden)",flags:[]},
+ {id:"medit",page:"europe-medievale",vmax:null,vtype:null,pmax:7.4,name:"Venice, Genoa, Iberia",region:"Europe and the Mediterranean",start:1250,end:1798,per:"13th – 18th c.",vol:"Seville 1565: ≈ 7.4% of the population",src:"Black Sea slave trade, war, Africa",her:"oui",race:"Religious, then increasingly African",aff:"Possible",fin:"Malta 1798",flags:["secondary source"]},
+ {id:"otto",page:"ottomans",vmax:null,vtype:null,pmax:20,name:"Ottoman Empire",region:"Europe and the Mediterranean",start:1350,end:1908,per:"14th c. – 1908",vol:"≈ 1/5 of Constantinople (16th-17th c.)",src:"Tatar raids, devshirme, purchases from the Caucasus and Africa",her:"no (children of concubines)",race:"Prices and functions according to origin",aff:"Frequent, upward mobility possible",fin:"1830-1908, largely nominal",flags:["secondary source"]},
+ {id:"tatar",page:"tatars",vmax:5,vtype:"flux",pmax:null,name:"Crimean Tatar raids",region:"Europe and the Mediterranean",start:1441,end:1783,per:"1441 – 1783",vol:"2 M (İnalcık, 1500-1700) to 5 M (Charnysh and Lall)",src:"Raids in Poland-Lithuania and Muscovy",her:"—",race:"Religious (Christians)",aff:"Ransom",fin:"Russian annexation of Crimea, 1783",flags:["disputed"]},
+ {id:"barb",vmax:1.25,vtype:"flux",pmax:null,name:"Barbary corsairs",region:"Europe and the Mediterranean",start:1530,end:1830,per:"1530 – 1830",vol:"1 to 1.25 M (Davis); attested numbers 25,000-35,000",src:"Privateering at sea, coastal raids",her:"no",race:"Religious (Christians)",aff:"Ransom, conversion",fin:"1816, 1830",flags:["disputed"],page:"barbaresques"},
+ {id:"russie",page:"russie",vmax:null,vtype:null,pmax:37.7,name:"Russia (kholops, serfs)",region:"Europe and the Mediterranean",start:1450,end:1861,per:"1450 – 1861",vol:"Kholops ≈ 10% (Hellie); privately owned serfs 37.7% in 1857",src:"Self-sale, debt; serfdom by law (1649)",her:"oui",race:"No",aff:"Rare for serfs",fin:"1861 (redemption payments until 1907)",flags:[]},
+ {id:"azt",page:"ameriques",vmax:null,vtype:null,pmax:null,name:"Aztecs",region:"Americas",start:1325,end:1521,per:"14th – 16th c.",vol:"No estimate",src:"Punishment, war, debt, self-sale",her:"no",race:"No",aff:"Yes; children born free",fin:"Spanish conquest",flags:["secondary source"]},
+ {id:"nwc",page:"ameriques",vmax:null,vtype:null,pmax:25,name:"Northwest Coast",region:"Americas",start:1500,end:1880,per:"Precolonial – 19th c.",vol:"Up to 1/4 of the population in some groups",src:"Raids, purchase between groups",her:"not established",race:"No",aff:"Not established",fin:"Colonization",flags:[]},
+ {id:"amind",page:"ameriques",vmax:5,vtype:"flux",pmax:null,name:"Enslavement of Native Americans",region:"Americas",start:1492,end:1900,per:"1492 – c. 1900",vol:"2.5 to 5 M (Reséndez, broad definition)",src:"War, raids, encomienda, peonage",her:"variable",race:"Yes",aff:"Variable",fin:"Spanish laws of 1542; persistence",flags:["disputed"]},
+ {id:"atl",vmax:12.5,vtype:"flux",pmax:null,name:"Transatlantic slave trade and colonies",region:"Americas",start:1501,end:1888,per:"1501 – 1888",vol:"12.5 M embarked, 10.7 M landed; France 1.38 M",src:"Purchase from African states and merchants, war, raids",her:"oui",race:"Yes (color)",aff:"Low; very low in the United States",fin:"Britain 1833, France 1848, United States 1865, Brazil 1888",flags:["to be verified"],page:"traite-atlantique"}
+];
+const isRace = r => ["amind","atl"].includes(r.id);
+
+/* Timeline scale: -3000→0 over 22%, 0→1500 over 33%, 1500→2000 over 45% */
+function x(y){
+  if(y<0) return 22*(y+3000)/3000;
+  if(y<1500) return 22+33*y/1500;
+  return 55+45*(Math.min(y,2000)-1500)/500;
+}
+function fmt(y){return y<0? (-y)+" BCE" : String(y);}
+
+function buildFrise(){
+  const f=document.getElementById("frise");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const row=document.createElement("div"); row.className="frow";
+    const n=document.createElement("span"); n.className="name"; n.textContent=r.name; n.title=r.name;
+    const t=document.createElement("div"); t.className="track";
+    const b=document.createElement("button"); b.type="button"; b.className="bar"+(isRace(r)?" race":"");
+    b.style.left=x(r.start)+"%"; b.style.width=Math.max(.6,x(r.end)-x(r.start))+"%";
+    b.setAttribute("aria-label",r.name+", "+r.per); b.title=r.name+" · "+r.per;
+    b.addEventListener("click",()=>{ document.getElementById("f-q").value=r.name; render(); location.hash="comparer"; });
+    t.appendChild(b); row.append(n,t); f.appendChild(row);
+  });
+  const ticks=document.getElementById("ticks");
+  [-3000,-2000,-1000,0,500,1000,1500,1700,1800,1900,2000].forEach(y=>{
+    const s=document.createElement("span"); s.style.left=x(y)+"%"; s.textContent=y===0?"0":fmt(y); ticks.appendChild(s);
+  });
+}
+function buildCards(){
+  const c=document.getElementById("cards");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const a=document.createElement("a"); a.className="card"+(r.page?" live":"");
+    a.href=r.page? "#"+r.page : "#comparer";
+    if(!r.page) a.addEventListener("click",()=>{document.getElementById("f-q").value=r.name; render();});
+    a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"Read the page":"Page coming soon · see the table"}</span>`;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    c.appendChild(a);
+  });
+}
+
+let sortKey=null, sortDir=1;
+function render(){
+  const q=document.getElementById("f-q").value.trim().toLowerCase();
+  const reg=document.getElementById("f-region").value;
+  const her=document.getElementById("f-her").checked, race=document.getElementById("f-race").checked;
+  let rows=D.filter(r=>(!reg||r.region===reg)&&(!her||r.her==="oui")&&(!race||isRace(r))&&(!q||(r.name+" "+r.vol+" "+r.src+" "+r.region).toLowerCase().includes(q)));
+  const desc=(fa)=>(a,b)=>{const x=fa(a),y=fa(b); if(x==null&&y==null) return a.start-b.start; if(x==null) return 1; if(y==null) return -1; return y-x;};
+  const mode=document.getElementById("f-sort").value;
+  if(sortKey==="name") rows.sort((a,b)=>a.name.localeCompare(b.name,"en")*sortDir);
+  else if(sortKey) rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+  else if(mode==="vol") rows.sort(desc(r=>r.vmax));
+  else if(mode==="part") rows.sort(desc(r=>r.pmax));
+  else if(mode==="dur") rows.sort(desc(r=>r.end-r.start));
+  else if(mode==="end") rows.sort(desc(r=>r.end));
+  else rows.sort((a,b)=>a.start-b.start);
+  const note=document.getElementById("sortnote");
+  note.textContent = sortKey? "" : mode==="vol" ? "Ranked by the upper estimate of each range. \"Cumulative flow\" = total over the entire period; \"stock\" = number of slaves present at a given moment. The two cannot be compared directly. Systems without an estimate are listed last."
+    : mode==="part" ? "Ranked by the maximum share of the population enslaved at a given date. Systems without an estimate are listed last." : "";
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      `<span class="civ"></span><br><span class="pill"></span>${r.vtype?`<span class="pill">${r.vtype==="flux"?"cumulative flow":"stock"}</span>`:""}${r.flags.map(f=>`<span class="pill flag">${f}</span>`).join("")}${r.page?` <a href="#${r.page}">Read</a>`:""}`,
+      r.per, r.vol, r.src,
+      r.her==="oui"?'<span class="yes">Yes</span>':r.her,
+      isRace(r)?`<span class="yes"></span>`:r.race,
+      r.aff, r.fin
+    ];
+    cells.forEach((h,i)=>{const td=document.createElement("td"); if(i===1) td.className="num";
+      if(i===0){td.innerHTML=h; td.querySelector(".civ").textContent=r.name; td.querySelector(".pill").textContent=r.region;}
+      else if(i===5&&isRace(r)){td.innerHTML=h; td.querySelector(".yes").textContent=r.race;}
+      else if(i===4&&r.her==="oui"){td.innerHTML=h;}
+      else td.textContent=h;
+      tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent=rows.length+" system"+(rows.length===1?"":"s")+" shown out of "+D.length;
+}
+function initFilters(){
+  const s=document.getElementById("f-region");
+  [...new Set(D.map(r=>r.region))].forEach(r=>{const o=document.createElement("option"); o.value=r; o.textContent=r; s.appendChild(o);});
+  ["f-q","f-region","f-her","f-race"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+  document.getElementById("f-sort").addEventListener("input",()=>{sortKey=null; render();});
+  document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.sort; sortDir = sortKey===k? -sortDir : 1; sortKey=k; render();}));
+}
+
+const CIV=[...new Set(D.map(r=>r.page))];
+const VIEWS=["accueil","comparer","civilisations","abolitions","debat","aujourdhui","methode",...CIV];
+function route(){
+  const h=location.hash.replace("#","");
+  const v=VIEWS.includes(h)?h:"accueil";
+  VIEWS.forEach(n=>document.getElementById("v-"+n).classList.toggle("active",n===v));
+  const navv=CIV.includes(v)?"civilisations":v;
+  document.querySelectorAll("nav.main a").forEach(a=>{ if(a.getAttribute("href")==="#"+navv) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+  window.scrollTo(0,0);
+}
+function buildCivGroups(){
+  const box=document.getElementById("civgroups"); const seen=new Set();
+  [...new Set(D.map(r=>r.region))].forEach(reg=>{
+    const g=document.createElement("div"); g.className="stack";
+    const h=document.createElement("h2"); h.textContent=reg; g.appendChild(h);
+    const c=document.createElement("div"); c.className="cards";
+    D.filter(r=>r.region===reg).sort((a,b)=>a.start-b.start).forEach(r=>{
+      if(seen.has(r.page)) return; seen.add(r.page);
+      const same=D.filter(x=>x.page===r.page);
+      const a=document.createElement("a"); a.className="card live"; a.href="#"+r.page;
+      a.innerHTML='<span class="per"></span><strong></strong><span class="soon">Read the page</span>';
+      a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      c.appendChild(a);
+    });
+    g.appendChild(c); box.appendChild(g);
+  });
+}
+buildFrise(); buildCards(); buildCivGroups(); initFilters(); render(); route();
+window.addEventListener("hashchange",route);
+</script>
+</body>
+</html>

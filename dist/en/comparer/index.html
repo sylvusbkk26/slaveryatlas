@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare slave systems · Slavery Atlas</title>
+<meta name="description" content="Filter by region, isolate hereditary or racialized systems, sort by date. The labels &quot;disputed,&quot; &quot;secondary source&quot; and &quot;to be verified&quot; indicate how…">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="en" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="es" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="de" href="https://slaveryatlas.org/de/comparer/">
+<link rel="alternate" hreflang="zh-Hans" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="ru" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/en/comparer/">
+<meta property="og:title" content="Compare slave systems · Slavery Atlas">
+<meta property="og:description" content="Filter by region, isolate hereditary or racialized systems, sort by date. The labels &quot;disputed,&quot; &quot;secondary source&quot; and &quot;to be verified&quot; indicate how…">
+<meta property="og:url" content="https://slaveryatlas.org/en/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Slavery Atlas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/en/">Slavery Atlas</a><nav class="main" aria-label="Main navigation"><a href="/en/">Home</a><a href="/en/comparer/" aria-current="page">Compare</a><a href="/en/civilisations/">Civilizations</a><a href="/en/abolitions/">Abolitions</a><a href="/en/debat/">The debate</a><a href="/en/aujourdhui/">Today</a><a href="/en/methode/">Method</a></nav><nav class="langs" aria-label="Language"><a href="/fr/comparer/" lang="fr">FR</a><a href="/en/comparer/" lang="en" aria-current="true">EN</a><a href="/es/comparer/" lang="es">ES</a><a href="/de/comparer/" lang="de">DE</a><a href="/zh/comparer/" lang="zh-Hans">中文</a><a href="/ru/comparer/" lang="ru">RU</a></nav></div></header>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Tool</span>
+      <h1>Compare slave systems</h1>
+      <p class="lead">Filter by region, isolate hereditary or racialized systems, sort by date. The labels "disputed," "secondary source" and "to be verified" indicate how solid each figure is.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Search<input type="search" id="f-q" placeholder="Rome, nobi, Dahomey…"></label>
+        <label for="f-region">Region<select id="f-region"><option value="">All</option></select></label>
+        <label for="f-sort">Sort by<select id="f-sort">
+          <option value="vol">Estimated volume (descending)</option>
+          <option value="part">Share of the population (descending)</option>
+          <option value="dur">Duration (descending)</option>
+          <option value="end">Most recent end first</option>
+          <option value="start">Chronological (oldest first)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Hereditary only</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Racial criterion only</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">System ↕</button></th>
+            <th><button type="button" data-sort="start">Period ↕</button></th>
+            <th>Volumes or share of the population</th>
+            <th>How people became enslaved</th>
+            <th>Hereditary</th>
+            <th>Racial criterion</th>
+            <th>Manumission</th>
+            <th><button type="button" data-sort="end">End ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Modern slavery: a figure of a different kind</strong>
+        <p>The ILO, Walk Free and the IOM estimate that 50 million people were living in modern slavery in 2021 (28 M in forced labor, 22 M in forced marriage). This is a stock measured on a given day: it cannot be compared with the 12.5 million of the transatlantic slave trade, which is a cumulative total over 375 years.</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">Slavery Atlas · Detailed sources on every page.</div></footer>
+<script src="/assets/app.en.js"></script>
+</body>
+</html>

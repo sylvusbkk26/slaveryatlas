@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>比较各奴隶制度 · 奴隶制图谱</title>
+<meta name="description" content="按地区筛选，单独查看世袭或种族化的制度，按日期排序。“有争议”“二手资料”和“待核实”标签表明每个数字的可靠程度。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="en" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="es" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="de" href="https://slaveryatlas.org/de/comparer/">
+<link rel="alternate" hreflang="zh-Hans" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="ru" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/en/comparer/">
+<meta property="og:title" content="比较各奴隶制度 · 奴隶制图谱">
+<meta property="og:description" content="按地区筛选，单独查看世袭或种族化的制度，按日期排序。“有争议”“二手资料”和“待核实”标签表明每个数字的可靠程度。">
+<meta property="og:url" content="https://slaveryatlas.org/zh/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Slavery Atlas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/zh/">奴隶制图谱</a><nav class="main" aria-label="主导航"><a href="/zh/">首页</a><a href="/zh/comparer/" aria-current="page">比较</a><a href="/zh/civilisations/">文明</a><a href="/zh/abolitions/">废除</a><a href="/zh/debat/">争论</a><a href="/zh/aujourdhui/">当代</a><a href="/zh/methode/">方法</a></nav><nav class="langs" aria-label="Language"><a href="/fr/comparer/" lang="fr">FR</a><a href="/en/comparer/" lang="en">EN</a><a href="/es/comparer/" lang="es">ES</a><a href="/de/comparer/" lang="de">DE</a><a href="/zh/comparer/" lang="zh-Hans" aria-current="true">中文</a><a href="/ru/comparer/" lang="ru">RU</a></nav></div></header>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">工具</span>
+      <h1>比较各奴隶制度</h1>
+      <p class="lead">按地区筛选，单独查看世袭或种族化的制度，按日期排序。“有争议”“二手资料”和“待核实”标签表明每个数字的可靠程度。</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">搜索<input type="search" id="f-q" placeholder="罗马、nobi、达荷美……"></label>
+        <label for="f-region">地区<select id="f-region"><option value="">全部</option></select></label>
+        <label for="f-sort">排序方式<select id="f-sort">
+          <option value="vol">估计规模（从大到小）</option>
+          <option value="part">占人口比例（从高到低）</option>
+          <option value="dur">持续时间（从长到短）</option>
+          <option value="end">终结时间最近者优先</option>
+          <option value="start">按时间顺序（最早者优先）</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> 仅显示世袭制</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> 仅显示种族标准</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">制度 ↕</button></th>
+            <th><button type="button" data-sort="start">时期 ↕</button></th>
+            <th>规模或占人口比例</th>
+            <th>如何沦为奴隶</th>
+            <th>世袭</th>
+            <th>种族标准</th>
+            <th>解放</th>
+            <th><button type="button" data-sort="end">终结 ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>现代奴役：性质不同的数字</strong>
+        <p>国际劳工组织、Walk Free和国际移民组织估计，2021年处于现代奴役状态的人数为5000万（2800万为强迫劳动，2200万为强迫婚姻）。这是在某一天测得的存量：不能与大西洋奴隶贸易的1250万相比较，后者是375年间的累计总数。</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">奴隶制图谱 · 各页面均附有详细资料来源。</div></footer>
+<script src="/assets/app.zh.js"></script>
+</body>
+</html>

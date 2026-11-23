@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сравнение рабовладельческих систем · Атлас рабства</title>
+<meta name="description" content="Фильтруйте по региону, выделяйте наследственные или расовые системы, сортируйте по дате. Пометки «оспаривается», «вторичный источник» и «требует проверки»…">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="en" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="es" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="de" href="https://slaveryatlas.org/de/comparer/">
+<link rel="alternate" hreflang="zh-Hans" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="ru" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/en/comparer/">
+<meta property="og:title" content="Сравнение рабовладельческих систем · Атлас рабства">
+<meta property="og:description" content="Фильтруйте по региону, выделяйте наследственные или расовые системы, сортируйте по дате. Пометки «оспаривается», «вторичный источник» и «требует проверки»…">
+<meta property="og:url" content="https://slaveryatlas.org/ru/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Slavery Atlas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/ru/">Атлас рабства</a><nav class="main" aria-label="Основная навигация"><a href="/ru/">Главная</a><a href="/ru/comparer/" aria-current="page">Сравнить</a><a href="/ru/civilisations/">Цивилизации</a><a href="/ru/abolitions/">Отмена рабства</a><a href="/ru/debat/">Дискуссия</a><a href="/ru/aujourdhui/">Сегодня</a><a href="/ru/methode/">Метод</a></nav><nav class="langs" aria-label="Language"><a href="/fr/comparer/" lang="fr">FR</a><a href="/en/comparer/" lang="en">EN</a><a href="/es/comparer/" lang="es">ES</a><a href="/de/comparer/" lang="de">DE</a><a href="/zh/comparer/" lang="zh-Hans">中文</a><a href="/ru/comparer/" lang="ru" aria-current="true">RU</a></nav></div></header>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Инструмент</span>
+      <h1>Сравнение рабовладельческих систем</h1>
+      <p class="lead">Фильтруйте по региону, выделяйте наследственные или расовые системы, сортируйте по дате. Пометки «оспаривается», «вторичный источник» и «требует проверки» показывают надёжность каждой цифры.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Поиск<input type="search" id="f-q" placeholder="Рим, ноби, Дагомея…"></label>
+        <label for="f-region">Регион<select id="f-region"><option value="">Все</option></select></label>
+        <label for="f-sort">Сортировать по<select id="f-sort">
+          <option value="vol">Оценочному масштабу (по убыванию)</option>
+          <option value="part">Доле в населении (по убыванию)</option>
+          <option value="dur">Продолжительности (по убыванию)</option>
+          <option value="end">Дате прекращения (сначала самые поздние)</option>
+          <option value="start">Хронологии (сначала самые ранние)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Только наследственные</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Только с расовым критерием</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">Система ↕</button></th>
+            <th><button type="button" data-sort="start">Период ↕</button></th>
+            <th>Масштаб или доля в населении</th>
+            <th>Как становились рабами</th>
+            <th>Наследственное</th>
+            <th>Расовый критерий</th>
+            <th>Отпуск на волю</th>
+            <th><button type="button" data-sort="end">Конец ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Современное рабство: цифра иной природы</strong>
+        <p>МОТ, Walk Free и МОМ оценивают число людей в современном рабстве в 2021 году в 50 миллионов (28 млн — в принудительном труде, 22 млн — в принудительном браке). Это численность, измеренная на определённую дату: её нельзя сравнивать с 12,5 миллиона трансатлантической работорговли — суммарным итогом за 375 лет.</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">Атлас рабства · Подробные источники — на каждой странице.</div></footer>
+<script src="/assets/app.ru.js"></script>
+</body>
+</html>

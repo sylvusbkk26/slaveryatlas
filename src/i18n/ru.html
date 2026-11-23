@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Атлас рабства</title>
+<meta name="description" content="Сравнительная история рабства по цивилизациям и эпохам: масштабы, правовой статус, отмена, дискуссии историков.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : atlas d'archives — encre bleu de fer sur papier gris froid, ocre pour les chiffres, rouge sombre pour les mises en garde.
+   Layout : bandeau de navigation fixe, colonne de lecture ~68ch, outils (frise, tableau) en pleine largeur. */
+:root{
+  --paper:#f3f4f2;
+  --panel:#ffffff;
+  --ink:#1b2431;
+  --muted:#5b6574;
+  --rule:#d5d9dd;
+  --accent:#1f4f7a;
+  --ochre:#a86a12;
+  --warn:#8e2b2b;
+  --chip:#e7ebef;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+    --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+  --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:600}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.read{max-width:68ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-lg{display:flex;flex-direction:column;gap:40px}
+
+/* Navigation */
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:.92rem;font-weight:500}
+nav.main a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.proto{background:var(--chip);color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px}
+.proto strong{color:var(--warn)}
+
+main{padding:40px 0 72px}
+section.view{display:none}
+section.view.active{display:block}
+
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);font-weight:600}
+.lead{font-size:1.15rem;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* Chiffres clés */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.fig .n{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--ochre);font-variant-numeric:tabular-nums;line-height:1.1}
+.fig .l{font-weight:600}
+.fig .s{font-size:.85rem;color:var(--muted)}
+
+/* Frise */
+.frise{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;overflow-x:auto}
+.frise-inner{min-width:760px;display:flex;flex-direction:column;gap:5px}
+.frow{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px}
+.frow .name{font-size:.84rem;text-align:right;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+.bar{position:absolute;top:2px;height:12px;border-radius:3px;background:var(--accent);opacity:.85;border:0;padding:0;cursor:pointer}
+.bar.race{background:var(--warn)}
+.bar:hover{opacity:1}
+.axis{display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* Cartes civilisations */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.live{border-left:4px solid var(--ochre)}
+.card .soon{font-size:.75rem;color:var(--muted)}
+.card.live .soon{color:var(--ochre);font-weight:600}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.principles div{border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+
+/* Comparer */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.filters select,.filters input[type=search]{font:inherit;font-size:.92rem;padding:7px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:170px}
+.filters .chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:.9rem;padding-bottom:7px}
+.count{font-size:.88rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--chip);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--ochre)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .civ{font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);margin:2px 4px 0 0;white-space:nowrap}
+.pill.oui{color:var(--warn)}
+.pill.flag{border:1px solid var(--rule);background:transparent}
+.yes{color:var(--warn);font-weight:600}
+
+/* Page modèle */
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fiche dd{margin:0;font-weight:500}
+.callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.callout.blue{border-left-color:var(--accent)}
+.debate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.debate>div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.scale{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px}
+.srow{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:10px;align-items:center;font-size:.86rem}
+.sbar{height:14px;background:var(--chip);border-radius:3px;position:relative;overflow:hidden}
+.sbar span{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.sbar span.range{background:var(--ochre);opacity:.55}
+.srow .v{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+ul.src{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.back{font-size:.88rem;text-decoration:none;font-weight:500}
+ol.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;position:relative;padding-left:16px}
+ol.timeline li::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ochre)}
+ol.timeline .yr{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+@media (max-width:560px){ ol.timeline li{grid-template-columns:1fr;gap:2px} }
+footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){
+  nav.main{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  nav.main a{white-space:nowrap}
+  .srow{grid-template-columns:1fr auto}
+  .srow .sbar{grid-column:1 / -1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#accueil">Атлас рабства</a>
+    <nav class="main" aria-label="Основная навигация">
+      <a href="#accueil">Главная</a>
+      <a href="#comparer">Сравнить</a>
+      <a href="#civilisations">Цивилизации</a>
+      <a href="#abolitions">Отмена рабства</a>
+      <a href="#debat">Дискуссия</a>
+      <a href="#aujourdhui">Сегодня</a>
+      <a href="#methode">Метод</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ACCUEIL -->
+<section class="view" id="v-accueil">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Сравнительная история · от Хаммурапи до наших дней</span>
+      <h1>Рабство — история всех цивилизаций</h1>
+      <p class="lead">Месопотамия, Рим, Китай, Корея, халифаты, африканские царства, Османская империя, крымские татары, берберийские корсары, ацтеки, европейские державы: почти все крупные общества знали рабство. Этот сайт ставит эти системы рядом — с их цифрами, правилами и тем, как они прекратились, — чтобы каждый мог сравнить их по документам.</p>
+    </div>
+
+    <div class="figures" aria-label="Ключевые цифры">
+      <div class="fig"><span class="n">12,5 млн</span><span class="l">Трансатлантическая работорговля</span><span class="s">Африканцы, погруженные на корабли с 1501 по 1875 год, из них 1,38 млн — под французским флагом (база данных SlaveVoyages).</span></div>
+      <div class="fig"><span class="n">8–17 млн</span><span class="l">Восточная работорговля</span><span class="s">Сахара, Красное море, Индийский океан, примерно с 650 по 1900 год. Оценки весьма неопределённы (Alencastro, Austen).</span></div>
+      <div class="fig"><span class="n">2–5 млн</span><span class="l">Набеги крымских татар</span><span class="s">Пленники, захваченные в Речи Посполитой и Московском государстве, 1441–1774 (İnalcık, Charnysh и Lall).</span></div>
+      <div class="fig"><span class="n">1981</span><span class="l">Последняя отмена</span><span class="s">Мавритания, декретом; уголовно наказуемым рабство стало там лишь в 2007 году. Саудовская Аравия и Йемен — 1962.</span></div>
+    </div>
+
+    <div class="stack">
+      <h2>Временная шкала рабовладельческих систем</h2>
+      <p class="muted read">Каждая полоса охватывает период существования системы. Красным отмечены системы, в которых статус раба определялся расовым происхождением. Нажмите на полосу, чтобы открыть сравнительную таблицу.</p>
+      <div class="frise" role="group" aria-label="Хронологическая шкала">
+        <div class="frise-inner" id="frise"></div>
+        <div class="axis"><span></span><div class="ticks" id="ticks"></div></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Статус, основанный на войне, долге, рождении или религии</span><span><i style="background:var(--warn)"></i>Статус, определяемый расовым происхождением</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">Шкала нелинейная: Античность сжата для удобства чтения.</p>
+    </div>
+
+    <div class="stack">
+      <h2>По цивилизациям</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="stack">
+      <h2>Как сайт проводит сравнение</h2>
+      <div class="principles">
+        <div><h3>Критерий за критерием</h3><p class="muted">Масштаб, продолжительность, доля в населении, правовой статус, наследственность, отпуск на волю, прекращение. Ни один критерий сам по себе не позволяет классифицировать систему.</p></div>
+        <div><h3>Цифры, которые нельзя складывать</h3><p class="muted">Поток за три столетия, численность на определённую дату и доля в населении — три разные меры. При каждой цифре указано, что именно она измеряет.</p></div>
+        <div><h3>У каждой оценки есть автор</h3><p class="muted">Диапазоны приписаны историку, который их предлагает, а спорные цифры помечены как таковые.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARER -->
+<section class="view" id="v-comparer">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Инструмент</span>
+      <h1>Сравнение рабовладельческих систем</h1>
+      <p class="lead">Фильтруйте по региону, выделяйте наследственные или расовые системы, сортируйте по дате. Пометки «оспаривается», «вторичный источник» и «требует проверки» показывают надёжность каждой цифры.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Поиск<input type="search" id="f-q" placeholder="Рим, ноби, Дагомея…"></label>
+        <label for="f-region">Регион<select id="f-region"><option value="">Все</option></select></label>
+        <label for="f-sort">Сортировать по<select id="f-sort">
+          <option value="vol">Оценочному масштабу (по убыванию)</option>
+          <option value="part">Доле в населении (по убыванию)</option>
+          <option value="dur">Продолжительности (по убыванию)</option>
+          <option value="end">Дате прекращения (сначала самые поздние)</option>
+          <option value="start">Хронологии (сначала самые ранние)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Только наследственные</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Только с расовым критерием</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">Система ↕</button></th>
+            <th><button type="button" data-sort="start">Период ↕</button></th>
+            <th>Масштаб или доля в населении</th>
+            <th>Как становились рабами</th>
+            <th>Наследственное</th>
+            <th>Расовый критерий</th>
+            <th>Отпуск на волю</th>
+            <th><button type="button" data-sort="end">Конец ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Современное рабство: цифра иной природы</strong>
+        <p>МОТ, Walk Free и МОМ оценивают число людей в современном рабстве в 2021 году в 50 миллионов (28 млн — в принудительном труде, 22 млн — в принудительном браке). Это численность, измеренная на определённую дату: её нельзя сравнивать с 12,5 миллиона трансатлантической работорговли — суммарным итогом за 375 лет.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARESQUES -->
+<section class="view" id="v-barbaresques">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Средиземноморье · 1530–1830</span>
+      <h1>Берберийские корсары и европейские рабы</h1>
+      <p class="lead">На протяжении трёх столетий корсары Алжира, Туниса, Триполи и Сале захватывали в море и на побережьях Европы христиан — моряков, рыбаков и сельских жителей, которых продавали или удерживали ради выкупа в Магрибе.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Период</dt><dd>ок. 1530–1830</dd></div>
+      <div><dt>Оценочный масштаб</dt><dd>1–1,25 млн (Davis, экстраполяция оспаривается)</dd></div>
+      <div><dt>Засвидетельствованная численность</dt><dd>25 000–35 000 в XVII в.</dd></div>
+      <div><dt>Порабощение</dt><dd>Каперство на море, прибрежные набеги</dd></div>
+      <div><dt>Наследственное</dt><dd>Нет</dd></div>
+      <div><dt>Критерий</dt><dd>Религиозный (христиане)</dd></div>
+      <div><dt>Выход</dt><dd>Выкуп, обращение в ислам, побег</dd></div>
+      <div><dt>Конец</dt><dd>1816 (бомбардировка Алжира), 1830 (французское завоевание)</dd></div>
+    </dl>
+
+    <div class="stack read">
+      <h2>Экономика каперства и выкупа</h2>
+      <p>Берберийские регентства, в большей или меньшей степени автономные вассалы Османской империи, превратили каперство в государственное занятие. Пленников использовали на галерах, на общественных работах или в домашнем хозяйстве, а многих перепродавали их семьям или религиозным орденам. Тринитарии (основаны в 1198 году) и мерседарии (по традиции — 1218) собирали средства по всему христианскому миру для выкупа пленных.</p>
+      <p>Только в Алжире около 1650 года насчитывалось более 30 000 европейских рабов. Набеги затрагивали Италию, Испанию, Прованс, а также Ирландию, Англию и Исландию.</p>
+      <p>Конец пришёл извне. В 1816 году англо-нидерландский флот лорда Эксмута бомбардировал Алжир и добился освобождения около 1 200 рабов (цифра различается в зависимости от источника). Французское завоевание Алжира в 1830 году положило конец каперству.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Сколько? Цифра Davis и её критика</h2>
+      <div class="scale" aria-label="Сравнение порядков величин">
+        <div class="srow"><span>Засвидетельствованная численность (XVII в.)</span><div class="sbar"><span style="left:0;width:2.8%"></span></div><span class="v">25 000–35 000</span></div>
+        <div class="srow"><span>Берберийские пленники, оценка общего числа</span><div class="sbar"><span style="left:0;width:80%"></span><span class="range" style="left:80%;width:20%"></span></div><span class="v">1–1,25 млн</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Полосы в масштабе 0–1,25 миллиона. Охристая часть показывает верхний предел неопределённости оценки.</p>
+      <div class="debate">
+        <div>
+          <h3>Оценка Robert C. Davis</h3>
+          <p>В книге <em>Christian Slaves, Muslim Masters</em> («Рабы-христиане, господа-мусульмане», 2003) Davis оценивает, что между 1530 и 1780 годами были обращены в рабство «почти наверняка 1 миллион, а возможно, и 1,25 миллиона» европейцев. Он исходит из наблюдаемой численности и предполагает, что ежегодно приходилось замещать четверть (смерти, выкупы, обращения в ислам), то есть около 8 500 захватов в год.</p>
+          <p>Он также утверждает, что между 1500 и 1650 годами в Берберию, вероятно, было увезено больше европейских христиан, чем африканцев в Америку.</p>
+        </div>
+        <div>
+          <h3>Критика</h3>
+          <p>Peter Earle считает, что экстраполяция с самого интенсивного периода (1580–1680) завышает итог. John Wright подчёркивает шаткость ретроспективного расчёта. Ehud Toledano указывает на отсутствие османских источников, а Jarbel Rodriguez — на смешение пленника, подлежащего выкупу, и раба.</p>
+          <p>Сам Davis признаёт, что его метод — единственно возможный при имеющихся архивах, но не наилучший.</p>
+        </div>
+      </div>
+      <div class="callout blue read">
+        <strong>Что важно для сравнения</strong>
+        <p>Европейцы тоже становились жертвами массовой работорговли — здесь и во время татарских набегов (2–5 миллионов пленников). Цифра Davis — верхняя оценка порядка величины, а не подсчёт. За всё время своего существования две работорговли различаются на порядок: 1–1,25 млн для Берберии, 12,5 млн для Атлантики. Берберийских пленников можно было выкупить, и их статус не переходил к детям.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Источники</h2>
+      <ul class="src">
+        <li>Robert C. Davis, <em>Christian Slaves, Muslim Masters</em>, Palgrave Macmillan, 2003. Обзор: <a href="https://news.osu.edu/when-europeans-were-slaves--research-suggests-white-slavery-was-much-more-common-than-previously-believed/">Ohio State University News, 2004</a>.</li>
+        <li>Дискуссия и критика: <a href="https://mg.co.za/article/2004-03-11-book-reopens-arguments-about-slave-raids-on-europe/">Mail &amp; Guardian, 2004</a>; <a href="https://en.wikipedia.org/wiki/Barbary_slave_trade">Wikipedia, Barbary slave trade</a> (вторичный источник).</li>
+        <li>Ордена выкупа пленных: <a href="https://en.wikipedia.org/wiki/Mercedarians">Wikipedia, Mercedarians</a> (вторичный источник).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CIVILISATIONS -->
+<section class="view" id="v-civilisations">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">По цивилизациям</span>
+      <h1>Все цивилизации</h1>
+      <p class="lead">Каждая страница построена по одному шаблону: период, масштаб, как становились рабами, наследственный статус или нет, отпуск на волю, конец рабства, дискуссии и источники.</p>
+    </div>
+    <div class="stack-lg" id="civgroups"></div>
+  </div>
+</section>
+<!-- TRAITE ATLANTIQUE -->
+<section class="view" id="v-traite-atlantique">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Атлантика · 1501–1888</span>
+      <h1>Трансатлантическая работорговля и колониальное рабство</h1>
+      <p class="lead">С 1501 по 1875 год европейские и американские суда перевезли в Америку около 12,5 миллиона африканцев, купленных в основном у африканских государств и торговцев. Они были обращены в рабство на плантациях Бразилии, Карибского бассейна и юга Соединённых Штатов.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Период</dt><dd>1501–1875 (работорговля); рабство до 1888 года</dd></div>
+      <div><dt>Погружено на суда</dt><dd>12,5 млн (SlaveVoyages)</dd></div>
+      <div><dt>Высажено живыми</dt><dd>≈ 10,7 млн</dd></div>
+      <div><dt>Смертность в пути</dt><dd>≈ 12–16 %</dd></div>
+      <div><dt>Порабощение</dt><dd>Покупка у африканских государств и торговцев, война, набеги</dd></div>
+      <div><dt>Наследственное</dt><dd>Да</dd></div>
+      <div><dt>Критерий</dt><dd>Расовый (цвет кожи)</dd></div>
+      <div><dt>Конец</dt><dd>Великобритания 1833, Франция 1848, США 1865, Бразилия 1888</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>Кто перевозил пленников?</h2>
+      <div class="scale" aria-label="Африканцы, погруженные на суда, по флагу">
+        <div class="srow"><span>Португалия и Бразилия</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">5,85 млн</span></div>
+        <div class="srow"><span>Великобритания</span><div class="sbar"><span style="left:0;width:55.7%"></span></div><span class="v">3,26 млн</span></div>
+        <div class="srow"><span>Франция</span><div class="sbar"><span style="left:0;width:23.6%"></span></div><span class="v">1,38 млн</span></div>
+        <div class="srow"><span>Испания и Уругвай</span><div class="sbar"><span style="left:0;width:18.2%"></span></div><span class="v">1,06 млн</span></div>
+        <div class="srow"><span>Нидерланды</span><div class="sbar"><span style="left:0;width:9.5%"></span></div><span class="v">0,55 млн</span></div>
+        <div class="srow"><span>США</span><div class="sbar"><span style="left:0;width:5.2%"></span></div><span class="v">0,31 млн</span></div>
+        <div class="srow"><span>Дания и Балтика</span><div class="sbar"><span style="left:0;width:1.9%"></span></div><span class="v">0,11 млн</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Африканцы, погруженные на суда с 1501 по 1875 год, по флагу судна. Источник: база данных SlaveVoyages, оценки.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Франция: Нант, Сен-Доминго и «Чёрный кодекс»</h2>
+      <p>Франция снарядила 4 118 работорговых экспедиций, 44 % из них — из Нанта, далее следовали Гавр, Ла-Рошель, Сен-Мало и Онфлёр. «Чёрный кодекс» (Code noir) 1685 года регулировал рабство в её колониях и определял раба как движимое имущество.</p>
+      <p>В 1789 году в Сен-Доминго было более 450 000 рабов при примерно 30 000 белых и 30 000 свободных цветных, и колония лидировала в мировом производстве сахара. По словам современника, автора Hilliard d'Auberteuil, с 1680 по 1776 год туда было ввезено более 800 000 африканцев, а в живых оставалось лишь 290 000.</p>
+      <p>После обретения независимости ордонанс 1825 года обязал Гаити выплатить бывшим колонистам компенсацию в 150 миллионов франков, сниженную в 1838 году до 90 миллионов. Вместе со связанными займами Гаити выплачивала её до 1921–1922 годов.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>Поразительный демографический контраст</strong>
+      <p>Непосредственно в Северной Америке высадилось лишь около 388 000 африканцев, однако в 1860 году в США было почти 4 миллиона рабов: подневольное население росло там примерно на 25 % за десятилетие. В Бразилии и Карибском бассейне оно сокращалось примерно на 20 % за десятилетие (Michael Tadman). Сахарный режим держался лишь за счёт непрерывного притока новых пленников.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Что историки считают особенностью этой системы</h2>
+      <div class="debate">
+        <div>
+          <h3>Уникальное сочетание</h3>
+          <p>Ни один критерий сам по себе не выделяет трансатлантическую работорговлю: другие работорговли были продолжительнее или сопоставимы по масштабу. Её своеобразие — в сочетании признаков. Статус раба был наследственным и определялся цветом кожи. Экспортная плантация была встроена в европейский капитализм. Поток был сосредоточен примерно в 350 годах, а потомки рабов и хозяев сегодня являются согражданами.</p>
+        </div>
+        <div>
+          <h3>Рабство и капитализм</h3>
+          <p>Eric Williams (1944) утверждал, что прибыли от рабства помогли финансировать промышленную революцию. Stanley Engerman оценивает их менее чем в 5 % британской экономики, а Seymour Drescher показывает, что система не находилась в упадке, когда Великобритания её отменила. Joseph Inikori, напротив, отстаивает значимость атлантической торговли в целом.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Отмена</h2>
+      <p>Франция отменила рабство 4 февраля 1794 года; Бонапарт восстановил работорговлю в 1802 году, а окончательная отмена датируется 1848 годом. Великобритания запретила работорговлю в 1807 году и рабство в 1833 году, выплатив владельцам 20 миллионов фунтов; рабы не получили ничего.</p>
+      <p>С 1808 по 1867 год Западноафриканская эскадра (West Africa Squadron) Королевского флота захватила около 1 600 невольничьих судов и освободила около 150 000 африканцев ценой гибели почти 1 600 моряков. Chaim Kaufmann и Robert Pape видят в этом «безусловно самое дорогостоящее международное моральное действие в новой истории».</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Источники</h2>
+      <ul class="src">
+        <li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages, оценки</a> (Eltis и Richardson).</li>
+        <li>Henry Louis Gates Jr., <a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">«How many slaves landed in the US?»</a>, PBS.</li>
+        <li>BnF Heritage, <a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">«Slave trade»</a> и <a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">«Haiti's independence debt»</a>.</li>
+        <li>UCL, <a href="https://www.ucl.ac.uk/lbs/project/context/">Legacies of British Slavery</a>.</li>
+        <li>Kaufmann и Pape, <a href="https://www.cambridge.org/core/journals/international-organization/article/abs/explaining-costly-international-moral-action-britains-sixtyyear-campaign-against-the-atlantic-slave-trade/C13419C7C80556BF07280DAAFDC2C9DD"><em>International Organization</em>, 1999</a>.</li>
+        <li>Демография и дискуссия о тезисе Williams: <a href="https://en.wikipedia.org/wiki/Atlantic_slave_trade">Wikipedia, Atlantic slave trade</a> и <a href="https://en.wikipedia.org/wiki/Capitalism_and_Slavery">Capitalism and Slavery</a> (вторичный источник).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRAITES ORIENTALES -->
+<section class="view" id="v-traites-orientales">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Сахара, Красное море, Индийский океан · 650–1900</span>
+      <h1>Восточная работорговля</h1>
+      <p class="lead">На протяжении почти двенадцати столетий африканских пленников переправляли через Сахару, по Красному морю и с суахилийского побережья в Северную Африку, Аравию, страны Персидского залива, Персию и Индию. Это самая продолжительная из крупных работорговль — и хуже всего поддающаяся измерению.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Период</dt><dd>ок. 650–1900; отмена вплоть до 1962–1981 годов</dd></div>
+      <div><dt>Оценочный масштаб</dt><dd>8–17 млн, по некоторым авторам до 25 млн</dd></div>
+      <div><dt>Только Сахара</dt><dd>7,42 млн (Lovejoy)</dd></div>
+      <div><dt>Порабощение</dt><dd>Набеги, война, покупка у африканских государств</dd></div>
+      <div><dt>Наследственное</dt><dd>По-разному; дети наложниц часто свободны</dd></div>
+      <div><dt>Критерий</dt><dd>Прежде всего религиозный; цветовой предрассудок — предмет споров</dd></div>
+      <div><dt>Использование</dt><dd>Домашнее хозяйство, гарем, армия, отдельные плантации</dd></div>
+      <div><dt>Конец</dt><dd>Саудовская Аравия и Йемен 1962, Оман 1970, Мавритания 1981</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>Сколько? Оценки расходятся втрое</h2>
+      <div class="scale" aria-label="Оценки восточной работорговли по авторам">
+        <div class="srow"><span>Alencastro</span><div class="sbar"><span style="left:0;width:32%"></span></div><span class="v">≈ 8 млн</span></div>
+        <div class="srow"><span>Segal</span><div class="sbar"><span style="left:0;width:46%"></span><span class="range" style="left:46%;width:10%"></span></div><span class="v">11,5–14 млн</span></div>
+        <div class="srow"><span>M'Bokolo (1998)</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 млн</span></div>
+        <div class="srow"><span>Austen, вслед за ним Pétré-Grenouilleau</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 млн</span></div>
+        <div class="srow"><span>Bairoch</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">≈ 25 млн</span></div>
+        <div class="srow"><span>Трансатлантическая работорговля, для сравнения</span><div class="sbar"><span style="left:0;width:50%;background:var(--warn)"></span></div><span class="v">12,5 млн</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Полосы в масштабе 0–25 миллионов. Восточная работорговля охватывает около 1 250 лет, трансатлантическая — около 375 лет.</p>
+      <div class="callout read">
+        <strong>Почему такой разброс</strong>
+        <p>Для столетий с 650 по 1400 год цифры «можно лишь угадывать», напоминает историк Klas Rönnbäck: разброс возникает прежде всего из-за допущений о Средневековье, для которого данных почти нет. Трансатлантическая же работорговля реконструирована судно за судном. Распространённые цифры в «десятки или сотни миллионов» специалисты считают сильно завышенными.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Работорговля домашняя, военная и в большей мере женская</h2>
+      <p>Трансатлантическая работорговля вывозила примерно двух мужчин на одну женщину. Восточная работорговля больше ценила женщин — для наложничества и домашнего труда. Мужчины служили слугами, солдатами или чернорабочими. Меньшую часть мальчиков кастрировали, чтобы сделать евнухами; смертность при этой операции описывается как высокая, но надёжный процент не установлен.</p>
+      <p>Мусульманский мир также превращал бывших рабов в элиту: мамлюки, обращённые в ислам рабы-воины, правили Египтом с 1250 по 1517 год.</p>
+      <p>Плантации оставались редкостью, за двумя исключениями. Восстание зинджей (869–883, близ Басры) подняло более 50 000 рабов с солончаков. В XIX веке гвоздичные плантации Занзибара держались на рабах, составлявших до двух третей населения.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>Почему так мало потомков?</strong>
+      <p>Заметных африканских диаспор на Ближнем Востоке немного. Историки объясняют это кастрацией части мужчин, высокой долей женщин и интеграцией детей наложниц, которые часто были свободными. Относительный вес этих факторов не определён количественно. Этот контраст с Америкой отчасти объясняет и то, почему эта работорговля занимает меньше места в исторической памяти.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Дискуссия вокруг «скрытого геноцида»</h2>
+      <div class="debate">
+        <div>
+          <h3>Tidiane N'Diaye</h3>
+          <p>В книге <em>Le Génocide voilé</em> («Скрытый геноцид», 2008) франко-сенегальский антрополог оценивает число вывезенных на Восток в 17 миллионов и говорит о геноциде. Он противопоставляет примерно 1 миллион потомков 70 миллионам для трансатлантической работорговли. Его порядки величин близки к данным научной литературы, но две последние цифры не подкреплены источниками.</p>
+        </div>
+        <div>
+          <h3>Критика</h3>
+          <p>В рецензии 2010 года Moritz Behrendt упрекает его в том, что он опирается почти исключительно на европейских путешественников, рассматривает как единое целое очень разные системы и называет работорговлю «арабо-мусульманской», не называя атлантическую «европейско-христианской». Утверждение N'Diaye, что три четверти кастрированных умирали, не подтверждается ни одним найденным академическим источником.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Поздняя отмена</h2>
+      <p>В Османской империи рабынь продавали ещё в 1908 году. Затем последовала череда формальных отмен: Иран и Иордания 1929, Бахрейн 1937, Кувейт 1949, Катар 1952, Саудовская Аравия и Йемен 1962, Оман 1970, Мавритания 1981. В 1948 году Anti-Slavery Society оценивало число рабов на Аравийском полуострове примерно в 1 миллион. Почти все эти отмены были достигнуты под британским или международным давлением.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Источники</h2>
+      <ul class="src">
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em> («Трансформации рабства»), 3-е изд., 2012: <a href="https://www.bu.edu/africa/files/2023/11/Slave-Trade-Tables.docx.pdf">таблицы, Boston University</a>.</li>
+        <li>Klas Rönnbäck, <a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">«Slave trades out of Africa»</a>, African Economic History Network.</li>
+        <li>Сравнение оценок: <a href="https://human.libretexts.org/Courses/Lumen_Learning/Book:_History_of_World_Civilization_II-2_(Lumen)/04:_2:_African_Slave_Trade/04.2:_TransSaharan_Slave_Trade">LibreTexts</a> (вторичный источник).</li>
+        <li>Moritz Behrendt, <a href="https://qantara.de/node/10064">рецензия на <em>Le Génocide voilé</em></a>, Qantara.de, 2010.</li>
+        <li>Отмена рабства и зинджи: <a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (вторичный источник).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="view" id="v-mesopotamie-egypte"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Античность · III–I тыс. до н. э.</span><h1>Месопотамия и Древний Египет</h1><p class="lead">Древнейшие из известных сводов законов уже регулируют рабство. И в Месопотамии, и в Египте рабами становились в результате войны, из-за долгов или продавая себя, чтобы выжить в нищете.</p></div><dl class="fiche"><div><dt>Период</dt><dd>III–I тыс. до н. э.</dd></div><div><dt>Масштаб</dt><dd>Надёжных оценок нет</dd></div><div><dt>Порабощение</dt><dd>Война, долги, продажа себя или детей</dd></div><div><dt>Наследственное</dt><dd>Не установлено</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Ключевой текст</dt><dd>Законы Хаммурапи, ок. 1753 г. до н. э.</dd></div></dl><div class="stack read"><h2>Законы Хаммурапи</h2><p>Законы различают три категории людей: <em>awīlum</em> (полноправный свободный человек), <em>muškēnum</em> и <em>wardum</em> или <em>amtum</em> — раб или рабыня. Раб здесь — собственность, продаваемая с гарантиями: статьи 278–281 регулируют гарантии при продаже, статьи 15–20 карают укрывательство беглых, а статья 282 предусматривает, что рабу, отрекающемуся от своего господина, отрезают ухо.</p><p>Часто цитируемое правило, статья 117, якобы освобождало через три года человека, проданного за долги. Это требует проверки по научному переводу. Оценок доли рабов в населении Месопотамии не существует.</p></div><div class="stack read"><h2>Египет: скорее слуги, чем рабы</h2><p>Египетские термины, переводимые как «раб», обозначают скорее работников или слуг. Рабы могли владеть имуществом и пользовались определённой защитой. В эпоху Нового царства расширяется рабство иноземных пленников из Нубии, Ливии и Азии.</p><p>Рабство не было господствующим способом производства в Египте.</p></div><div class="callout blue read"><strong>Пирамиды строили не рабы</strong><p>Египтологи единодушны: великие пирамиды возводили мобилизованные или оплачиваемые работники. Приводимая Геродотом цифра в «100 000 рабов» ничем не подтверждена.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">Wikipedia, Code of Hammurabi</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Egypt">Wikipedia, Slavery in ancient Egypt</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-grece"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Античность · VIII–II вв. до н. э.</span><h1>Греция: Афины и спартанские илоты</h1><p class="lead">Афинская демократия отчасти опиралась на труд рабов, в большинстве своём негреков. Спарта господствовала над илотами, которых было намного больше, чем граждан.</p></div><dl class="fiche"><div><dt>Афины</dt><dd>20 000–80 000 рабов (оспаривается)</dd></div><div><dt>Спарта</dt><dd>170 000–224 000 илотов</dd></div><div><dt>Порабощение</dt><dd>Война, пиратство, торговля; для илотов — завоевание</dd></div><div><dt>Наследственное</dt><dd>Да</dd></div><div><dt>Критерий</dt><dd>Этнический (негреки), не расовый</dd></div><div><dt>Отпуск на волю</dt><dd>Част в Афинах в IV в.</dd></div></dl><div class="stack"><h2>Афины: цифра, вызывающая острые споры</h2><div class="scale"><div class="srow"><span>Нижняя современная оценка</span><div class="sbar"><span style="left:0;width:5.0%"></span></div><span class="v">≈ 20 000</span></div><div class="srow"><span>Верхняя современная оценка</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">80 000 и более</span></div><div class="srow"><span>Античная перепись (сомнительна)</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">400 000</span></div></div><p class="muted" style="font-size:.82rem">Полосы в масштабе 0–400 000. Цифру в 400 000, переданную Афинеем, большинство исследователей отвергает.</p></div><div class="stack read"><h2>Афины</h2><p>Перепись Деметрия Фалерского (317–307 гг. до н. э.) насчитывает 21 000 граждан, 10 000 метеков и 400 000 рабов — цифра, в которой сомневается большинство историков. Современные оценки колеблются примерно от 20 000 до 80 000 и более. На серебряных рудниках Лавриона, по-видимому, было занято около 30 000 рабов.</p><p>Рабов добывали войной, пиратством и торговлей, и в основном это были «варвары»: в одном списке из 32 конфискованных рабов 13 были фракийцами. Солон в VI веке запретил долговое рабство афинян. Аристотель описывает раба как «одушевлённое орудие» и формулирует учение о рабстве «по природе».</p></div><div class="stack read"><h2>Спартанские илоты</h2><p>Коллективная собственность государства, прикреплённые к земле, илоты Лаконии и Мессении отдавали часть урожая. По Аристотелю, эфоры ежегодно объявляли им войну, чтобы <em>криптия</em> могла убивать их без религиозной скверны. Фукидид сообщает об исчезновении около 2 000 илотов, которым была обещана свобода.</p><p>Мессения была освобождена Эпаминондом в 369 г. до н. э.</p></div><div class="callout blue read"><strong>Рабы или крепостные?</strong><p>Сами древние колебались: Критий называет илотов «рабами в высшей степени», Поллукс помещает их «между свободными и рабами». Историк Jean Ducat говорит о крепостной зависимости.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Greece">Wikipedia, Slavery in ancient Greece</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Helots">Wikipedia, Helots</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-rome"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Античность · II в. до н. э. – V в.</span><h1>Рим — рабовладельческое общество</h1><p class="lead">Рим был одним из крупнейших рабовладельческих обществ в истории: миллионы военнопленных трудились в его поместьях, рудниках и домах. Но вольноотпущенник мог стать гражданином.</p></div><dl class="fiche"><div><dt>Период</dt><dd>II в. до н. э. – V в.</dd></div><div><dt>Италия</dt><dd>от 1–1,5 млн (Scheidel) до 3 млн (Brunt)</dd></div><div><dt>Империя (260–425)</dt><dd>≈ 10–15 % населения</dd></div><div><dt>Порабощение</dt><dd>Война, рождение, подкинутые дети, пиратство</dd></div><div><dt>Наследственное</dt><dd>Да</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Отпуск на волю</dt><dd>Частый, даёт гражданство</dd></div><div><dt>Конец</dt><dd>Постепенный переход к колонату и крепостной зависимости</dd></div></dl><div class="stack"><h2>Сколько рабов было в Италии?</h2><div class="scale"><div class="srow"><span>Keith Hopkins (28 г. до н. э.)</span><div class="sbar"><span style="left:0;width:26.7%"></span></div><span class="v">0,8 млн</span></div><div class="srow"><span>Walter Scheidel</span><div class="sbar"><span style="left:0;width:33.3%"></span><span class="range" style="left:33.3%;width:16.7%"></span></div><span class="v">1–1,5 млн</span></div><div class="srow"><span>Julius Beloch</span><div class="sbar"><span style="left:0;width:66.7%"></span></div><span class="v">≈ 2 млн</span></div><div class="srow"><span>Peter Brunt</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 3 млн</span></div></div><p class="muted" style="font-size:.82rem">Полосы в масштабе 0–3 миллиона. Численность на определённый момент, а не потоки.</p></div><div class="stack read"><h2>Население, пополнявшееся войной и рождением</h2><p>По Walter Scheidel, для формирования рабского населения Италии потребовалось ввезти 2–4 миллиона рабов за два последних столетия до нашей эры. Тем не менее около трёх четвертей италийских рабов, по-видимому, были рабами от рождения.</p><p>Юридически раб был вещью (<em>res</em>), не обладал правосубъектностью, а его показания принимались только под пыткой. Восстание Спартака (73–71 гг. до н. э.) — самый известный эпизод этой истории.</p></div><div class="callout blue read"><strong>Рим похож на Бразилию, а не на США</strong><p>Соотношение между ввозом и численностью рабского населения (примерно 3 к 1) сближает Рим с рабовладельческой Бразилией, а не с югом США, где рабское население выросло с 1,2 миллиона в 1810 году почти до 4 миллионов в 1860 году при ввозе всего 600 000–650 000 человек (Scheidel).</p></div><div class="stack read"><h2>Реальный путь к свободе</h2><p>Формальный отпуск на волю, как правило, давал римское гражданство, а дети вольноотпущенников рождались свободными. Он был настолько частым, что Августу пришлось ограничить его законами <em>lex Fufia Caninia</em> (2 г. до н. э.) и <em>lex Aelia Sentia</em> (4 г. н. э.). В этом — главный контраст с расовым рабством в Америке.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://www.cambridge.org/core/journals/journal-of-roman-studies/article/human-mobility-in-roman-italy-ii-the-slave-population/72D80C5839817A1F4C456A33C9F62E7A">Walter Scheidel, «The slave population», Journal of Roman Studies, 2005</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Rome">Wikipedia, Slavery in ancient Rome</a> (вторичный источник; цифра для Империи, вероятно, принадлежит Kyle Harper, требует проверки)</li></ul></div></div></section>
+<section class="view" id="v-chine"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Азия · Шан – 1910</span><h1>Китай: подневольность меньшинства, но тысячелетняя</h1><p class="lead">Рабство проходит через всю историю Китая — от пленников, приносимых в жертву при Шан, до девочек, проданных в служанки в XX веке, — но так и не стало основой экономики.</p></div><dl class="fiche"><div><dt>Период</dt><dd>Шан – 1909/1910</dd></div><div><dt>Масштаб</dt><dd>Небольшая доля; ≈ 2 млн при завоевании Цин</dd></div><div><dt>Порабощение</dt><dd>Наказание, война, долги, продажа детей</dd></div><div><dt>Наследственное</dt><dd>Для некоторых групп</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Конец</dt><dd>1909–1910; практики сохранялись до 1949 года</dd></div></dl><div class="stack read"><h2>От Хань до Цин</h2><p>При Хань рабы составляют лишь «очень небольшую часть населения», а владение ими ограничено: 200 для ванов и гунов, 30 для чиновников. Узурпатор Ван Ман отменил рабство в 9 г. н. э., а затем восстановил его в 12 году.</p><p>Танское право запрещает порабощать свободных, но допускает это для преступников, иноземцев и сирот, относимых к «подлому люду», юридически приравненному к скоту. При маньчжурском завоевании у Цин насчитывалось около 2 миллионов рабов. Император Юнчжэн в 1723–1730 годах освободил большинство наследственных подневольных групп.</p></div><div class="callout read"><strong>Поздняя и неполная отмена</strong><p>Рабство было официально отменено в 1909 году (по некоторым источникам — в 1910), но практика сохранялась до 1949 года, в частности в форме <em>муй-цай</em> (mui tsai) — девочек, проданных в домашнюю прислугу.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_China">Wikipedia, Slavery in China</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-coree"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Азия · 918 – 1894</span><h1>Корея: ноби — до 40 % населения</h1><p class="lead">При династии Чосон в Корее была одна из самых высоких в мире долей подневольного населения. Но природа этой системы, которую многие историки считают более близкой к крепостному праву, остаётся предметом споров.</p></div><dl class="fiche"><div><dt>Период</dt><dd>918 – 1894</dd></div><div><dt>Доля в населении</dt><dd>≥ 30 % (XV–XVII вв.), до 40 % на юге</dd></div><div><dt>В 1858 году</dt><dd>≈ 1,5 %</dd></div><div><dt>Порабощение</dt><dd>Долги, голод, рождение</dd></div><div><dt>Наследственное</dt><dd>Да</dd></div><div><dt>Расовый критерий</dt><dd>Нет (ноби — корейцы)</dd></div><div><dt>Конец</dt><dd>1801, 1886–1887, 1894</dd></div></dl><div class="stack"><h2>Доля ноби в населении</h2><div class="scale"><div class="srow"><span>До Чосон</span><div class="sbar"><span style="left:0;width:25.0%"></span></div><span class="v">≤ 10 %</span></div><div class="srow"><span>XV–XVII вв.</span><div class="sbar"><span style="left:0;width:75.0%"></span><span class="range" style="left:75.0%;width:25.0%"></span></div><span class="v">30–40 %</span></div><div class="srow"><span>1858</span><div class="sbar"><span style="left:0;width:3.8%"></span></div><span class="v">≈ 1,5 %</span></div></div><p class="muted" style="font-size:.82rem">Полосы в масштабе 0–40 %. Источники: Kye (2021), Kim Sun Joo (2023), Kim (2003).</p></div><div class="stack read"><h2>Наследственный статус</h2><p>Статус ноби передавался по рождению и пополнялся за счёт долгов и самопродажи в голодные годы. Сеульский реестр 1663 года насчитывает 73 % ноби среди зарегистрированных жителей, но это локальная выборка.</p><p>Государственные ноби были освобождены в 1801 году. Наследственный статус отменён в 1886–1887 годах, а система исчезла в 1894 году с реформой Кабо.</p></div><div class="stack"><h2>Рабы или крепостные?</h2><div class="debate"><div><h3>Количественный критерий</h3><p>При 30–40 % населения Корея эпохи Чосон относится к числу крупных рабовладельческих обществ — наравне с югом США или Римом.</p></div><div><h3>Права и интеграция</h3><p>Ноби могли владеть имуществом и землёй, а те, кто жил вне дома господина, имели собственное хозяйство. Kim говорит о «крепостной зависимости, развившейся в рамках рабства», James Palais считает их ближе к крепостным, Rhee и Yang находят слово «раб» неуместным.</p></div></div></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Korea">Wikipedia, Slavery in Korea</a> (вторичный источник, обобщает Kye 2021, Kim 2023, Palais 1998)</li></ul></div></div></section>
+<section class="view" id="v-inde"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Азия · XIII в. – 1861</span><h1>Индия: султанаты, аграрная кабала и британская отмена</h1><p class="lead">На субконтиненте рабство принимало форму военного плена при султанатах, вывоза в Среднюю Азию и наследственной аграрной кабалы, которой подвергались низшие касты.</p></div><dl class="fiche"><div><dt>Период</dt><dd>Делийский султанат – 1861</dd></div><div><dt>Около 1840 года</dt><dd>от 1,1 млн до 8–9 млн в зависимости от определения</dd></div><div><dt>Порабощение</dt><dd>Война, неуплата налогов, аграрная кабала</dd></div><div><dt>Наследственное</dt><dd>Да (аграрная кабала)</dd></div><div><dt>Критерий</dt><dd>Совпадает с кастой, не расовый</dd></div><div><dt>Конец</dt><dd>1843, Уголовный кодекс 1861 года</dd></div></dl><div class="stack read"><h2>Цифры из хроник</h2><p>Хроники Делийского султаната приводят, вероятно, завышенные цифры: 50 000 молодых рабов при Ала ад-Дине Хальджи, 180 000 при Фируз-шахе Туглаке. Историк Scott Levi связывает вывоз индусов в Среднюю Азию с формированием султанского и могольского государств. В XVII веке Нидерландская Ост-Индская компания также вывозила 150–400 рабов в год из Аракана и Бенгалии.</p></div><div class="callout blue read"><strong>Почему оценки расходятся в восемь раз</strong><p>Для 1840-х годов оценки колеблются примерно от 1,1 миллиона до 8–9 миллионов (Bartle Frere, 1841). Всё зависит от определения: считать ли рабами закабалённых сельскохозяйственных работников из низших каст, таких как пулаяр или парайяр?</p></div><div class="stack read"><h2>Отмена «через отрицание»</h2><p>Британская Индия лишила рабство правового признания в 1843 году, а затем фактически криминализировала его Уголовным кодексом 1861 года. Историк Indrani Chatterjee говорит об «отмене через отрицание», поскольку аграрная кабала в значительной мере сохранилась.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_India">Wikipedia, Slavery in India</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-siam"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Юго-Восточная Азия · XVII в. – 1915</span><h1>Сиам и архипелаг: долги и набеги</h1><p class="lead">В Сиаме рабство было прежде всего долговой кабалой, из которой можно было выкупиться. На Филиппинском архипелаге флотилии Сулу совершали набеги на побережья всей Юго-Восточной Азии.</p></div><dl class="fiche"><div><dt>Сиам около 1854 года</dt><dd>1/4–1/3 населения (Pallegoix)</dd></div><div><dt>Сулу, 1770–1870</dt><dd>200 000–300 000 порабощённых</dd></div><div><dt>Порабощение</dt><dd>Долги, война, морские набеги</dd></div><div><dt>Наследственное</dt><dd>Возможно</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Конец в Сиаме</dt><dd>1874 → 1905 → 1915</dd></div></dl><div class="stack read"><h2>Сиам: кабала с правом выкупа</h2><p>Около 1854 года монсеньор Pallegoix оценивал, что от четверти до трети из примерно 6 миллионов жителей были долговыми рабами. Это оценка наблюдателя, а не перепись.</p><p>Хозяева не могли ни убивать, ни калечить своих рабов, которые могли владеть имуществом, наследовать, заключать договоры, обращаться в суд и выкупаться на волю. Историк Cruikshank считает западную модель рабства неприменимой к этой системе.</p></div><div class="stack read"><h2>Постепенная отмена при Чулалонгкорне</h2><p>Король Чулалонгкорн провёл поэтапную отмену. Указ 1874 года освобождал по достижении 21 года детей, рождённых в рабстве после 1868 года. Закон об отмене рабства датируется 1905 годом, Уголовный кодекс 1908 года криминализировал продажу людей, а юридически рабство прекратилось в 1915 году.</p></div><div class="stack read"><h2>Набеги Сулу</h2><p>Флотилии иранун и бангинги султанатов Сулу и Магинданао, по оценкам, обратили в рабство 200 000–300 000 человек между 1770 и 1870 годами, совершая набеги вплоть до Малаккского пролива, Явы и юга Китая. Малайское слово <em>lanun</em> («пират») происходит от названия иранун.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf">R. B. Cruikshank, «Slavery in Nineteenth Century Siam», Journal of the Siam Society, 1975</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Thailand">Wikipedia, Slavery in Thailand</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Philippines">Wikipedia, Slavery in the Philippines</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-asie-centrale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Средняя Азия · XVI в. – 1873</span><h1>Хива и Бухара — невольничьи рынки</h1><p class="lead">До русского завоевания Хивинское и Бухарское ханства были крупными невольничьими рынками, которые пополнялись туркменскими и казахскими набегами на персов и русских поселенцев.</p></div><dl class="fiche"><div><dt>Период</dt><dd>XVI в. – 1873</dd></div><div><dt>Масштаб</dt><dd>≈ 1 млн персов (1-я половина XIX в.), слабо подкреплено источниками</dd></div><div><dt>Порабощение</dt><dd>Туркменские и казахские набеги</dd></div><div><dt>Критерий</dt><dd>Религиозный: шииты и христиане</dd></div><div><dt>Конец</dt><dd>1873, под давлением России</dd></div></dl><div class="stack read"><h2>Религия как граница</h2><p>Поскольку ислам запрещает порабощать мусульман, суннитские ханства считали персов-шиитов, как и христиан, законной добычей. Миссионер Josef Wolff насчитывал в 1840-х годах в Бухаре 200 000 персидских рабов.</p></div><div class="callout read"><strong>Шаткие цифры</strong><p>Цифра примерно в 1 миллион порабощённых персов и цифра Wolff основаны на рассказах путешественников. Их следует воспринимать как порядок величины.</p></div><div class="stack read"><h2>Конец</h2><p>Русские рабы были освобождены в 1840 году под давлением Санкт-Петербурга. Русское завоевание Хивы в 1873 году вызвало восстание рабов и отмену рабства, которой потребовал генерал Кауфман.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Khivan_slave_trade">Wikipedia, Khivan slave trade</a> (вторичный источник)</li><li>Jeff Eden, <em>Slavery and Empire in Central Asia</em> («Рабство и империя в Средней Азии»), Cambridge UP, 2018 (<a href="https://dash.harvard.edu/bitstream/handle/1/33493418/EDEN-DISSERTATION-2016.pdf">диссертация</a>)</li></ul></div></div></section>
+<section class="view" id="v-afrique"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Африка · XVII в. – 1981</span><h1>Африканские рабовладельческие общества</h1><p class="lead">Рабство существовало в Африке до работорговли и даже усилилось там в XIX веке. Такие государства, как халифат Сокото или королевство Дагомея, были среди крупных рабовладельческих обществ своего времени.</p></div><dl class="fiche"><div><dt>Сокото около 1900 года</dt><dd>1–2,5 млн рабов, 1/4–1/2 населения</dd></div><div><dt>Эфиопия около 1932 года</dt><dd>≥ 2 млн рабов (Anti-Slavery Society)</dd></div><div><dt>Порабощение</dt><dd>Война, набеги, дань, долги</dd></div><div><dt>Наследственное</dt><dd>Часто</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Конец</dt><dd>1901 (Северная Нигерия), 1942 (Эфиопия), 1981 (Мавритания)</dd></div></dl><div class="stack read"><h2>Халифат Сокото</h2><p>Основанный в начале XIX века на территории нынешней северной Нигерии, халифат около 1900 года насчитывал по меньшей мере 1 миллион, а возможно, и 2,5 миллиона рабов. Jan Hogendorn и Paul Lovejoy оценивают их долю от четверти до половины населения численностью около 10 миллионов. Тем самым Сокото входит в число крупных рабовладельческих обществ Нового времени, уступая США 1860 года (около 4 миллионов) и Бразилии.</p><p>Британец Лугард отменил правовой статус раба в 1901 году без компенсации.</p></div><div class="stack read"><h2>Дагомея — участник трансатлантической работорговли</h2><p>Работорговля давала основную часть царских доходов Дагомеи. Король Гезо подписал договор о прекращении вывоза лишь после британской блокады 1851–1852 годов, а в 1857–1858 годах вывоз возобновился. При дворе шёл настоящий спор между сторонниками работорговли и сторонниками перехода к пальмовому маслу. Порты Уида, Бонни и Луанда вместе отправили через Атлантику более 2 миллионов пленников.</p></div><div class="callout blue read"><strong>Не обобщать</strong><p>Доля рабов «от четверти до половины» относится к крупным рабовладельческим государствам XIX века, а не ко всей Африке.</p></div><div class="stack read"><h2>Эфиопия и Мавритания: последние отмены</h2><p>Эфиопия была принята в Лигу Наций в 1923 году при условии упразднения рабства. Итальянские законы 1935–1936 годов освободили около 420 000 рабов, а Хайле Селассие отменил рабство 26 августа 1942 года.</p><p>В Мавритании французская отмена 1905 года не применялась. Декрет 1981 года отменил рабство без уголовной ответственности, а закон 2007 года криминализировал его. Современные оценки расходятся: 90 000 человек по Global Slavery Index 2018, 600 000 по данным BBC в 2017 году.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Sokoto_Caliphate">Wikipedia, Sokoto Caliphate</a> (вторичный источник, Hogendorn и Lovejoy)</li><li><a href="https://en.wikipedia.org/wiki/History_of_the_Kingdom_of_Dahomey">Wikipedia, Kingdom of Dahomey</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Ethiopia">Wikipedia, Slavery in Ethiopia</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Mauritania">Wikipedia, Slavery in Mauritania</a> (вторичный источник)</li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, «Slave trades out of Africa»</a></li></ul></div></div></section>
+<section class="view" id="v-europe-medievale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Европа · IX – XVIII вв.</span><h1>Средневековая Европа, викинги и Средиземноморье</h1><p class="lead">Французское слово <em>esclave</em> («раб»), как и английское <em>slave</em>, происходит от слова «славянин»: в Средние века пленников из Восточной Европы продавали в исламский мир и Византию. Затем на Западе рабство пришло в упадок, но не в Средиземноморье.</p></div><dl class="fiche"><div><dt>Период</dt><dd>IX – XVIII вв.</dd></div><div><dt>Англия, 1086</dt><dd>≈ 10 % населения («Книга Страшного суда»)</dd></div><div><dt>Севилья, 1565</dt><dd>≈ 7,4 % населения</dd></div><div><dt>Порабощение</dt><dd>Война, набеги викингов, черноморская работорговля</dd></div><div><dt>Критерий</dt><dd>Религиозный, затем всё больше африканское происхождение</dd></div><div><dt>Конец</dt><dd>1102 (Англия), 1334 (Швеция), Мальта 1798</dd></div></dl><div class="stack read"><h2>Викинги и славяне</h2><p>С IX по XI век викинги захватывали ирландцев, англосаксов и франков и переправляли славянских пленников по Волге и Днепру в Аббасидский халифат и Византию. Дублин стал крупным рынком. Оксфордский проект «Dirhams for Slaves» («Дирхамы за рабов») считает, что рабы были одной из главных статей экспорта Северной Европы.</p><p>В X веке славяне — самая многочисленная группа в работорговле, отсюда латинское <em>sclavus</em>, а затем французское <em>esclave</em> (William Phillips).</p></div><div class="stack read"><h2>От упадка на Западе к средиземноморской работорговле</h2><p>В Западной Европе рабство отступает между X и XII веками, уступая место крепостной зависимости: работорговля запрещена в Англии в 1102 году, Швеция отменила рабство в 1334 году.</p><p>Средиземноморье сохраняет рабов вплоть до Нового времени. Венеция и Генуя с XIII века господствуют в черноморской работорговле, главным рынком которой была Каффа в Крыму. В 1414–1423 годах в Венеции было продано не менее 10 000 рабов. В 1565 году в Севилье на 85 538 жителей приходилось 6 327 рабов, в большинстве африканцев.</p></div><div class="callout blue read"><strong>Звено, ведущее к Атлантике</strong><p>Первый португальский набег в Тропическую Африку датируется 1441 годом. Иберийское рабство связывает средневековое Средиземноморье с трансатлантической работорговлей.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_medieval_Europe">Wikipedia, Slavery in medieval Europe</a> (вторичный источник)</li><li><a href="https://historyireland.com/?p=10176">History Ireland</a></li><li><a href="https://krc.web.ox.ac.uk/node/309951">Oxford, Dirhams for Slaves</a></li></ul></div></div></section>
+<section class="view" id="v-ottomans"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Османская империя · XIV в. – 1908</span><h1>Османская империя: воины, гарем и домашняя прислуга</h1><p class="lead">В Османской империи рабство было прежде всего политическим и домашним: элитные воины, наложницы гарема, евнухи и слуги. В период расцвета пятую часть населения Константинополя составляли рабы.</p></div><dl class="fiche"><div><dt>Период</dt><dd>XIV в. – 1908 (конец системы датируется 1924 годом)</dd></div><div><dt>Константинополь</dt><dd>≈ 1/5 населения (XVI–XVII вв.)</dd></div><div><dt>Рабы-воины</dt><dd>≈ 100 000 капыкулу в 1609 году</dd></div><div><dt>Порабощение</dt><dd>Татарские набеги, девширме, покупка на Кавказе и в Африке</dd></div><div><dt>Критерий</dt><dd>Цена и функции в зависимости от происхождения</dd></div><div><dt>Отпуск на волю</dt><dd>Частый; возможен социальный подъём</dd></div></dl><div class="stack read"><h2>Рабы на вершине государства</h2><p><em>Капыкулу</em> (kapıkulu), рабы Порты, в том числе янычары, набиравшиеся через девширме — «налог кровью», взимавшийся с христианских мальчиков Балкан и Анатолии, — насчитывали в 1609 году около 100 000 человек. Рабы могли становиться визирями.</p></div><div class="stack read"><h2>Гарем и евнухи</h2><p>Наложниц гарема покупали; чаще всего они были христианского происхождения: черкешенки, абхазки, грузинки. Чёрные евнухи происходили из Тропической Африки, белые — с Балкан или Кавказа. Цены зависели от происхождения: белая девушка для домашней службы стоила около 3 000 курушей, африканка — 1 500–2 500 (Madeline Zilfi).</p></div><div class="stack read"><h2>Во многом номинальная отмена</h2><p>Фирман 1830 года о белых рабах, «косметическое» закрытие стамбульского рынка в 1847 году, запрет черкесской и грузинской работорговли в 1854–1855 годах, затем торговли чернокожими рабами в 1857 году, который в Триполи не применялся до 1890-х годов. Рабынь продавали ещё в 1908 году.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (вторичный источник)</li><li>Madeline Zilfi, <em>Women and Slavery in the Late Ottoman Empire</em> («Женщины и рабство в поздней Османской империи»), Cambridge UP, 2010</li></ul></div></div></section>
+<section class="view" id="v-tatars"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Восточная Европа · 1441–1783</span><h1>Набеги крымских татар</h1><p class="lead">На протяжении более трёх столетий татарские и ногайские всадники совершали набеги на Речь Посполитую, Украину и Московское государство, снабжая невольничьи рынки Крымского ханства и Османской империи. Это один из крупнейших потоков работорговли Нового времени и один из наименее известных на Западе.</p></div><dl class="fiche"><div><dt>Период</dt><dd>1441 – 1783</dd></div><div><dt>Оценочный масштаб</dt><dd>2–5 млн пленников</dd></div><div><dt>Главный рынок</dt><dd>Каффа, ≈ 20 000 продаж в год около 1570 года</dd></div><div><dt>Порабощение</dt><dd>Набеги</dd></div><div><dt>Критерий</dt><dd>Религиозный (христиане)</dd></div><div><dt>Выход</dt><dd>Выкуп</dd></div><div><dt>Конец</dt><dd>Присоединение Крыма к России, 1783</dd></div></dl><div class="stack"><h2>Сколько пленников?</h2><div class="scale"><div class="srow"><span>Baranowski (только Речь Посполитая)</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">≤ 1 млн</span></div><div class="srow"><span>İnalcık и Kołodziejczyk (1500–1700)</span><div class="sbar"><span style="left:0;width:40.0%"></span></div><span class="v">≈ 2 млн</span></div><div class="srow"><span>Charnysh и Lall, подсчёт</span><div class="sbar"><span style="left:0;width:72.8%"></span></div><span class="v">≥ 3,64 млн</span></div><div class="srow"><span>Charnysh и Lall, с учётом недостающих данных</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 5 млн</span></div></div><p class="muted" style="font-size:.82rem">Полосы в масштабе 0–5 миллионов. Накопленные потоки.</p></div><div class="stack read"><h2>Кровопускание для Восточной Европы</h2><p>Согласно исследованию Volha Charnysh и Ranjit Lall (<em>American Political Science Review</em>, 2026), с 1441 по 1774 год было захвачено не менее 3,64 миллиона человек, а с оценкой недостающих данных — около 5 миллионов. Это составило бы более четверти населения Восточной Европы 1400 года.</p><p>Orest Subtelny отмечает, что отдельные набеги уводили до 30 000 человек, но в среднем речь шла скорее о 3 000. В Каффе, находившейся под османским контролем с 1475 года, в 1570-х годах ежегодно продавали почти 20 000 рабов (Halil İnalcık).</p></div><div class="callout read"><strong>Новая оценка, ещё требующая обсуждения</strong><p>Исследование Charnysh и Lall — самое новое и даёт самую высокую оценку; специалисты его ещё не обсудили. Историк Alan Fisher считает, что надёжный итог подсчитать невозможно, поскольку источники завышают численность.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Crimean-Nogai_Raids">Wikipedia, Crimean–Nogai slave raids</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (вторичный источник)</li><li>Charnysh и Lall, <em>American Political Science Review</em>, 2026 (публикация требует подтверждения)</li></ul></div></div></section>
+<section class="view" id="v-russie"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Россия · 1450–1861</span><h1>Россия: от холопов к крепостным</h1><p class="lead">Россия знала рабство в собственном смысле — <em>холопство</em>, — а затем массовое крепостное право, охватывавшее в 1857 году более трети населения. Русские крепостные были освобождены в 1861 году, за четыре года до американских рабов.</p></div><dl class="fiche"><div><dt>Холопы</dt><dd>≈ 10 % населения Московского государства (Hellie)</dd></div><div><dt>Помещичьи крестьяне, 1857</dt><dd>23,1 млн из 62,5 млн (≈ 37,7 %)</dd></div><div><dt>Порабощение</dt><dd>Самопродажа, долги, плен; крепостная зависимость — по закону</dd></div><div><dt>Наследственное</dt><dd>Да</dd></div><div><dt>Расовый критерий</dt><dd>Нет</dd></div><div><dt>Конец</dt><dd>1679/1723 (холопы), 1861 (крепостные)</dd></div></dl><div class="stack read"><h2>Холопы — русские, продававшие себя сами</h2><p>По Richard Hellie, холопы составляли около 10 % населения Московского государства. Он видит в этом «одну из самых своеобразных рабовладельческих систем в мире», поскольку рабами в большинстве были русские, продававшие себя сами. Пашенные холопы были слиты с крепостными в 1679 году, дворовые — в 1723 году.</p></div><div class="stack read"><h2>Крепостное право</h2><p>Закреплённое Соборным уложением 1649 года, крепостное право прикрепляет крестьян к земле и даёт помещикам почти неограниченные права. Крепостных можно было передавать без земли, но они сохраняли защиту имущества, свободу вероисповедания и доступ к суду. Александр II отменил крепостное право в 1861 году; бывшие крепостные часто платили за свою землю дороже рыночной цены, а выкупные платежи были отменены лишь в 1907 году.</p></div><div class="callout blue read"><strong>1861 и 1865: две отмены, две системы</strong><p>Сравнение русского крепостного права и американского рабства, проведённое Peter Kolchin, проясняет многое, но остаётся спорным. Крепостные, одной национальности и веры со своими господами, не были ни юридически движимым имуществом, ни закрепощены по признаку расы.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://www.historytoday.com/archive/slaves-not-serfs">History Today, «Slaves, not serfs»</a> (о Hellie)</li><li><a href="https://en.wikipedia.org/wiki/Serfdom_in_Russia">Wikipedia, Serfdom in Russia</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Kholop">Wikipedia, Kholop</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-ameriques"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Все цивилизации</a><span class="eyebrow">Америка · XIV – XIX вв.</span><h1>Америка до и после Колумба</h1><p class="lead">Индейские общества знали разнообразные формы подневольности. Затем колонизация обратила в рабство миллионы индейцев, а некоторые индейские народы сами владели чернокожими рабами.</p></div><dl class="fiche"><div><dt>Ацтеки</dt><dd>Статус не наследственный, дети рождались свободными</dd></div><div><dt>Северо-западное побережье</dt><dd>До 1/4 населения — подневольные</dd></div><div><dt>Порабощённые индейцы</dt><dd>2,5–5 млн за четыре столетия (Reséndez)</dd></div><div><dt>Каролина, 1670–1715</dt><dd>24 000–51 000 вывезенных (Gallay)</dd></div><div><dt>Критерий</dt><dd>Нет до 1492 года; затем расовый</dd></div><div><dt>Конец</dt><dd>Завоевание; пережитки до XIX в.</dd></div></dl><div class="stack read"><h2>Ацтеки и инки</h2><p>У ацтеков <em>tlacotli</em> становились в наказание, вследствие войны, долгов или самопродажи — например, во время голода 1450-х годов. Раб мог вступать в брак, владеть имуществом и даже рабами, а его дети рождались свободными (Ross Hassig). Но пленников приносили в жертву, и «неисправимого» раба, трижды перепроданного, могли продать для жертвоприношения.</p><p>У инков <em>yanakuna</em> составляют наследственную форму подневольности, иногда с высоким статусом; перевод словом «раб» спорен.</p></div><div class="stack read"><h2>Северо-западное побережье</h2><p>На тихоокеанском побережье Северной Америки рабство было встроено в общества охотников и рыболовов и в потлач. Leland Donald показывает, что эта подневольность соответствует межкультурному определению рабства; в некоторых группах рабами была до четверти населения.</p></div><div class="stack read"><h2>«Другое рабство»</h2><p>Andrés Reséndez (<em>The Other Slavery</em> — «Другое рабство», премия Бэнкрофта 2017 года) оценивает число индейцев, обращённых в рабство за четыре столетия, в 2,5–5 миллионов. Его широкое определение охватывает энкомьенду, репартимьенто, долговой пеонаж и принудительный труд, пережившие законодательные запреты. Alan Gallay оценивает, что из портов Каролины в 1670–1715 годах было вывезено 24 000–51 000 индейцев.</p><p>Наконец, «Пять племён» (чероки, крики, чокто, чикасо, семинолы) около 1839 года владели на Индейской территории 4 500–5 000 чернокожих рабов.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Aztec_Empire">Wikipedia, Slavery in the Aztec Empire</a> (вторичный источник)</li><li><a href="https://www.ucpress.edu/books/aboriginal-slavery-on-the-northwest-coast-of-north-america/hardcover">Leland Donald, Aboriginal Slavery on the Northwest Coast, UC Press, 1997</a></li><li><a href="https://en.wikipedia.org/wiki/The_Other_Slavery">Wikipedia, The Other Slavery</a> (вторичный источник)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_among_Native_Americans_in_the_United_States">Wikipedia, Slavery among Native Americans</a> (вторичный источник)</li></ul></div></div></section>
+<section class="view" id="v-abolitions"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Хронология · от Солона до 2007 года</span><h1>Отмена рабства</h1><p class="lead">Отмена рабства как государственная политика, проводимая в мировом масштабе, родилась в атлантических обществах в XIX веке. Большинство отмен в Африке, Османской империи и арабских странах были достигнуты под британским или международным давлением, порой очень поздно.</p></div><div class="stack"><ol class="timeline"><li><span class="yr">VI в. до н. э.</span><span><strong>Афины</strong> · Солон запрещает долговое рабство афинян.</span></li><li><span class="yr">9 г. н. э.</span><span><strong>Китай</strong> · Ван Ман отменяет рабство, восстановленное в 12 году.</span></li><li><span class="yr">1102</span><span><strong>Англия</strong> · Запрет работорговли.</span></li><li><span class="yr">1334</span><span><strong>Швеция</strong> · Отмена рабства.</span></li><li><span class="yr">1723–1730</span><span><strong>Китай</strong> · Юнчжэн освобождает большинство наследственных подневольных групп.</span></li><li><span class="yr">1794</span><span><strong>Франция</strong> · Отмена рабства 4 февраля; Бонапарт восстанавливает работорговлю в 1802 году.</span></li><li><span class="yr">1801</span><span><strong>Корея</strong> · Освобождение государственных ноби.</span></li><li><span class="yr">1807</span><span><strong>Великобритания</strong> · Отмена работорговли; Королевский флот борется с ней до 1867 года.</span></li><li><span class="yr">1816</span><span><strong>Алжир</strong> · Бомбардировка лордом Эксмутом и освобождение европейских рабов.</span></li><li><span class="yr">1833</span><span><strong>Великобритания</strong> · Отмена рабства; владельцам выплачено 20 млн фунтов.</span></li><li><span class="yr">1843</span><span><strong>Британская Индия</strong> · Прекращение правового признания рабства.</span></li><li><span class="yr">1848</span><span><strong>Франция</strong> · Окончательная отмена (Виктор Шёльшер). <span class="pill flag">требует проверки</span></span></li><li><span class="yr">1857</span><span><strong>Османская империя</strong> · Запрет торговли чернокожими рабами, долго почти не применявшийся.</span></li><li><span class="yr">1861</span><span><strong>Россия</strong> · Отмена крепостного права.</span></li><li><span class="yr">1865</span><span><strong>США</strong> · 13-я поправка. <span class="pill flag">требует проверки</span></span></li><li><span class="yr">1873</span><span><strong>Хива</strong> · Отмена после русского завоевания.</span></li><li><span class="yr">1888</span><span><strong>Бразилия</strong> · «Золотой закон»: последняя отмена в Америке. <span class="pill flag">требует проверки</span></span></li><li><span class="yr">1894</span><span><strong>Корея</strong> · Реформа Кабо.</span></li><li><span class="yr">1897</span><span><strong>Занзибар</strong> · Отмена, распространённая на наложниц в 1909 году.</span></li><li><span class="yr">1901</span><span><strong>Северная Нигерия</strong> · Отмена правового статуса раба в Сокото.</span></li><li><span class="yr">1909–1910</span><span><strong>Китай</strong> · Официальная отмена.</span></li><li><span class="yr">1915</span><span><strong>Сиам</strong> · Юридический конец рабства после закона 1905 года.</span></li><li><span class="yr">1929</span><span><strong>Иран, Иордания</strong> · Отмена.</span></li><li><span class="yr">1942</span><span><strong>Эфиопия</strong> · Отмена Хайле Селассие.</span></li><li><span class="yr">1949–1952</span><span><strong>Кувейт, Катар</strong> · Отмена.</span></li><li><span class="yr">1962</span><span><strong>Саудовская Аравия, Йемен</strong> · Отмена.</span></li><li><span class="yr">1970</span><span><strong>Оман</strong> · Отмена при султане Кабусе.</span></li><li><span class="yr">1981</span><span><strong>Мавритания</strong> · Отмена декретом, без уголовной ответственности.</span></li><li><span class="yr">2007</span><span><strong>Мавритания</strong> · Рабство становится преступлением.</span></li></ol></div><div class="stack"><h2>Два вывода, которые нужно держать рядом</h2><div class="debate"><div><h3>Движение, рождённое на Западе</h3><p>Соединённое Королевство направило на борьбу с работорговлей значительные средства: с 1808 по 1867 год Западноафриканская эскадра захватила около 1 600 судов и освободила около 150 000 африканцев. Kaufmann и Pape видят в этом «безусловно самое дорогостоящее международное моральное действие в новой истории».</p></div><div><h3>Компенсация хозяевам, а не жертвам</h3><p>Британская и французская отмены возместили ущерб владельцам, но никогда — рабам. На Гаити именно бывшие рабы выплачивали компенсацию колонистам — вплоть до 1921–1922 годов. Борьба с работорговлей служила также оправданием колонизации Африки.</p></div></div></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (вторичный источник)</li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">BnF Heritage</a></li><li>Даты 1848, 1865 и 1888 годов: общепринятые ориентиры, требуют проверки по первичному источнику.</li></ul></div></div></section>
+<section class="view" id="v-debat"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Историография и память</span><h1>Почему западная память сосредоточена на трансатлантической работорговле</h1><p class="lead">Если рабство было повсеместным, почему публичная дискуссия во Франции, Великобритании или США почти исключительно касается трансатлантической работорговли? Историки выдвигают несколько причин и расходятся во мнениях о пользе сравнения.</p></div><div class="stack read"><h2>Четыре причины</h2><p><strong>Потомки — граждане.</strong> Потомки атлантических рабов живут в обществах, которые их поработили или которые из них выросли (Антильские острова, США, Бразилия, Гаити), и выдвигают там требования памяти и репараций: план из десяти пунктов КАРИКОМ (2014), объявленный Африканским союзом 2025 год репараций. Восточная работорговля оставила мало заметных диаспор.</p><p><strong>Государства законодательно оценивают собственные преступления.</strong> Закон Тобира от 21 мая 2001 года признаёт преступлением против человечности трансатлантическую работорговлю, работорговлю в Индийском океане и рабство, «совершавшиеся начиная с XV века»; в нём не упоминаются ни транссахарская, ни внутриафриканская работорговля.</p><p><strong>Это лучше всего документированная работорговля.</strong> Только она реконструирована рейс за рейсом в общедоступной базе данных.</p><p><strong>Традиция самокритики демократий</strong> часто упоминается, но ни одно специальное исследование её не подтверждает: это гипотеза.</p></div><div class="stack"><h2>Сравнивать или подчёркивать особость: сильнейшие аргументы</h2><div class="debate"><div><h3>За глобальную историю</h3><p>Olivier Pétré-Grenouilleau (<em>Les Traites négrières</em> — «Работорговля африканцами», 2004) называет около 11 миллионов вывезенных через Атлантику, 17 миллионов для восточной работорговли и 14 миллионов для внутриафриканской. Рабство — почти универсальный институт, африканские государства были его участниками, а история, сосредоточенная на Европе, парадоксальным образом остаётся европоцентричной. Он отвергает любую «шкалу Рихтера страданий» и считает, что работорговля не была геноцидом, поскольку её целью была эксплуатация, а не истребление.</p></div><div><h3>За особость атлантической системы</h3><p>Атлантическая система отличалась качественно: раб как движимое имущество, составлявший 30–60 % стоимости плантации; наследственный статус, определяемый цветом кожи; естественная убыль на 20 % за десятилетие в Карибском бассейне — и всё это в сердце обществ, провозглашавших свободу и равенство. Её последствия продолжаются: расизм, долги, подобные гаитянскому, неравенство.</p></div></div></div><div class="stack read"><h2>Дело Pétré-Grenouilleau</h2><p>В 2005 году Коллектив выходцев с Антильских островов, Гвианы и Реюньона подал на историка в суд, ссылаясь на закон Тобира, а в начале 2006 года отозвал иск. Иск касался его отказа от слова «геноцид», а не его сравнительных цифр. Françoise Vergès, входившая тогда в Комитет памяти рабства, назвала иск «неприемлемым». Воззвание «Свобода для истории», подписанное почти 600 преподавателями и исследователями, потребовало тогда, чтобы законодатель перестал давать оценки истории.</p></div><div class="stack read"><h2>Общая почва</h2><p>Orlando Patterson (<em>Slavery and Social Death</em> — «Рабство и социальная смерть», 1982) сравнивает 66 обществ и определяет рабство, не делая расу критерием. Его работа служит обоим лагерям: институт универсален, но в Атлантике к нему добавляется расовый признак. Специалисты по Корее, Сиаму или Спарте, в свою очередь, напоминают, что многие системы не отвечают определению раба как вещи, что делает чисто количественные сравнения относительными.</p><p>Социолог Jean-Michel Chaumont, автор книги <em>La Concurrence des victimes</em> («Конкуренция жертв», 1997), предостерегает от соревнования памятей за уникальность.</p></div><div class="callout blue read"><strong>Редакционная линия сайта</strong><p>Никаких вердиктов о том, какая работорговля «хуже» других. Каждая система описывается критерий за критерием, с подписанными цифрами, дискуссиями и участниками со всех сторон: европейскими, арабскими и африканскими торговцами, татарскими и османскими государствами, а также восстаниями, внутренними спорами и аболиционизмом.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia (фр.), закон Тобира</a> (текст требует проверки на Légifrance)</li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">Интервью Pétré-Grenouilleau газете JDD (2005), воспроизведённое на Herodote.net</a> (научно-популярный сайт с определённой позицией)</li><li><a href="https://www.timeshighereducation.com/node/92737">Times Higher Education, о деле</a></li><li><a href="https://www.college-de-france.fr/fr/agenda/conferencier-invite/la-concurrence-des-victimes-25-ans-plus-tard/extension-du-domaine-de-la-lutte">Jean-Michel Chaumont, Collège de France, 2022</a></li><li><a href="https://scholar.harvard.edu/sites/scholar.harvard.edu/files/vbrown/files/brown-socialdeath.pdf">Vincent Brown, «Social Death and Political Life», AHR, 2009</a></li></ul></div></div></section>
+<section class="view" id="v-aujourdhui"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Современное рабство · 2021</span><h1>Рабство сегодня</h1><p class="lead">Запрещённое повсюду, рабство не исчезло. По данным Международной организации труда, в 2021 году 50 миллионов человек находились в положении «современного рабства».</p></div><div class="figures"><div class="fig"><span class="n">50 млн</span><span class="l">Людей в современном рабстве</span><span class="s">На определённую дату 2021 года — на 10 млн больше, чем в 2016 году.</span></div><div class="fig"><span class="n">28 млн</span><span class="l">Принудительный труд</span><span class="s">86 % — в частном секторе, 14 % — навязан государствами.</span></div><div class="fig"><span class="n">22 млн</span><span class="l">Принудительные браки</span><span class="s">65 % — в Азиатско-Тихоокеанском регионе.</span></div><div class="fig"><span class="n">3,3 млн</span><span class="l">Детей в принудительном труде</span><span class="s">Мигранты подвержены риску более чем в три раза сильнее.</span></div></div><div class="stack read"><h2>Где?</h2><p>Global Slavery Index 2023 ставит на первые места по доле затронутого населения КНДР, Эритрею и Мавританию. В арабских государствах самый высокий уровень принудительных браков. Страны G20 ежегодно импортируют товары с риском принудительного труда примерно на 468 миллиардов долларов, из них на 170 миллиардов — США.</p></div><div class="callout read"><strong>Почему эту цифру нельзя сравнивать с работорговлей</strong><p>50 миллионов — это численность, измеренная на определённую дату. 12,5 миллиона трансатлантической работорговли или 8–17 миллионов восточной работорговли — суммарные итоги за период от трёх до двенадцати столетий. Поэтому утверждение, что «сегодня рабов в четыре раза больше, чем за всю трансатлантическую работорговлю», ложно. Кроме того, «современное рабство» включает принудительный брак и ситуации без юридической собственности, тогда как историческое рабство чаще всего было правовым статусом — передаваемым по наследству и продаваемым.</p></div><div class="stack read"><h2>Источники</h2><ul class="src"><li><a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0">МОТ, пресс-релиз, сентябрь 2022</a></li><li><a href="https://alliance87.org/sites/default/files/2023-06/Global%20Estimates%20of%20Modern%20Slavery%20Forced%20Labour%20and%20Forced%20Marriage.pdf">МОТ, Walk Free и МОМ, Global Estimates of Modern Slavery, 2022</a></li><li><a href="https://cdn.walkfree.org/content/uploads/2023/05/24144628/GSI-2023-Executive-Summary.pdf">Walk Free, Global Slavery Index 2023</a></li></ul></div></div></section>
+<!-- METHODE -->
+<section class="view" id="v-methode">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Метод и источники</span>
+      <h1>Как устанавливаются цифры</h1>
+      <p class="lead">Масштабы рабства редко бывают результатом прямого подсчёта. Это реконструкции, более или менее надёжные в зависимости от доступных архивов.</p>
+      <p><strong>Трансатлантическая работорговля</strong> реконструирована рейс за рейсом в базе данных SlaveVoyages (Eltis и Richardson), с восполнением пробелов расчётным путём. Это лучше всего измеренная работорговля.</p>
+      <p><strong>Восточная работорговля</strong> оценивается по рассказам путешественников, неполным реестрам и экстраполяциям (Austen, Lovejoy, Manning). Оценки разных авторов расходятся втрое.</p>
+      <p><strong>Татарские и берберийские набеги</strong> оцениваются ретроспективным расчётом на основе разрозненных данных о численности — метод, вызывающий споры.</p>
+      <p><strong>Доли в населении</strong> (Рим, Корея, Сокото, Сиам) взяты из переписей или оценок наблюдателей и зависят от принятого определения рабства.</p>
+    </div>
+    <div class="stack read">
+      <h2>Пометки надёжности</h2>
+      <p><span class="pill flag">оспаривается</span> диапазон, о котором спорят специалисты. <span class="pill flag">вторичный источник</span> цифра известна по обобщающей работе и приписана названному историку. <span class="pill flag">требует проверки</span> данные, не сверенные с первичным источником для этого прототипа.</p>
+    </div>
+    <div class="stack read">
+      <h2>Основная литература</h2>
+      <ul class="src">
+        <li>Olivier Pétré-Grenouilleau, <em>Les traites négrières. Essai d'histoire globale</em> («Работорговля африканцами. Опыт глобальной истории»), Gallimard, 2004.</li>
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em> («Трансформации рабства»), 3-е изд., Cambridge UP, 2012.</li>
+        <li>Orlando Patterson, <em>Slavery and Social Death</em> («Рабство и социальная смерть»), Harvard UP, 1982.</li>
+        <li>David Eltis и David Richardson, <em>Atlas of the Transatlantic Slave Trade</em> («Атлас трансатлантической работорговли»), Yale UP, 2010; <a href="https://www.slavevoyages.org">slavevoyages.org</a>.</li>
+        <li>Andrés Reséndez, <em>The Other Slavery</em> («Другое рабство»), 2016.</li>
+        <li>МОТ, Walk Free, МОМ, <a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0"><em>Global Estimates of Modern Slavery</em></a> («Глобальные оценки современного рабства»), 2022.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Атлас рабства · Подробные источники — на каждой странице.</div></footer>
+
+<script>
+const D = [
+ {id:"meso",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Месопотамия",region:"Античность",start:-2100,end:-539,per:"III–I тыс. до н. э.",vol:"Общих оценок нет",src:"Война, долги, покупка",her:"не установлено",race:"Нет",aff:"Освобождение через 3 года при долговом рабстве (Хаммурапи, ст. 117)",fin:"—",flags:["вторичный источник"]},
+ {id:"egy",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Древний Египет",region:"Античность",start:-3000,end:-30,per:"III тыс. до н. э. – 30 г. до н. э.",vol:"Оценок нет; пирамиды строили оплачиваемые или мобилизованные работники",src:"Война, долги, продажа себя или детей",her:"по-разному",race:"Нет",aff:"Брак, служба при храме",fin:"—",flags:["вторичный источник"]},
+ {id:"ath",page:"grece",vmax:0.08,vtype:"eff",pmax:null,name:"Афины",region:"Античность",start:-600,end:-300,per:"VI–IV вв. до н. э.",vol:"20 000–80 000 рабов",src:"Война, пиратство, торговля (в основном негреки)",her:"oui",race:"Нет (этнический)",aff:"Част в IV в.",fin:"Солон запрещает долговое рабство афинян",flags:["оспаривается"]},
+ {id:"spa",page:"grece",vmax:0.224,vtype:"eff",pmax:null,name:"Спарта (илоты)",region:"Античность",start:-700,end:-146,per:"VIII–II вв. до н. э.",vol:"170 000–224 000, намного больше, чем граждан",src:"Завоевание Лаконии и Мессении, рождение",her:"oui",race:"Нет",aff:"Военная служба, выкуп",fin:"Мессения освобождена в 369 г. до н. э.",flags:["вторичный источник"]},
+ {id:"rome",page:"rome",vmax:3,vtype:"eff",pmax:15,name:"Рим",region:"Античность",start:-200,end:476,per:"II в. до н. э. – V в.",vol:"Италия: от 1–1,5 млн (Scheidel) до 3 млн (Brunt); Империя: 10–15 %",src:"Война, рождение (≈ 3/4), подкинутые дети, пиратство",her:"oui",race:"Нет",aff:"Частый, даёт гражданство",fin:"Постепенный переход к колонату и крепостной зависимости",flags:["оспаривается"]},
+ {id:"chine",page:"chine",vmax:2,vtype:"eff",pmax:null,name:"Китай",region:"Азия",start:-1600,end:1910,per:"Шан – 1909/1910",vol:"Небольшая доля; ≈ 2 млн при завоевании Цин",src:"Наказание, война, долги, продажа детей",her:"частично",race:"Нет",aff:"Императорские освобождения (1723–1730)",fin:"1909–1910; практики до 1949 года",flags:["вторичный источник"]},
+ {id:"coree",page:"coree",vmax:null,vtype:null,pmax:40,name:"Корея (ноби)",region:"Азия",start:918,end:1894,per:"918 – 1894",vol:"≥ 30 % населения (XV–XVII вв.), до 40 % на юге",src:"Долги, голод, рождение",her:"oui",race:"Нет",aff:"Выкуп, военная служба",fin:"1801, 1886, 1894",flags:["вторичный источник","оспаривается"]},
+ {id:"inde",page:"inde",vmax:9,vtype:"eff",pmax:null,name:"Индия",region:"Азия",start:1206,end:1861,per:"Делийский султанат – 1861",vol:"от 1,1 млн до 8–9 млн около 1840 года в зависимости от определения",src:"Война, неуплата налогов, аграрная кабала низших каст",her:"oui",race:"Нет (совпадает с кастой)",aff:"Не установлено",fin:"1843, Уголовный кодекс 1861 года",flags:["оспаривается"]},
+ {id:"siam",page:"siam",vmax:null,vtype:null,pmax:33,name:"Сиам",region:"Азия",start:1600,end:1915,per:"XVII в. – 1915",vol:"1/4–1/3 населения около 1854 года (Pallegoix)",src:"Прежде всего долги, война, рождение",her:"возможно",race:"Нет",aff:"Право на выкуп",fin:"1874 → 1905 → 1915",flags:[]},
+ {id:"asiec",page:"asie-centrale",vmax:1,vtype:"flux",pmax:null,name:"Хива и Бухара",region:"Азия",start:1500,end:1873,per:"XVI в. – 1873",vol:"≈ 1 млн порабощённых персов (1-я половина XIX в.)",src:"Туркменские и казахские набеги",her:"не установлено",race:"Религиозный (шииты, христиане)",aff:"Не установлено",fin:"1873, под давлением России",flags:["требует проверки"]},
+ {id:"orient",vmax:25,vtype:"flux",pmax:null,name:"Восточная работорговля",region:"Африка и мусульманский мир",start:650,end:1900,per:"650 – 1900 (и позже)",vol:"от 8 млн (Alencastro) до 17 млн (Austen), 25 млн (Bairoch); Сахара: 7,42 млн (Lovejoy)",src:"Набеги, война, покупка у африканских государств",her:"по-разному",race:"Прежде всего религиозный; цветовой предрассудок — предмет споров",aff:"Частый, интеграция",fin:"1908–1981 в зависимости от страны",flags:["оспаривается"],page:"traites-orientales"},
+ {id:"afr",page:"afrique",vmax:2.5,vtype:"eff",pmax:50,name:"Африканские общества (Сокото, Дагомея…)",region:"Африка и мусульманский мир",start:1600,end:1942,per:"XVII в. – 1942 (Эфиопия)",vol:"Сокото около 1900 года: 1–2,5 млн, 1/4–1/2 населения",src:"Война, набеги, дань, долги",her:"часто",race:"Нет",aff:"По-разному",fin:"1901 (Северная Нигерия), 1942 (Эфиопия), 1981 (Мавритания)",flags:["вторичный источник"]},
+ {id:"eumed",page:"europe-medievale",vmax:null,vtype:null,pmax:10,name:"Средневековая Европа и викинги",region:"Европа и Средиземноморье",start:800,end:1334,per:"IX – XIV вв.",vol:"≈ 10 % населения Англии в 1086 году",src:"Война, набеги викингов",her:"oui",race:"Нет (религиозный)",aff:"Переход к крепостной зависимости",fin:"1102 (Англия), 1334 (Швеция)",flags:[]},
+ {id:"medit",page:"europe-medievale",vmax:null,vtype:null,pmax:7.4,name:"Венеция, Генуя, Пиренейский полуостров",region:"Европа и Средиземноморье",start:1250,end:1798,per:"XIII – XVIII вв.",vol:"Севилья 1565: ≈ 7,4 % населения",src:"Черноморская работорговля, война, Африка",her:"oui",race:"Религиозный, затем всё больше африканское происхождение",aff:"Возможен",fin:"Мальта 1798",flags:["вторичный источник"]},
+ {id:"otto",page:"ottomans",vmax:null,vtype:null,pmax:20,name:"Османская империя",region:"Европа и Средиземноморье",start:1350,end:1908,per:"XIV в. – 1908",vol:"≈ 1/5 населения Константинополя (XVI–XVII вв.)",src:"Татарские набеги, девширме, покупка на Кавказе и в Африке",her:"нет (дети наложниц)",race:"Цена и функции в зависимости от происхождения",aff:"Частый, возможен социальный подъём",fin:"1830–1908, во многом номинально",flags:["вторичный источник"]},
+ {id:"tatar",page:"tatars",vmax:5,vtype:"flux",pmax:null,name:"Набеги крымских татар",region:"Европа и Средиземноморье",start:1441,end:1783,per:"1441 – 1783",vol:"от 2 млн (İnalcık, 1500–1700) до 5 млн (Charnysh и Lall)",src:"Набеги на Речь Посполитую и Московское государство",her:"—",race:"Религиозный (христиане)",aff:"Выкуп",fin:"Присоединение Крыма к России, 1783",flags:["оспаривается"]},
+ {id:"barb",vmax:1.25,vtype:"flux",pmax:null,name:"Берберийские корсары",region:"Европа и Средиземноморье",start:1530,end:1830,per:"1530 – 1830",vol:"1–1,25 млн (Davis); засвидетельствованная численность 25 000–35 000",src:"Каперство на море, прибрежные набеги",her:"нет",race:"Религиозный (христиане)",aff:"Выкуп, обращение в ислам",fin:"1816, 1830",flags:["оспаривается"],page:"barbaresques"},
+ {id:"russie",page:"russie",vmax:null,vtype:null,pmax:37.7,name:"Россия (холопы, крепостные)",region:"Европа и Средиземноморье",start:1450,end:1861,per:"1450 – 1861",vol:"Холопы ≈ 10 % (Hellie); помещичьи крестьяне — 37,7 % в 1857 году",src:"Самопродажа, долги; крепостная зависимость по закону (1649)",her:"oui",race:"Нет",aff:"Редко для крепостных",fin:"1861 (выкупные платежи до 1907 года)",flags:[]},
+ {id:"azt",page:"ameriques",vmax:null,vtype:null,pmax:null,name:"Ацтеки",region:"Америка",start:1325,end:1521,per:"XIV – XVI вв.",vol:"Оценок нет",src:"Наказание, война, долги, самопродажа",her:"нет",race:"Нет",aff:"Да; дети рождались свободными",fin:"Испанское завоевание",flags:["вторичный источник"]},
+ {id:"nwc",page:"ameriques",vmax:null,vtype:null,pmax:25,name:"Северо-западное побережье",region:"Америка",start:1500,end:1880,per:"Доколониальный период – XIX в.",vol:"До 1/4 населения в некоторых группах",src:"Набеги, покупка у других групп",her:"не установлено",race:"Нет",aff:"Не установлено",fin:"Колонизация",flags:[]},
+ {id:"amind",page:"ameriques",vmax:5,vtype:"flux",pmax:null,name:"Рабство индейцев",region:"Америка",start:1492,end:1900,per:"1492 – ок. 1900",vol:"2,5–5 млн (Reséndez, широкое определение)",src:"Война, набеги, энкомьенда, пеонаж",her:"по-разному",race:"Да",aff:"По-разному",fin:"Испанские законы 1542 года; пережитки",flags:["оспаривается"]},
+ {id:"atl",vmax:12.5,vtype:"flux",pmax:null,name:"Трансатлантическая работорговля и колонии",region:"Америка",start:1501,end:1888,per:"1501 – 1888",vol:"12,5 млн погружено, 10,7 млн высажено; Франция — 1,38 млн",src:"Покупка у африканских государств и торговцев, война, набеги",her:"oui",race:"Да (цвет кожи)",aff:"Редкий; очень редкий в США",fin:"Великобритания 1833, Франция 1848, США 1865, Бразилия 1888",flags:["требует проверки"],page:"traite-atlantique"}
+];
+const isRace = r => ["amind","atl"].includes(r.id);
+
+/* Шкала временной ленты: -3000→0 на 22 %, 0→1500 на 33 %, 1500→2000 на 45 % */
+function x(y){
+  if(y<0) return 22*(y+3000)/3000;
+  if(y<1500) return 22+33*y/1500;
+  return 55+45*(Math.min(y,2000)-1500)/500;
+}
+function fmt(y){return y<0? (-y)+" до н. э." : String(y);}
+
+function buildFrise(){
+  const f=document.getElementById("frise");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const row=document.createElement("div"); row.className="frow";
+    const n=document.createElement("span"); n.className="name"; n.textContent=r.name; n.title=r.name;
+    const t=document.createElement("div"); t.className="track";
+    const b=document.createElement("button"); b.type="button"; b.className="bar"+(isRace(r)?" race":"");
+    b.style.left=x(r.start)+"%"; b.style.width=Math.max(.6,x(r.end)-x(r.start))+"%";
+    b.setAttribute("aria-label",r.name+", "+r.per); b.title=r.name+" · "+r.per;
+    b.addEventListener("click",()=>{ document.getElementById("f-q").value=r.name; render(); location.hash="comparer"; });
+    t.appendChild(b); row.append(n,t); f.appendChild(row);
+  });
+  const ticks=document.getElementById("ticks");
+  [-3000,-2000,-1000,0,500,1000,1500,1700,1800,1900,2000].forEach(y=>{
+    const s=document.createElement("span"); s.style.left=x(y)+"%"; s.textContent=y===0?"0":fmt(y); ticks.appendChild(s);
+  });
+}
+function buildCards(){
+  const c=document.getElementById("cards");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const a=document.createElement("a"); a.className="card"+(r.page?" live":"");
+    a.href=r.page? "#"+r.page : "#comparer";
+    if(!r.page) a.addEventListener("click",()=>{document.getElementById("f-q").value=r.name; render();});
+    a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"Читать страницу":"Страница готовится · см. таблицу"}</span>`;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    c.appendChild(a);
+  });
+}
+
+let sortKey=null, sortDir=1;
+function render(){
+  const q=document.getElementById("f-q").value.trim().toLowerCase();
+  const reg=document.getElementById("f-region").value;
+  const her=document.getElementById("f-her").checked, race=document.getElementById("f-race").checked;
+  let rows=D.filter(r=>(!reg||r.region===reg)&&(!her||r.her==="oui")&&(!race||isRace(r))&&(!q||(r.name+" "+r.vol+" "+r.src+" "+r.region).toLowerCase().includes(q)));
+  const desc=(fa)=>(a,b)=>{const x=fa(a),y=fa(b); if(x==null&&y==null) return a.start-b.start; if(x==null) return 1; if(y==null) return -1; return y-x;};
+  const mode=document.getElementById("f-sort").value;
+  if(sortKey==="name") rows.sort((a,b)=>a.name.localeCompare(b.name,"ru")*sortDir);
+  else if(sortKey) rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+  else if(mode==="vol") rows.sort(desc(r=>r.vmax));
+  else if(mode==="part") rows.sort(desc(r=>r.pmax));
+  else if(mode==="dur") rows.sort(desc(r=>r.end-r.start));
+  else if(mode==="end") rows.sort(desc(r=>r.end));
+  else rows.sort((a,b)=>a.start-b.start);
+  const note=document.getElementById("sortnote");
+  note.textContent = sortKey? "" : mode==="vol" ? "Сортировка по верхней оценке каждого диапазона. «Поток» — суммарный итог за весь период; «численность» — число рабов, имевшихся в определённый момент. Напрямую их сравнивать нельзя. Системы без оценки — в конце списка."
+    : mode==="part" ? "Сортировка по максимальной доле подневольного населения на определённую дату. Системы без оценки — в конце списка." : "";
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      `<span class="civ"></span><br><span class="pill"></span>${r.vtype?`<span class="pill">${r.vtype==="flux"?"накопленный поток":"численность"}</span>`:""}${r.flags.map(f=>`<span class="pill flag">${f}</span>`).join("")}${r.page?` <a href="#${r.page}">Читать</a>`:""}`,
+      r.per, r.vol, r.src,
+      r.her==="oui"?'<span class="yes">Да</span>':r.her,
+      isRace(r)?`<span class="yes"></span>`:r.race,
+      r.aff, r.fin
+    ];
+    cells.forEach((h,i)=>{const td=document.createElement("td"); if(i===1) td.className="num";
+      if(i===0){td.innerHTML=h; td.querySelector(".civ").textContent=r.name; td.querySelector(".pill").textContent=r.region;}
+      else if(i===5&&isRace(r)){td.innerHTML=h; td.querySelector(".yes").textContent=r.race;}
+      else if(i===4&&r.her==="oui"){td.innerHTML=h;}
+      else td.textContent=h;
+      tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent="Показано систем: "+rows.length+" из "+D.length;
+}
+function initFilters(){
+  const s=document.getElementById("f-region");
+  [...new Set(D.map(r=>r.region))].forEach(r=>{const o=document.createElement("option"); o.value=r; o.textContent=r; s.appendChild(o);});
+  ["f-q","f-region","f-her","f-race"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+  document.getElementById("f-sort").addEventListener("input",()=>{sortKey=null; render();});
+  document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.sort; sortDir = sortKey===k? -sortDir : 1; sortKey=k; render();}));
+}
+
+const CIV=[...new Set(D.map(r=>r.page))];
+const VIEWS=["accueil","comparer","civilisations","abolitions","debat","aujourdhui","methode",...CIV];
+function route(){
+  const h=location.hash.replace("#","");
+  const v=VIEWS.includes(h)?h:"accueil";
+  VIEWS.forEach(n=>document.getElementById("v-"+n).classList.toggle("active",n===v));
+  const navv=CIV.includes(v)?"civilisations":v;
+  document.querySelectorAll("nav.main a").forEach(a=>{ if(a.getAttribute("href")==="#"+navv) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+  window.scrollTo(0,0);
+}
+function buildCivGroups(){
+  const box=document.getElementById("civgroups"); const seen=new Set();
+  [...new Set(D.map(r=>r.region))].forEach(reg=>{
+    const g=document.createElement("div"); g.className="stack";
+    const h=document.createElement("h2"); h.textContent=reg; g.appendChild(h);
+    const c=document.createElement("div"); c.className="cards";
+    D.filter(r=>r.region===reg).sort((a,b)=>a.start-b.start).forEach(r=>{
+      if(seen.has(r.page)) return; seen.add(r.page);
+      const same=D.filter(x=>x.page===r.page);
+      const a=document.createElement("a"); a.className="card live"; a.href="#"+r.page;
+      a.innerHTML='<span class="per"></span><strong></strong><span class="soon">Читать страницу</span>';
+      a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      c.appendChild(a);
+    });
+    g.appendChild(c); box.appendChild(g);
+  });
+}
+buildFrise(); buildCards(); buildCivGroups(); initFilters(); render(); route();
+window.addEventListener("hashchange",route);
+</script>
+</body>
+</html>
