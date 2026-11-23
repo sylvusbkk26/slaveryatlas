@@ -46,13 +46,18 @@
       <h2>Map of slave systems</h2>
       <p class="muted read">Each dot is a slave system, each line a major slave-trade route. Drag the slider to see what existed at a given date; click a dot for details.</p>
       <div class="map-wrap">
-        <div class="map-canvas"></div>
+        <div class="map-regions" role="group"></div>
+        <div class="map-canvas">
+          <div class="map-zoom"><button type="button" class="map-zin" aria-label="Zoom in" title="Zoom in">+</button><button type="button" class="map-zout" aria-label="Zoom out" title="Zoom out">−</button><button type="button" class="map-reset" aria-label="Whole world" title="Whole world">⤢</button></div>
+        </div>
         <div class="map-controls">
+          <button type="button" class="map-play" aria-pressed="false"></button>
           <label for="map-year">Period</label>
           <input type="range" id="map-year" min="0" max="29" step="1">
           <output id="map-year-out" for="map-year"></output>
           <span class="map-count"></span>
         </div>
+        <p class="map-help">Scroll or pinch to zoom, drag to pan, double-click to zoom in.</p>
         <div class="legend"><span><i style="background:var(--accent)"></i>Status based on war, debt, birth or religion</span><span><i style="background:var(--warn)"></i>Status assigned by racial origin</span><span><i class="lr"></i>Slave-trade route</span></div>
       </div>
       <div class="map-info" aria-live="polite"><span class="muted">Click a dot on the map to show the system.</span></div>
@@ -85,7 +90,7 @@
 </section></main>
 <footer><div class="wrap">Slavery Atlas · Detailed sources on every page.</div></footer>
 <script src="/assets/app.en.js"></script>
-<script>window.MAP_T=Object.assign({"title": "Map of slave systems", "all": "All periods", "read": "Read the page"},{fmt:y=>y<0?(-y)+' BCE':String(y),count:(n,t)=>n+' of '+t+' systems'});</script>
+<script>window.MAP_T=Object.assign({"title": "Map of slave systems", "all": "All periods", "read": "Read the page", "play": "Play", "pause": "Pause", "allregions": "All regions", "zoomto": "Zoom here", "end": "End"},{fmt:y=>y<0?(-y)+' BCE':String(y),count:(n,t)=>n+' of '+t+' systems'});</script>
 <script src="/assets/vendor/d3-array.min.js"></script>
 <script src="/assets/vendor/d3-geo.min.js"></script>
 <script src="/assets/vendor/topojson-client.min.js"></script>

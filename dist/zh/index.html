@@ -46,13 +46,18 @@
       <h2>奴隶制度地图</h2>
       <p class="muted read">每个圆点代表一种奴隶制度，每条线代表一条主要的奴隶贸易路线。拖动滑块可查看某一年份存在的制度；点击圆点查看详情。</p>
       <div class="map-wrap">
-        <div class="map-canvas"></div>
+        <div class="map-regions" role="group"></div>
+        <div class="map-canvas">
+          <div class="map-zoom"><button type="button" class="map-zin" aria-label="放大" title="放大">+</button><button type="button" class="map-zout" aria-label="缩小" title="缩小">−</button><button type="button" class="map-reset" aria-label="全图" title="全图">⤢</button></div>
+        </div>
         <div class="map-controls">
+          <button type="button" class="map-play" aria-pressed="false"></button>
           <label for="map-year">时期</label>
           <input type="range" id="map-year" min="0" max="29" step="1">
           <output id="map-year-out" for="map-year"></output>
           <span class="map-count"></span>
         </div>
+        <p class="map-help">滚轮或双指缩放，拖动平移，双击放大。</p>
         <div class="legend"><span><i style="background:var(--accent)"></i>基于战争、债务、出身或宗教的身份</span><span><i style="background:var(--warn)"></i>按种族出身划定的身份</span><span><i class="lr"></i>奴隶贸易路线</span></div>
       </div>
       <div class="map-info" aria-live="polite"><span class="muted">点击地图上的圆点以显示该制度。</span></div>
@@ -85,7 +90,7 @@
 </section></main>
 <footer><div class="wrap">奴隶制图谱 · 各页面均附有详细资料来源。</div></footer>
 <script src="/assets/app.zh.js"></script>
-<script>window.MAP_T=Object.assign({"title": "奴隶制度地图", "all": "所有时期", "read": "阅读页面"},{fmt:y=>y<0?'公元前'+(-y)+'年':y+'年',count:(n,t)=>'显示'+n+'个制度（共'+t+'个）'});</script>
+<script>window.MAP_T=Object.assign({"title": "奴隶制度地图", "all": "所有时期", "read": "阅读页面", "play": "播放", "pause": "暂停", "allregions": "所有地区", "zoomto": "放大至此", "end": "终结"},{fmt:y=>y<0?'公元前'+(-y)+'年':y+'年',count:(n,t)=>'显示'+n+'个制度（共'+t+'个）'});</script>
 <script src="/assets/vendor/d3-array.min.js"></script>
 <script src="/assets/vendor/d3-geo.min.js"></script>
 <script src="/assets/vendor/topojson-client.min.js"></script>

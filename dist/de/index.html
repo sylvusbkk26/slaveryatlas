@@ -46,13 +46,18 @@
       <h2>Karte der Sklavereisysteme</h2>
       <p class="muted read">Jeder Punkt ist ein Sklavereisystem, jede Linie eine große Route des Sklavenhandels. Ziehen Sie den Regler, um zu sehen, was zu einem bestimmten Zeitpunkt bestand; klicken Sie auf einen Punkt für Details.</p>
       <div class="map-wrap">
-        <div class="map-canvas"></div>
+        <div class="map-regions" role="group"></div>
+        <div class="map-canvas">
+          <div class="map-zoom"><button type="button" class="map-zin" aria-label="Vergrößern" title="Vergrößern">+</button><button type="button" class="map-zout" aria-label="Verkleinern" title="Verkleinern">−</button><button type="button" class="map-reset" aria-label="Gesamtansicht" title="Gesamtansicht">⤢</button></div>
+        </div>
         <div class="map-controls">
+          <button type="button" class="map-play" aria-pressed="false"></button>
           <label for="map-year">Epoche</label>
           <input type="range" id="map-year" min="0" max="29" step="1">
           <output id="map-year-out" for="map-year"></output>
           <span class="map-count"></span>
         </div>
+        <p class="map-help">Mausrad oder Zwei-Finger-Geste zum Zoomen, Ziehen zum Verschieben, Doppelklick zum Vergrößern.</p>
         <div class="legend"><span><i style="background:var(--accent)"></i>Status durch Krieg, Schulden, Geburt oder Religion</span><span><i style="background:var(--warn)"></i>Status nach rassischer Herkunft</span><span><i class="lr"></i>Route des Sklavenhandels</span></div>
       </div>
       <div class="map-info" aria-live="polite"><span class="muted">Klicken Sie auf einen Punkt der Karte, um das System anzuzeigen.</span></div>
@@ -85,7 +90,7 @@
 </section></main>
 <footer><div class="wrap">Atlas der Sklaverei · Ausführliche Quellen auf jeder Seite.</div></footer>
 <script src="/assets/app.de.js"></script>
-<script>window.MAP_T=Object.assign({"title": "Karte der Sklavereisysteme", "all": "Alle Epochen", "read": "Seite lesen"},{fmt:y=>y<0?(-y)+' v. Chr.':String(y),count:(n,t)=>n+' von '+t+' Systemen'});</script>
+<script>window.MAP_T=Object.assign({"title": "Karte der Sklavereisysteme", "all": "Alle Epochen", "read": "Seite lesen", "play": "Abspielen", "pause": "Pause", "allregions": "Alle Regionen", "zoomto": "Hierher zoomen", "end": "Ende"},{fmt:y=>y<0?(-y)+' v. Chr.':String(y),count:(n,t)=>n+' von '+t+' Systemen'});</script>
 <script src="/assets/vendor/d3-array.min.js"></script>
 <script src="/assets/vendor/d3-geo.min.js"></script>
 <script src="/assets/vendor/topojson-client.min.js"></script>
