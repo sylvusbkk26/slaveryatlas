@@ -47,6 +47,12 @@ def build_js(s, lang):
     js = js.replace('a.className="card live"; a.href="#"+r.page;', f'a.className="card live"; a.href="{L}"+r.page+"/";')
     js = re.sub(r'<a href="#\$\{r\.page\}">', f'<a href="{L}${{r.page}}/">', js)
     js = js.replace('buildFrise(); buildCards(); buildCivGroups();', '')
+    # Chiffre clé (volume ou part de la population) sous le nom, dans les cartes.
+    addvol = 'const v=document.createElement("span");v.className="vol";v.textContent=VOLTXT;a.insertBefore(v,a.querySelector(".soon"));'
+    js = js.replace('a.querySelector("strong").textContent=r.name;',
+                    'a.querySelector("strong").textContent=r.name;' + addvol.replace('VOLTXT', 'r.vol'), 1)
+    js = js.replace('a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");',
+                    'a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");' + addvol.replace('VOLTXT', 'same.map(x=>x.vol).join(" · ")'), 1)
     js += '''
 const $=id=>document.getElementById(id);
 if($("frise")) buildFrise();

@@ -82,6 +82,7 @@ main{padding:40px 0 72px}
 /* Cartes civilisations */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .vol{font-size:.86rem;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
 .card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .card.live{border-left:4px solid var(--ochre)}
 .card .soon{font-size:.75rem;color:var(--muted)}
@@ -110,8 +111,8 @@ td .civ{font-weight:600}
 .yes{color:var(--warn);font-weight:600}
 
 /* Page modèle */
-.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
-.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px;box-shadow:1px 0 0 var(--rule),0 1px 0 var(--rule)}
 .fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
 .fiche dd{margin:0;font-weight:500}
 .callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}

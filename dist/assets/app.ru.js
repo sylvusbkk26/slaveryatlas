@@ -57,7 +57,7 @@ function buildCards(){
     a.href="/ru/"+r.page+"/";
     
     a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"Читать страницу":"Страница готовится · см. таблицу"}</span>`;
-    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;const v=document.createElement("span");v.className="vol";v.textContent=r.vol;a.insertBefore(v,a.querySelector(".soon"));
     c.appendChild(a);
   });
 }
@@ -121,7 +121,7 @@ function buildCivGroups(){
       const a=document.createElement("a"); a.className="card live"; a.href="/ru/"+r.page+"/";
       a.innerHTML='<span class="per"></span><strong></strong><span class="soon">Читать страницу</span>';
       a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
-      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");const v=document.createElement("span");v.className="vol";v.textContent=same.map(x=>x.vol).join(" · ");a.insertBefore(v,a.querySelector(".soon"));
       c.appendChild(a);
     });
     g.appendChild(c); box.appendChild(g);
