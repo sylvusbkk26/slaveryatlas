@@ -28,7 +28,7 @@ js=js.replace('buildFrise(); buildCards(); buildCivGroups();','')
 open(OUT+'/assets/app.js','w').write(js)
 # --- pages
 secs=dict(re.findall(r'<section class="view" id="v-([a-z-]+)">(.*?)</section>',s,re.S))
-proto=re.search(r'<div class="proto">.*?</div>',s,re.S).group(0)
+proto=''
 footer=re.search(r'<footer>.*?</footer>',s,re.S).group(0)
 D_titles={}
 def plain(h): return re.sub(r'\s+',' ',re.sub(r'<[^>]+>','',h)).strip()
