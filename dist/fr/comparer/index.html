@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparer les systèmes esclavagistes · Slavery Atlas</title>
+<meta name="description" content="Filtrez par région, isolez les systèmes héréditaires ou racialisés, triez par date. Les étiquettes « contesté », « 2nde main » et « à vérifier » indiquent…">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/fr/comparer/">
+<meta property="og:title" content="Comparer les systèmes esclavagistes · Slavery Atlas">
+<meta property="og:description" content="Filtrez par région, isolez les systèmes héréditaires ou racialisés, triez par date. Les étiquettes « contesté », « 2nde main » et « à vérifier » indiquent…">
+<meta property="og:url" content="https://slaveryatlas.org/fr/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/fr/">Les esclavages du monde</a><nav class="main" aria-label="Navigation principale"><a href="/fr/">Accueil</a><a href="/fr/comparer/" aria-current="page">Comparer</a><a href="/fr/civilisations/">Civilisations</a><a href="/fr/abolitions/">Abolitions</a><a href="/fr/debat/">Le débat</a><a href="/fr/aujourdhui/">Aujourd'hui</a><a href="/fr/methode/">Méthode</a></nav></div></header>
+<div class="proto"><strong>Prototype.</strong> Les chiffres viennent d'une recherche préliminaire et doivent être vérifiés dans les ouvrages cités avant publication.</div>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Outil</span>
+      <h1>Comparer les systèmes esclavagistes</h1>
+      <p class="lead">Filtrez par région, isolez les systèmes héréditaires ou racialisés, triez par date. Les étiquettes « contesté », « 2nde main » et « à vérifier » indiquent la solidité de chaque chiffre.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Rechercher<input type="search" id="f-q" placeholder="Rome, nobi, Dahomey…"></label>
+        <label for="f-region">Région<select id="f-region"><option value="">Toutes</option></select></label>
+        <label for="f-sort">Trier par<select id="f-sort">
+          <option value="vol">Volume estimé (décroissant)</option>
+          <option value="part">Part de la population (décroissant)</option>
+          <option value="dur">Durée (décroissant)</option>
+          <option value="end">Fin la plus récente d'abord</option>
+          <option value="start">Chronologique (plus ancien d'abord)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Héréditaire uniquement</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Critère racial uniquement</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">Système ↕</button></th>
+            <th><button type="button" data-sort="start">Période ↕</button></th>
+            <th>Volumes ou part de la population</th>
+            <th>Comment on devenait esclave</th>
+            <th>Héréditaire</th>
+            <th>Critère racial</th>
+            <th>Affranchissement</th>
+            <th><button type="button" data-sort="end">Fin ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Esclavage moderne : un chiffre d'une autre nature</strong>
+        <p>L'OIT, Walk Free et l'OIM estiment à 50 millions le nombre de personnes en esclavage moderne en 2021 (28 M en travail forcé, 22 M en mariage forcé). C'est un stock mesuré un jour donné : il ne se compare pas aux 12,5 millions de la traite atlantique, qui sont un total cumulé sur 375 ans.</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">Prototype · Les esclavages du monde · Sources détaillées dans chaque page.</div></footer>
+<script src="/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "slaveryatlas",
+  "main": "worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/"]
+  },
+  "routes": [
+    { "pattern": "slaveryatlas.org", "custom_domain": true },
+    { "pattern": "www.slaveryatlas.org", "custom_domain": true }
+  ]
+}

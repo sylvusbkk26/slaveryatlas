@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les esclavages du monde</title>
+<meta name="description" content="Histoire comparée de l'esclavage par civilisation et par époque : volumes, statuts, abolitions, débats d'historiens.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : atlas d'archives — encre bleu de fer sur papier gris froid, ocre pour les chiffres, rouge sombre pour les mises en garde.
+   Layout : bandeau de navigation fixe, colonne de lecture ~68ch, outils (frise, tableau) en pleine largeur. */
+:root{
+  --paper:#f3f4f2;
+  --panel:#ffffff;
+  --ink:#1b2431;
+  --muted:#5b6574;
+  --rule:#d5d9dd;
+  --accent:#1f4f7a;
+  --ochre:#a86a12;
+  --warn:#8e2b2b;
+  --chip:#e7ebef;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+    --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+  --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:600}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.read{max-width:68ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-lg{display:flex;flex-direction:column;gap:40px}
+
+/* Navigation */
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:.92rem;font-weight:500}
+nav.main a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.proto{background:var(--chip);color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px}
+.proto strong{color:var(--warn)}
+
+main{padding:40px 0 72px}
+section.view{display:none}
+section.view.active{display:block}
+
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);font-weight:600}
+.lead{font-size:1.15rem;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* Chiffres clés */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.fig .n{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--ochre);font-variant-numeric:tabular-nums;line-height:1.1}
+.fig .l{font-weight:600}
+.fig .s{font-size:.85rem;color:var(--muted)}
+
+/* Frise */
+.frise{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;overflow-x:auto}
+.frise-inner{min-width:760px;display:flex;flex-direction:column;gap:5px}
+.frow{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px}
+.frow .name{font-size:.84rem;text-align:right;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+.bar{position:absolute;top:2px;height:12px;border-radius:3px;background:var(--accent);opacity:.85;border:0;padding:0;cursor:pointer}
+.bar.race{background:var(--warn)}
+.bar:hover{opacity:1}
+.axis{display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* Cartes civilisations */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.live{border-left:4px solid var(--ochre)}
+.card .soon{font-size:.75rem;color:var(--muted)}
+.card.live .soon{color:var(--ochre);font-weight:600}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.principles div{border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+
+/* Comparer */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.filters select,.filters input[type=search]{font:inherit;font-size:.92rem;padding:7px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:170px}
+.filters .chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:.9rem;padding-bottom:7px}
+.count{font-size:.88rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--chip);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--ochre)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .civ{font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);margin:2px 4px 0 0;white-space:nowrap}
+.pill.oui{color:var(--warn)}
+.pill.flag{border:1px solid var(--rule);background:transparent}
+.yes{color:var(--warn);font-weight:600}
+
+/* Page modèle */
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fiche dd{margin:0;font-weight:500}
+.callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.callout.blue{border-left-color:var(--accent)}
+.debate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.debate>div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.scale{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px}
+.srow{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:10px;align-items:center;font-size:.86rem}
+.sbar{height:14px;background:var(--chip);border-radius:3px;position:relative;overflow:hidden}
+.sbar span{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.sbar span.range{background:var(--ochre);opacity:.55}
+.srow .v{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+ul.src{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.back{font-size:.88rem;text-decoration:none;font-weight:500}
+ol.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;position:relative;padding-left:16px}
+ol.timeline li::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ochre)}
+ol.timeline .yr{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+@media (max-width:560px){ ol.timeline li{grid-template-columns:1fr;gap:2px} }
+footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){
+  nav.main{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  nav.main a{white-space:nowrap}
+  .srow{grid-template-columns:1fr auto}
+  .srow .sbar{grid-column:1 / -1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#accueil">Les esclavages du monde</a>
+    <nav class="main" aria-label="Navigation principale">
+      <a href="#accueil">Accueil</a>
+      <a href="#comparer">Comparer</a>
+      <a href="#civilisations">Civilisations</a>
+      <a href="#abolitions">Abolitions</a>
+      <a href="#debat">Le débat</a>
+      <a href="#aujourdhui">Aujourd'hui</a>
+      <a href="#methode">Méthode</a>
+    </nav>
+  </div>
+</header>
+<div class="proto"><strong>Prototype.</strong> Les chiffres viennent d'une recherche préliminaire et doivent être vérifiés dans les ouvrages cités avant publication.</div>
+
+<main>
+<!-- ACCUEIL -->
+<section class="view" id="v-accueil">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Histoire comparée · de Hammurabi à aujourd'hui</span>
+      <h1>L'esclavage, une histoire de toutes les civilisations</h1>
+      <p class="lead">Mésopotamie, Rome, Chine, Corée, califats, royaumes africains, Empire ottoman, Tatars de Crimée, corsaires barbaresques, Aztèques, puissances européennes : presque toutes les grandes sociétés ont pratiqué l'esclavage. Ce site met ces systèmes côte à côte, avec leurs chiffres, leurs règles et leurs fins, pour que chacun puisse comparer sur pièces.</p>
+    </div>
+
+    <div class="figures" aria-label="Chiffres clés">
+      <div class="fig"><span class="n">12,5 M</span><span class="l">Traite atlantique</span><span class="s">Africains embarqués de 1501 à 1875, dont 1,38 M sous pavillon français (base SlaveVoyages).</span></div>
+      <div class="fig"><span class="n">8 à 17 M</span><span class="l">Traites orientales</span><span class="s">Sahara, mer Rouge, océan Indien, de 650 à 1900 environ. Estimations très incertaines (Alencastro, Austen).</span></div>
+      <div class="fig"><span class="n">2 à 5 M</span><span class="l">Raids tatars de Crimée</span><span class="s">Captifs pris en Pologne-Lituanie et en Moscovie, 1441-1774 (İnalcık, Charnysh et Lall).</span></div>
+      <div class="fig"><span class="n">1981</span><span class="l">Dernière abolition</span><span class="s">Mauritanie, par décret ; l'esclavage n'y est pénalisé qu'en 2007. Arabie saoudite et Yémen : 1962.</span></div>
+    </div>
+
+    <div class="stack">
+      <h2>Frise des systèmes esclavagistes</h2>
+      <p class="muted read">Chaque barre couvre la période d'existence du système. En rouge, les systèmes où le statut d'esclave était assigné selon l'origine raciale. Cliquez une barre pour ouvrir le tableau comparatif.</p>
+      <div class="frise" role="group" aria-label="Frise chronologique">
+        <div class="frise-inner" id="frise"></div>
+        <div class="axis"><span></span><div class="ticks" id="ticks"></div></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Statut fondé sur la guerre, la dette, la naissance ou la religion</span><span><i style="background:var(--warn)"></i>Statut assigné par l'origine raciale</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">Échelle non linéaire : l'Antiquité est compressée pour lisibilité.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Par civilisation</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="stack">
+      <h2>Comment ce site compare</h2>
+      <div class="principles">
+        <div><h3>Critère par critère</h3><p class="muted">Volume, durée, part de la population, statut juridique, transmission héréditaire, affranchissement, fin. Aucun critère ne suffit seul à classer un système.</p></div>
+        <div><h3>Des chiffres qui ne s'additionnent pas</h3><p class="muted">Un flux sur trois siècles, un stock un jour donné et une part de population sont trois mesures différentes. Chaque chiffre dit lequel il est.</p></div>
+        <div><h3>Chaque estimation signée</h3><p class="muted">Les fourchettes sont attribuées à l'historien qui les propose, et les chiffres contestés sont signalés comme tels.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARER -->
+<section class="view" id="v-comparer">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Outil</span>
+      <h1>Comparer les systèmes esclavagistes</h1>
+      <p class="lead">Filtrez par région, isolez les systèmes héréditaires ou racialisés, triez par date. Les étiquettes « contesté », « 2nde main » et « à vérifier » indiquent la solidité de chaque chiffre.</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">Rechercher<input type="search" id="f-q" placeholder="Rome, nobi, Dahomey…"></label>
+        <label for="f-region">Région<select id="f-region"><option value="">Toutes</option></select></label>
+        <label for="f-sort">Trier par<select id="f-sort">
+          <option value="vol">Volume estimé (décroissant)</option>
+          <option value="part">Part de la population (décroissant)</option>
+          <option value="dur">Durée (décroissant)</option>
+          <option value="end">Fin la plus récente d'abord</option>
+          <option value="start">Chronologique (plus ancien d'abord)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> Héréditaire uniquement</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> Critère racial uniquement</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">Système ↕</button></th>
+            <th><button type="button" data-sort="start">Période ↕</button></th>
+            <th>Volumes ou part de la population</th>
+            <th>Comment on devenait esclave</th>
+            <th>Héréditaire</th>
+            <th>Critère racial</th>
+            <th>Affranchissement</th>
+            <th><button type="button" data-sort="end">Fin ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Esclavage moderne : un chiffre d'une autre nature</strong>
+        <p>L'OIT, Walk Free et l'OIM estiment à 50 millions le nombre de personnes en esclavage moderne en 2021 (28 M en travail forcé, 22 M en mariage forcé). C'est un stock mesuré un jour donné : il ne se compare pas aux 12,5 millions de la traite atlantique, qui sont un total cumulé sur 375 ans.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARESQUES -->
+<section class="view" id="v-barbaresques">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Méditerranée · 1530-1830</span>
+      <h1>Les corsaires barbaresques et les esclaves européens</h1>
+      <p class="lead">Pendant trois siècles, les corsaires d'Alger, de Tunis, de Tripoli et de Salé ont capturé en mer et sur les côtes d'Europe des marins, des pêcheurs et des villageois chrétiens, vendus ou retenus contre rançon au Maghreb.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Période</dt><dd>v. 1530 à 1830</dd></div>
+      <div><dt>Volume estimé</dt><dd>1 à 1,25 M (Davis, extrapolation contestée)</dd></div>
+      <div><dt>Effectifs attestés</dt><dd>25 000 à 35 000 au XVIIe s.</dd></div>
+      <div><dt>Asservissement</dt><dd>Course en mer, razzias côtières</dd></div>
+      <div><dt>Héréditaire</dt><dd>Non</dd></div>
+      <div><dt>Critère</dt><dd>Religieux (chrétiens)</dd></div>
+      <div><dt>Sortie</dt><dd>Rachat, conversion, évasion</dd></div>
+      <div><dt>Fin</dt><dd>1816 (Alger bombardée), 1830 (conquête française)</dd></div>
+    </dl>
+
+    <div class="stack read">
+      <h2>Une économie de la course et de la rançon</h2>
+      <p>Les régences barbaresques, vassales plus ou moins autonomes de l'Empire ottoman, faisaient de la course une activité d'État. Les captifs servaient aux galères, aux travaux publics ou dans les maisons, et beaucoup étaient revendus à leurs familles ou à des ordres religieux. Les Trinitaires (fondés en 1198) et les Mercédaires (traditionnellement 1218) collectaient des fonds dans toute la chrétienté pour racheter les captifs.</p>
+      <p>Alger comptait à elle seule plus de 30 000 esclaves européens vers 1650. Les razzias touchaient l'Italie, l'Espagne, la Provence, mais aussi l'Irlande, l'Angleterre et l'Islande.</p>
+      <p>La fin vient de l'extérieur. En 1816, la flotte anglo-néerlandaise de lord Exmouth bombarde Alger et obtient la libération d'environ 1 200 esclaves (le chiffre varie selon les sources). La conquête française d'Alger en 1830 met fin à la course.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Combien ? Le chiffre de Davis et ses critiques</h2>
+      <div class="scale" aria-label="Ordres de grandeur comparés">
+        <div class="srow"><span>Stocks attestés (XVIIe s.)</span><div class="sbar"><span style="left:0;width:2.8%"></span></div><span class="v">25 000-35 000</span></div>
+        <div class="srow"><span>Barbaresques, total estimé</span><div class="sbar"><span style="left:0;width:80%"></span><span class="range" style="left:80%;width:20%"></span></div><span class="v">1-1,25 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-1,25 million. La partie ocre représente l'incertitude haute de l'estimation.</p>
+      <div class="debate">
+        <div>
+          <h3>L'estimation de Robert C. Davis</h3>
+          <p>Dans <em>Christian Slaves, Muslim Masters</em> (2003), Davis estime que « presque certainement 1 million, et peut-être 1,25 million » d'Européens ont été asservis entre 1530 et 1780. Il part des effectifs observés et suppose qu'un quart devait être remplacé chaque année (décès, rachats, conversions), soit environ 8 500 captures par an.</p>
+          <p>Il avance aussi qu'entre 1500 et 1650, plus de chrétiens européens ont probablement été emmenés en Barbarie que d'Africains vers les Amériques.</p>
+        </div>
+        <div>
+          <h3>Les critiques</h3>
+          <p>Peter Earle juge que l'extrapolation à partir de la période la plus intense (1580-1680) gonfle le total. John Wright souligne la fragilité du calcul rétrospectif. Ehud Toledano reproche l'absence de sources ottomanes, et Jarbel Rodriguez la confusion entre captif rançonnable et esclave.</p>
+          <p>Davis reconnaît lui-même que sa méthode est la seule possible avec les archives disponibles, pas la meilleure.</p>
+        </div>
+      </div>
+      <div class="callout blue read">
+        <strong>À retenir pour la comparaison</strong>
+        <p>Les Européens ont aussi été victimes de traites massives, ici et lors des raids tatars (2 à 5 millions de captifs). Le chiffre de Davis est un ordre de grandeur haut, pas un décompte. Sur l'ensemble de leur durée, les deux traites diffèrent d'un ordre de grandeur : 1 à 1,25 M pour la Barbarie, 12,5 M pour l'Atlantique. Les captifs barbaresques pouvaient être rachetés et leur statut ne passait pas à leurs enfants.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li>Robert C. Davis, <em>Christian Slaves, Muslim Masters</em>, Palgrave Macmillan, 2003. Présentation : <a href="https://news.osu.edu/when-europeans-were-slaves--research-suggests-white-slavery-was-much-more-common-than-previously-believed/">Ohio State University News, 2004</a>.</li>
+        <li>Débat et critiques : <a href="https://mg.co.za/article/2004-03-11-book-reopens-arguments-about-slave-raids-on-europe/">Mail &amp; Guardian, 2004</a> ; <a href="https://en.wikipedia.org/wiki/Barbary_slave_trade">Wikipedia, Barbary slave trade</a> (2nde main).</li>
+        <li>Ordres rédempteurs : <a href="https://en.wikipedia.org/wiki/Mercedarians">Wikipedia, Mercedarians</a> (2nde main).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CIVILISATIONS -->
+<section class="view" id="v-civilisations">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Par civilisation</span>
+      <h1>Toutes les civilisations</h1>
+      <p class="lead">Chaque page suit le même gabarit : période, volumes, comment on devenait esclave, statut héréditaire ou non, affranchissement, fin de l'esclavage, débats et sources.</p>
+    </div>
+    <div class="stack-lg" id="civgroups"></div>
+  </div>
+</section>
+<!-- TRAITE ATLANTIQUE -->
+<section class="view" id="v-traite-atlantique">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Atlantique · 1501-1888</span>
+      <h1>La traite atlantique et l'esclavage colonial</h1>
+      <p class="lead">De 1501 à 1875, des navires européens et américains ont transporté environ 12,5 millions d'Africains vers les Amériques, achetés pour l'essentiel à des États et à des marchands africains. Ils ont été réduits en esclavage dans les plantations du Brésil, des Caraïbes et du sud des États-Unis.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Période</dt><dd>1501 à 1875 (traite) ; esclavage jusqu'en 1888</dd></div>
+      <div><dt>Embarqués</dt><dd>12,5 M (SlaveVoyages)</dd></div>
+      <div><dt>Débarqués vivants</dt><dd>≈ 10,7 M</dd></div>
+      <div><dt>Mortalité en mer</dt><dd>≈ 12 à 16 %</dd></div>
+      <div><dt>Asservissement</dt><dd>Achat à des États et marchands africains, guerre, razzias</dd></div>
+      <div><dt>Héréditaire</dt><dd>Oui</dd></div>
+      <div><dt>Critère</dt><dd>Racial (couleur de peau)</dd></div>
+      <div><dt>Fin</dt><dd>G.-B. 1833, France 1848, États-Unis 1865, Brésil 1888</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>Qui transportait les captifs ?</h2>
+      <div class="scale" aria-label="Africains embarqués par pavillon">
+        <div class="srow"><span>Portugal et Brésil</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">5,85 M</span></div>
+        <div class="srow"><span>Grande-Bretagne</span><div class="sbar"><span style="left:0;width:55.7%"></span></div><span class="v">3,26 M</span></div>
+        <div class="srow"><span>France</span><div class="sbar"><span style="left:0;width:23.6%"></span></div><span class="v">1,38 M</span></div>
+        <div class="srow"><span>Espagne et Uruguay</span><div class="sbar"><span style="left:0;width:18.2%"></span></div><span class="v">1,06 M</span></div>
+        <div class="srow"><span>Pays-Bas</span><div class="sbar"><span style="left:0;width:9.5%"></span></div><span class="v">0,55 M</span></div>
+        <div class="srow"><span>États-Unis</span><div class="sbar"><span style="left:0;width:5.2%"></span></div><span class="v">0,31 M</span></div>
+        <div class="srow"><span>Danemark et Baltique</span><div class="sbar"><span style="left:0;width:1.9%"></span></div><span class="v">0,11 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Africains embarqués de 1501 à 1875, par pavillon du navire. Source : base SlaveVoyages, estimations.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>La France : Nantes, Saint-Domingue et le Code noir</h2>
+      <p>La France a armé 4 118 expéditions négrières, dont 44 % depuis Nantes, devant Le Havre, La Rochelle, Saint-Malo et Honfleur. Le Code noir de 1685 encadrait juridiquement l'esclavage dans ses colonies et y définissait l'esclave comme un bien meuble.</p>
+      <p>En 1789, Saint-Domingue comptait plus de 450 000 esclaves pour environ 30 000 Blancs et 30 000 libres de couleur, et dominait la production mondiale de sucre. Selon Hilliard d'Auberteuil, auteur de l'époque, plus de 800 000 Africains y avaient été amenés entre 1680 et 1776, et seuls 290 000 restaient en vie.</p>
+      <p>Après l'indépendance, l'ordonnance de 1825 impose à Haïti une indemnité de 150 millions de francs au profit des anciens colons, ramenée à 90 millions en 1838. Avec les emprunts liés, Haïti la rembourse jusqu'en 1921-1922.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>Un contraste démographique saisissant</strong>
+      <p>Environ 388 000 Africains seulement ont débarqué directement en Amérique du Nord, mais les États-Unis comptaient près de 4 millions d'esclaves en 1860 : la population servile y croissait d'environ 25 % par décennie. Au Brésil et aux Caraïbes, elle diminuait d'environ 20 % par décennie (Michael Tadman). Le régime sucrier ne se maintenait que par l'arrivée continue de nouveaux captifs.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Ce que les historiens jugent propre à ce système</h2>
+      <div class="debate">
+        <div>
+          <h3>Une combinaison unique</h3>
+          <p>Aucun critère pris seul ne distingue la traite atlantique : d'autres traites ont été plus longues ou de volume comparable. C'est la combinaison qui la singularise. Le statut d'esclave y était héréditaire et assigné par la couleur de peau. La plantation d'exportation était intégrée au capitalisme européen. Le flux était concentré sur environ 350 ans, et les descendants des esclaves et des maîtres sont aujourd'hui concitoyens.</p>
+        </div>
+        <div>
+          <h3>Esclavage et capitalisme</h3>
+          <p>Eric Williams (1944) soutenait que les profits de l'esclavage avaient aidé à financer la révolution industrielle. Stanley Engerman les estime à moins de 5 % de l'économie britannique, et Seymour Drescher montre que le système n'était pas en déclin quand la Grande-Bretagne l'a aboli. Joseph Inikori défend au contraire le poids de l'ensemble du commerce atlantique.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Les abolitions</h2>
+      <p>La France abolit l'esclavage le 4 février 1794 ; Bonaparte rétablit la traite en 1802, et l'abolition définitive date de 1848. La Grande-Bretagne interdit la traite en 1807 et l'esclavage en 1833, en versant 20 millions de livres aux propriétaires ; les esclaves ne reçoivent rien.</p>
+      <p>De 1808 à 1867, le West Africa Squadron de la Royal Navy capture environ 1 600 navires négriers et libère environ 150 000 Africains, au prix de près de 1 600 marins morts. Chaim Kaufmann et Robert Pape y voient « de loin l'action morale internationale la plus coûteuse de l'histoire moderne ».</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages, estimations</a> (Eltis et Richardson).</li>
+        <li>Henry Louis Gates Jr., <a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">« How many slaves landed in the US? »</a>, PBS.</li>
+        <li>BnF Heritage, <a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">« Slave trade »</a> et <a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">« Haiti's independence debt »</a>.</li>
+        <li>UCL, <a href="https://www.ucl.ac.uk/lbs/project/context/">Legacies of British Slavery</a>.</li>
+        <li>Kaufmann et Pape, <a href="https://www.cambridge.org/core/journals/international-organization/article/abs/explaining-costly-international-moral-action-britains-sixtyyear-campaign-against-the-atlantic-slave-trade/C13419C7C80556BF07280DAAFDC2C9DD"><em>International Organization</em>, 1999</a>.</li>
+        <li>Démographie et débat Williams : <a href="https://en.wikipedia.org/wiki/Atlantic_slave_trade">Wikipedia, Atlantic slave trade</a> et <a href="https://en.wikipedia.org/wiki/Capitalism_and_Slavery">Capitalism and Slavery</a> (2nde main).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRAITES ORIENTALES -->
+<section class="view" id="v-traites-orientales">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Sahara, mer Rouge, océan Indien · 650-1900</span>
+      <h1>Les traites orientales</h1>
+      <p class="lead">Pendant près de douze siècles, des captifs africains ont été acheminés à travers le Sahara, par la mer Rouge et depuis la côte swahilie vers l'Afrique du Nord, l'Arabie, le Golfe, la Perse et l'Inde. C'est la plus longue des grandes traites, et la plus mal mesurée.</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>Période</dt><dd>v. 650 à 1900 ; abolitions jusqu'en 1962-1981</dd></div>
+      <div><dt>Volume estimé</dt><dd>8 à 17 M, jusqu'à 25 M selon les auteurs</dd></div>
+      <div><dt>Sahara seul</dt><dd>7,42 M (Lovejoy)</dd></div>
+      <div><dt>Asservissement</dt><dd>Razzias, guerre, achat aux États africains</dd></div>
+      <div><dt>Héréditaire</dt><dd>Variable ; enfants de concubines souvent libres</dd></div>
+      <div><dt>Critère</dt><dd>Religieux surtout ; préjugé de couleur débattu</dd></div>
+      <div><dt>Usages</dt><dd>Domestique, harem, armée, quelques plantations</dd></div>
+      <div><dt>Fin</dt><dd>Arabie saoudite et Yémen 1962, Oman 1970, Mauritanie 1981</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>Combien ? Des estimations du simple au triple</h2>
+      <div class="scale" aria-label="Estimations des traites orientales selon les auteurs">
+        <div class="srow"><span>Alencastro</span><div class="sbar"><span style="left:0;width:32%"></span></div><span class="v">≈ 8 M</span></div>
+        <div class="srow"><span>Segal</span><div class="sbar"><span style="left:0;width:46%"></span><span class="range" style="left:46%;width:10%"></span></div><span class="v">11,5-14 M</span></div>
+        <div class="srow"><span>M'Bokolo (1998)</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 M</span></div>
+        <div class="srow"><span>Austen, repris par Pétré-Grenouilleau</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 M</span></div>
+        <div class="srow"><span>Bairoch</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">≈ 25 M</span></div>
+        <div class="srow"><span>Traite atlantique, pour repère</span><div class="sbar"><span style="left:0;width:50%;background:var(--warn)"></span></div><span class="v">12,5 M</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-25 millions. Les traites orientales couvrent environ 1 250 ans, la traite atlantique environ 375 ans.</p>
+      <div class="callout read">
+        <strong>Pourquoi un tel écart</strong>
+        <p>Pour les siècles de 650 à 1400, les chiffres « ne peuvent qu'être devinés », rappelle l'historien Klas Rönnbäck : l'écart vient surtout des hypothèses sur le Moyen Âge, presque sans données. La traite atlantique, elle, est reconstituée navire par navire. Les chiffres en « dizaines ou centaines de millions » qui circulent sont jugés largement gonflés par les spécialistes.</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Une traite domestique, militaire et plus féminine</h2>
+      <p>La traite atlantique déportait environ deux hommes pour une femme. Les traites orientales recherchaient davantage de femmes, pour le concubinage et le travail domestique. Les hommes servaient comme domestiques, soldats ou manœuvres. Une minorité de garçons était castrée pour devenir eunuques ; la mortalité de l'opération est décrite comme élevée, mais aucun pourcentage fiable n'est établi.</p>
+      <p>Le monde musulman a aussi fait d'anciens esclaves une élite : les Mamelouks, soldats esclaves convertis, ont régné sur l'Égypte de 1250 à 1517.</p>
+      <p>La plantation reste rare, avec deux exceptions. La révolte des Zanj (869-883, près de Bassora) mobilise plus de 50 000 esclaves des marais salants. Au XIXe siècle, les girofleraies de Zanzibar reposent sur des esclaves qui forment jusqu'aux deux tiers de la population.</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>Pourquoi si peu de descendants ?</strong>
+      <p>Il existe peu de diasporas africaines visibles au Moyen-Orient. Les historiens l'expliquent par la castration d'une partie des hommes, la forte proportion de femmes et l'intégration des enfants de concubines, souvent libres. Le poids respectif de ces facteurs n'est pas chiffré. Ce contraste avec les Amériques explique aussi en partie pourquoi cette traite pèse moins dans les mémoires.</p>
+    </div>
+
+    <div class="stack">
+      <h2>Le débat autour du « génocide voilé »</h2>
+      <div class="debate">
+        <div>
+          <h3>Tidiane N'Diaye</h3>
+          <p>Dans <em>Le Génocide voilé</em> (2008), l'anthropologue franco-sénégalais estime à 17 millions les déportés vers l'Orient et parle de génocide. Il oppose environ 1 million de descendants à 70 millions pour la traite atlantique. Ses ordres de grandeur sont proches de la littérature, mais ces deux derniers chiffres ne sont pas sourcés.</p>
+        </div>
+        <div>
+          <h3>Les critiques</h3>
+          <p>Dans une recension de 2010, Moritz Behrendt lui reproche de s'appuyer presque uniquement sur des explorateurs européens, de traiter comme un bloc des systèmes très différents et de qualifier la traite d'« arabo-musulmane » sans dire « européo-chrétienne » pour l'Atlantique. Le chiffre de N'Diaye selon lequel les trois quarts des castrés mouraient n'est étayé par aucune source académique trouvée.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>Des abolitions tardives</h2>
+      <p>Dans l'Empire ottoman, des femmes esclaves sont encore vendues en 1908. Les abolitions formelles s'échelonnent ensuite : Iran et Jordanie 1929, Bahreïn 1937, Koweït 1949, Qatar 1952, Arabie saoudite et Yémen 1962, Oman 1970, Mauritanie 1981. En 1948, l'Anti-Slavery Society estimait à environ 1 million le nombre d'esclaves dans la péninsule arabique. Presque toutes ces abolitions ont été obtenues sous pression britannique ou internationale.</p>
+    </div>
+
+    <div class="stack read">
+      <h2>Sources</h2>
+      <ul class="src">
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, 3e éd., 2012 : <a href="https://www.bu.edu/africa/files/2023/11/Slave-Trade-Tables.docx.pdf">tableaux, Boston University</a>.</li>
+        <li>Klas Rönnbäck, <a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">« Slave trades out of Africa »</a>, African Economic History Network.</li>
+        <li>Estimations comparées : <a href="https://human.libretexts.org/Courses/Lumen_Learning/Book:_History_of_World_Civilization_II-2_(Lumen)/04:_2:_African_Slave_Trade/04.2:_TransSaharan_Slave_Trade">LibreTexts</a> (2nde main).</li>
+        <li>Moritz Behrendt, <a href="https://qantara.de/node/10064">recension du <em>Génocide voilé</em></a>, Qantara.de, 2010.</li>
+        <li>Abolitions et Zanj : <a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (2nde main).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-mesopotamie-egypte"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Antiquité · IIIe-Ier millénaire av. J.-C.</span><h1>Mésopotamie et Égypte ancienne</h1><p class="lead">Les plus anciens codes de lois connus encadrent déjà l'esclavage. En Mésopotamie comme en Égypte, on devenait esclave par la guerre, par dettes ou en se vendant pour survivre à la misère.</p></div><dl class="fiche"><div><dt>Période</dt><dd>IIIe-Ier mill. av. J.-C.</dd></div><div><dt>Volume</dt><dd>Aucune estimation fiable</dd></div><div><dt>Asservissement</dt><dd>Guerre, dettes, vente de soi ou d'enfants</dd></div><div><dt>Héréditaire</dt><dd>Non établi</dd></div><div><dt>Critère racial</dt><dd>Aucun</dd></div><div><dt>Texte clé</dt><dd>Code de Hammurabi, v. 1753 av. J.-C.</dd></div></dl><div class="stack read"><h2>Le Code de Hammurabi</h2><p>Le Code distingue trois catégories de personnes : l'<em>awīlum</em> (homme libre de plein droit), le <em>muškēnum</em> et le <em>wardum</em> ou l'<em>amtum</em>, l'esclave homme ou femme. L'esclave y est une propriété vendue avec garanties : les lois 278 à 281 règlent la garantie des ventes, les lois 15 à 20 punissent le recel de fugitifs, et la loi 282 prévoit qu'un esclave qui renie son maître a l'oreille coupée.</p><p>Une règle souvent citée, la loi 117, libérerait au bout de trois ans la personne vendue pour dettes. Elle reste à vérifier dans une traduction savante. Aucune estimation de la part d'esclaves dans la population mésopotamienne n'existe.</p></div><div class="stack read"><h2>Égypte : des serviteurs plus que des esclaves</h2><p>Les termes égyptiens traduits par « esclave » désignent plutôt des travailleurs ou des serviteurs. Les esclaves pouvaient posséder des biens et bénéficiaient de certaines protections. Le Nouvel Empire voit un essor de l'esclavage de captifs étrangers venus de Nubie, de Libye et d'Asie.</p><p>L'esclavage n'était pas le mode de production dominant de l'Égypte.</p></div><div class="callout blue read"><strong>Les pyramides n'ont pas été bâties par des esclaves</strong><p>Les égyptologues s'accordent : les grandes pyramides ont été construites par des travailleurs réquisitionnés ou rémunérés. Le chiffre de « 100 000 esclaves » rapporté par Hérodote n'est pas étayé.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">Wikipedia, Code of Hammurabi</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Egypt">Wikipedia, Slavery in ancient Egypt</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-grece"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Antiquité · VIIIe-IIe s. av. J.-C.</span><h1>Grèce : Athènes et les hilotes de Sparte</h1><p class="lead">La démocratie athénienne reposait en partie sur le travail d'esclaves, majoritairement non grecs. Sparte dominait une population d'hilotes bien plus nombreuse que ses citoyens.</p></div><dl class="fiche"><div><dt>Athènes</dt><dd>20 000 à 80 000 esclaves (contesté)</dd></div><div><dt>Sparte</dt><dd>170 000 à 224 000 hilotes</dd></div><div><dt>Asservissement</dt><dd>Guerre, piraterie, commerce ; conquête pour les hilotes</dd></div><div><dt>Héréditaire</dt><dd>Oui</dd></div><div><dt>Critère</dt><dd>Ethnique (non-Grecs), pas racial</dd></div><div><dt>Affranchissement</dt><dd>Fréquent à Athènes au IVe s.</dd></div></dl><div class="stack"><h2>Athènes : un chiffre très disputé</h2><div class="scale"><div class="srow"><span>Estimation basse moderne</span><div class="sbar"><span style="left:0;width:5.0%"></span></div><span class="v">≈ 20 000</span></div><div class="srow"><span>Estimation haute moderne</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">80 000 et plus</span></div><div class="srow"><span>Recensement antique (douteux)</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">400 000</span></div></div><p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-400 000. Le chiffre de 400 000, transmis par Athénée, est rejeté par la plupart des chercheurs.</p></div><div class="stack read"><h2>Athènes</h2><p>Le recensement de Démétrios de Phalère (317-307 av. J.-C.) compte 21 000 citoyens, 10 000 métèques et 400 000 esclaves, un chiffre dont la plupart des historiens doutent. Les estimations modernes vont d'environ 20 000 à 80 000 ou plus. Les mines d'argent du Laurion auraient employé environ 30 000 esclaves.</p><p>Les esclaves venaient de la guerre, de la piraterie et du commerce, et étaient surtout des « barbares » : sur une liste de 32 esclaves confisqués, 13 étaient thraces. Solon interdit au VIe siècle l'esclavage pour dettes des Athéniens. Aristote théorise l'esclave comme « outil animé » et formule la doctrine de l'esclavage « par nature ».</p></div><div class="stack read"><h2>Les hilotes de Sparte</h2><p>Propriété collective de l'État, attachés à la terre, les hilotes de Laconie et de Messénie versaient une part de leurs récoltes. Selon Aristote, les éphores leur déclaraient chaque année la guerre, pour que la <em>krypteia</em> puisse les tuer sans souillure religieuse. Thucydide rapporte la disparition d'environ 2 000 hilotes à qui la liberté avait été promise.</p><p>La Messénie est libérée par Épaminondas en 369 av. J.-C.</p></div><div class="callout blue read"><strong>Esclaves ou serfs ?</strong><p>Les Anciens eux-mêmes hésitaient : Critias dit les hilotes « esclaves au plus haut point », Pollux les place « entre les hommes libres et les esclaves ». L'historien Jean Ducat parle de servage.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Greece">Wikipedia, Slavery in ancient Greece</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Helots">Wikipedia, Helots</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-rome"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Antiquité · IIe s. av. J.-C. – Ve s.</span><h1>Rome, une société esclavagiste</h1><p class="lead">Rome fut l'une des grandes sociétés esclavagistes de l'histoire : des millions de captifs de guerre ont travaillé dans ses domaines, ses mines et ses maisons. Mais l'esclave affranchi pouvait devenir citoyen.</p></div><dl class="fiche"><div><dt>Période</dt><dd>IIe s. av. J.-C. – Ve s.</dd></div><div><dt>Italie</dt><dd>1 à 1,5 M (Scheidel) à 3 M (Brunt)</dd></div><div><dt>Empire (260-425)</dt><dd>≈ 10 à 15 % de la population</dd></div><div><dt>Asservissement</dt><dd>Guerre, naissance, enfants exposés, piraterie</dd></div><div><dt>Héréditaire</dt><dd>Oui</dd></div><div><dt>Critère racial</dt><dd>Aucun</dd></div><div><dt>Affranchissement</dt><dd>Fréquent, donne la citoyenneté</dd></div><div><dt>Fin</dt><dd>Glissement vers le colonat et le servage</dd></div></dl><div class="stack"><h2>Combien d'esclaves en Italie ?</h2><div class="scale"><div class="srow"><span>Keith Hopkins (28 av. J.-C.)</span><div class="sbar"><span style="left:0;width:26.7%"></span></div><span class="v">0,8 M</span></div><div class="srow"><span>Walter Scheidel</span><div class="sbar"><span style="left:0;width:33.3%"></span><span class="range" style="left:33.3%;width:16.7%"></span></div><span class="v">1-1,5 M</span></div><div class="srow"><span>Julius Beloch</span><div class="sbar"><span style="left:0;width:66.7%"></span></div><span class="v">≈ 2 M</span></div><div class="srow"><span>Peter Brunt</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 3 M</span></div></div><p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-3 millions. Effectifs à un moment donné, pas des flux.</p></div><div class="stack read"><h2>Une population entretenue par la guerre et la naissance</h2><p>Selon Walter Scheidel, constituer la population servile de l'Italie a nécessité 2 à 4 millions d'esclaves importés sur les deux derniers siècles avant notre ère. Environ trois quarts des esclaves italiens seraient toutefois nés esclaves.</p><p>Juridiquement, l'esclave était une chose (<em>res</em>), sans personnalité juridique, dont le témoignage n'était reçu que sous la torture. La révolte de Spartacus (73-71 av. J.-C.) en est l'épisode le plus célèbre.</p></div><div class="callout blue read"><strong>Rome ressemble au Brésil, pas aux États-Unis</strong><p>Le rapport entre importations et population servile (environ 3 pour 1) rapproche Rome du Brésil esclavagiste plutôt que du sud des États-Unis, où la population servile est passée de 1,2 million en 1810 à près de 4 millions en 1860 avec seulement 600 000 à 650 000 importations (Scheidel).</p></div><div class="stack read"><h2>Une porte de sortie réelle</h2><p>L'affranchissement formel conférait en général la citoyenneté romaine, et les enfants d'affranchis naissaient libres. Il était si fréquent qu'Auguste dut le plafonner par la <em>lex Fufia Caninia</em> (2 av. J.-C.) et la <em>lex Aelia Sentia</em> (4 apr. J.-C.). C'est un contraste majeur avec l'esclavage racial des Amériques.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.cambridge.org/core/journals/journal-of-roman-studies/article/human-mobility-in-roman-italy-ii-the-slave-population/72D80C5839817A1F4C456A33C9F62E7A">Walter Scheidel, « The slave population », Journal of Roman Studies, 2005</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Rome">Wikipedia, Slavery in ancient Rome</a> (2nde main ; chiffre pour l'Empire probablement de Kyle Harper, à vérifier)</li></ul></div></div></section>
+<section class="view" id="v-chine"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Asie · Shang – 1910</span><h1>Chine : une servitude minoritaire mais millénaire</h1><p class="lead">L'esclavage traverse toute l'histoire chinoise, des captifs sacrifiés sous les Shang aux fillettes vendues comme domestiques au XXe siècle, sans jamais devenir le fondement de l'économie.</p></div><dl class="fiche"><div><dt>Période</dt><dd>Shang – 1909/1910</dd></div><div><dt>Volume</dt><dd>Faible part ; ≈ 2 M à la conquête Qing</dd></div><div><dt>Asservissement</dt><dd>Punition, guerre, dettes, vente d'enfants</dd></div><div><dt>Héréditaire</dt><dd>Pour certains groupes</dd></div><div><dt>Critère racial</dt><dd>Non</dd></div><div><dt>Fin</dt><dd>1909-1910 ; pratiques jusqu'en 1949</dd></div></dl><div class="stack read"><h2>Des Han aux Qing</h2><p>Sous les Han, les esclaves ne représentent qu'« une très petite partie de la population », et leur possession est plafonnée : 200 pour les rois et ducs, 30 pour les fonctionnaires. L'usurpateur Wang Mang abolit l'esclavage en 9 apr. J.-C., puis le rétablit en 12.</p><p>Le droit Tang interdit d'asservir les personnes libres, mais l'autorise pour les criminels, les étrangers et les orphelins, rangés parmi les « gens vils » assimilés juridiquement au bétail. À la conquête mandchoue, les Qing comptent environ 2 millions d'esclaves. L'empereur Yongzheng libère la plupart des groupes serviles héréditaires entre 1723 et 1730.</p></div><div class="callout read"><strong>Une abolition tardive et incomplète</strong><p>L'esclavage est aboli officiellement en 1909 (1910 selon certaines sources), mais la pratique persiste jusqu'en 1949, notamment avec les <em>mui tsai</em>, fillettes vendues comme domestiques.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_China">Wikipedia, Slavery in China</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-coree"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Asie · 918 – 1894</span><h1>Corée : les nobi, jusqu'à 40 % de la population</h1><p class="lead">Sous la dynastie Joseon, la Corée a compté l'une des plus fortes proportions de population servile au monde. Mais la nature de ce système, plus proche du servage pour beaucoup d'historiens, reste débattue.</p></div><dl class="fiche"><div><dt>Période</dt><dd>918 – 1894</dd></div><div><dt>Part de la population</dt><dd>≥ 30 % (XVe-XVIIe s.), jusqu'à 40 % au sud</dd></div><div><dt>En 1858</dt><dd>≈ 1,5 %</dd></div><div><dt>Asservissement</dt><dd>Dettes, famine, naissance</dd></div><div><dt>Héréditaire</dt><dd>Oui</dd></div><div><dt>Critère racial</dt><dd>Non (nobi coréens)</dd></div><div><dt>Fin</dt><dd>1801, 1886-1887, 1894</dd></div></dl><div class="stack"><h2>La part des nobi dans la population</h2><div class="scale"><div class="srow"><span>Avant les Joseon</span><div class="sbar"><span style="left:0;width:25.0%"></span></div><span class="v">≤ 10 %</span></div><div class="srow"><span>XVe-XVIIe s.</span><div class="sbar"><span style="left:0;width:75.0%"></span><span class="range" style="left:75.0%;width:25.0%"></span></div><span class="v">30-40 %</span></div><div class="srow"><span>1858</span><div class="sbar"><span style="left:0;width:3.8%"></span></div><span class="v">≈ 1,5 %</span></div></div><p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-40 %. Sources : Kye (2021), Kim Sun Joo (2023), Kim (2003).</p></div><div class="stack read"><h2>Un statut héréditaire</h2><p>Le statut de nobi se transmettait par la naissance et s'alimentait des dettes et des ventes de soi en temps de famine. Un registre de Séoul de 1663 compte 73 % de nobi parmi les résidents enregistrés, mais c'est un échantillon local.</p><p>Les nobi d'État sont libérés en 1801. Le statut héréditaire est aboli en 1886-1887 et le système disparaît en 1894 avec la réforme Gabo.</p></div><div class="stack"><h2>Esclaves ou serfs ?</h2><div class="debate"><div><h3>Le critère numérique</h3><p>Avec 30 à 40 % de la population, la Corée des Joseon se range parmi les grandes sociétés esclavagistes, au niveau du sud des États-Unis ou de Rome.</p></div><div><h3>Les droits et l'intégration</h3><p>Les nobi pouvaient détenir des biens et des terres, et ceux qui vivaient hors de chez le maître avaient leur propre foyer. Kim parle d'un « servage développé sous l'esclavage », James Palais les juge plus proches des serfs, Rhee et Yang jugent le mot « esclave » inapproprié.</p></div></div></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Korea">Wikipedia, Slavery in Korea</a> (2nde main, résume Kye 2021, Kim 2023, Palais 1998)</li></ul></div></div></section>
+<section class="view" id="v-inde"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Asie · XIIIe s. – 1861</span><h1>Inde : sultanats, servitude agraire et abolition britannique</h1><p class="lead">Dans le sous-continent, l'esclavage a pris la forme de captifs de guerre sous les sultanats, d'exportations vers l'Asie centrale et d'une servitude agraire héréditaire qui frappait les basses castes.</p></div><dl class="fiche"><div><dt>Période</dt><dd>Sultanat de Delhi – 1861</dd></div><div><dt>Vers 1840</dt><dd>1,1 M à 8-9 M selon la définition</dd></div><div><dt>Asservissement</dt><dd>Guerre, défaut fiscal, servitude agraire</dd></div><div><dt>Héréditaire</dt><dd>Oui (servitude agraire)</dd></div><div><dt>Critère</dt><dd>Recoupe la caste, pas racial</dd></div><div><dt>Fin</dt><dd>1843, Code pénal de 1861</dd></div></dl><div class="stack read"><h2>Des chiffres de chroniques</h2><p>Les chroniques du sultanat de Delhi avancent des chiffres probablement gonflés : 50 000 jeunes esclaves sous Alauddin Khalji, 180 000 sous Firuz Shah Tughluq. L'historien Scott Levi rattache l'exportation d'Hindous vers l'Asie centrale à la construction des États sultanien et moghol. Au XVIIe siècle, la Compagnie néerlandaise des Indes exportait aussi 150 à 400 esclaves par an depuis l'Arakan et le Bengale.</p></div><div class="callout blue read"><strong>Pourquoi les estimations varient de 1 à 8</strong><p>Pour les années 1840, les estimations vont d'environ 1,1 million à 8-9 millions (Bartle Frere, 1841). Tout dépend de la définition : compte-t-on comme esclaves les travailleurs agricoles asservis des basses castes, comme les Pulayar ou les Paraiyar ?</p></div><div class="stack read"><h2>L'abolition « par le déni »</h2><p>L'Inde britannique retire la reconnaissance légale de l'esclavage en 1843, puis le criminalise en pratique par le Code pénal de 1861. L'historienne Indrani Chatterjee parle d'« abolition par le déni », car la servitude agraire a largement survécu.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_India">Wikipedia, Slavery in India</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-siam"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Asie du Sud-Est · XVIIe s. – 1915</span><h1>Siam et archipel : dettes et razzias</h1><p class="lead">Au Siam, l'esclavage était surtout une servitude pour dettes, rachetable. Dans l'archipel philippin, les flottes de Sulu razziaient les côtes de toute l'Asie du Sud-Est.</p></div><dl class="fiche"><div><dt>Siam vers 1854</dt><dd>1/4 à 1/3 de la population (Pallegoix)</dd></div><div><dt>Sulu, 1770-1870</dt><dd>200 000 à 300 000 asservis</dd></div><div><dt>Asservissement</dt><dd>Dettes, guerre, razzias maritimes</dd></div><div><dt>Héréditaire</dt><dd>Possible</dd></div><div><dt>Critère racial</dt><dd>Non</dd></div><div><dt>Fin au Siam</dt><dd>1874 → 1905 → 1915</dd></div></dl><div class="stack read"><h2>Le Siam : une servitude rachetable</h2><p>Vers 1854, Mgr Pallegoix estime qu'un quart à un tiers des quelque 6 millions d'habitants sont des esclaves pour dettes. C'est une estimation d'observateur, pas un recensement.</p><p>Les maîtres ne pouvaient ni tuer ni mutiler leurs esclaves, qui pouvaient posséder, hériter, contracter, aller en justice et se racheter. L'historien Cruikshank juge le modèle occidental d'esclavage inadapté à ce système.</p></div><div class="stack read"><h2>L'abolition graduelle de Chulalongkorn</h2><p>Le roi Chulalongkorn mène une abolition par étapes. Le décret de 1874 libère à 21 ans les enfants nés esclaves après 1868. La loi d'abolition date de 1905, le Code pénal de 1908 criminalise la vente, et l'esclavage prend fin légalement en 1915.</p></div><div class="stack read"><h2>Les razzias de Sulu</h2><p>Les flottes iranun et banguingui des sultanats de Sulu et de Maguindanao auraient asservi 200 000 à 300 000 personnes entre 1770 et 1870, en razziant jusqu'au détroit de Malacca, Java et le sud de la Chine. Le mot malais <em>lanun</em>, « pirate », vient du nom des Iranun.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf">R. B. Cruikshank, « Slavery in Nineteenth Century Siam », Journal of the Siam Society, 1975</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Thailand">Wikipedia, Slavery in Thailand</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Philippines">Wikipedia, Slavery in the Philippines</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-asie-centrale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Asie centrale · XVIe s. – 1873</span><h1>Khiva et Boukhara, marchés d'esclaves</h1><p class="lead">Jusqu'à la conquête russe, les khanats de Khiva et de Boukhara étaient de grands marchés d'esclaves, alimentés par les raids turkmènes et kazakhs contre les Persans et les colons russes.</p></div><dl class="fiche"><div><dt>Période</dt><dd>XVIe s. – 1873</dd></div><div><dt>Volume</dt><dd>≈ 1 M de Persans (1re moitié XIXe s.), faiblement sourcé</dd></div><div><dt>Asservissement</dt><dd>Raids turkmènes et kazakhs</dd></div><div><dt>Critère</dt><dd>Religieux : chiites et chrétiens</dd></div><div><dt>Fin</dt><dd>1873, sous pression russe</dd></div></dl><div class="stack read"><h2>La religion comme frontière</h2><p>L'islam interdisant d'asservir des musulmans, les khanats sunnites traitaient les Persans chiites comme des cibles licites, tout comme les chrétiens. Le missionnaire Josef Wolff comptait 200 000 esclaves persans à Boukhara dans les années 1840.</p></div><div class="callout read"><strong>Des chiffres fragiles</strong><p>Le chiffre d'environ 1 million de Persans asservis et celui de Wolff reposent sur des récits de voyageurs. Ils sont à prendre comme des ordres de grandeur.</p></div><div class="stack read"><h2>La fin</h2><p>Les esclaves russes sont libérés en 1840 sous la pression de Saint-Pétersbourg. La conquête russe de Khiva en 1873 provoque une révolte des esclaves et l'abolition exigée par le général Kaufman.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Khivan_slave_trade">Wikipedia, Khivan slave trade</a> (2nde main)</li><li>Jeff Eden, <em>Slavery and Empire in Central Asia</em>, Cambridge UP, 2018 (<a href="https://dash.harvard.edu/bitstream/handle/1/33493418/EDEN-DISSERTATION-2016.pdf">thèse</a>)</li></ul></div></div></section>
+<section class="view" id="v-afrique"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Afrique · XVIIe s. – 1981</span><h1>Les sociétés esclavagistes africaines</h1><p class="lead">L'esclavage existait en Afrique avant les traites et s'y est même intensifié au XIXe siècle. Des États comme le califat de Sokoto ou le royaume du Dahomey comptaient parmi les grandes sociétés esclavagistes de leur temps.</p></div><dl class="fiche"><div><dt>Sokoto vers 1900</dt><dd>1 à 2,5 M d'esclaves, 1/4 à 1/2 de la population</dd></div><div><dt>Éthiopie vers 1932</dt><dd>≥ 2 M d'esclaves (Anti-Slavery Society)</dd></div><div><dt>Asservissement</dt><dd>Guerre, razzias, tribut, dettes</dd></div><div><dt>Héréditaire</dt><dd>Souvent</dd></div><div><dt>Critère racial</dt><dd>Non</dd></div><div><dt>Fin</dt><dd>1901 (Nigeria du Nord), 1942 (Éthiopie), 1981 (Mauritanie)</dd></div></dl><div class="stack read"><h2>Le califat de Sokoto</h2><p>Fondé au début du XIXe siècle dans l'actuel nord du Nigeria, le califat comptait vers 1900 au moins 1 million et peut-être 2,5 millions d'esclaves. Jan Hogendorn et Paul Lovejoy estiment leur part entre un quart et la moitié d'une population d'environ 10 millions. Sokoto se place ainsi parmi les grandes sociétés esclavagistes modernes, derrière les États-Unis de 1860 (environ 4 millions) et le Brésil.</p><p>Le Britannique Lugard abolit le statut légal d'esclave en 1901, sans indemnité.</p></div><div class="stack read"><h2>Le Dahomey, acteur de la traite atlantique</h2><p>La traite fournissait l'essentiel des revenus royaux du Dahomey. Le roi Ghezo ne signe qu'après le blocus britannique de 1851-1852 un traité qui met fin aux exportations, et celles-ci reprennent en 1857-1858. À la cour, un vrai débat opposait les partisans de la traite à ceux d'une reconversion vers l'huile de palme. Les ports de Ouidah, Bonny et Luanda ont expédié ensemble plus de 2 millions de captifs vers l'Atlantique.</p></div><div class="callout blue read"><strong>Ne pas généraliser</strong><p>La part d'« un quart à la moitié » d'esclaves vaut pour les grands États esclavagistes du XIXe siècle, pas pour toute l'Afrique.</p></div><div class="stack read"><h2>Éthiopie et Mauritanie : les dernières abolitions</h2><p>L'Éthiopie est admise à la Société des Nations en 1923 à condition de supprimer l'esclavage. Les lois italiennes de 1935-1936 libèrent environ 420 000 esclaves, et Haïlé Sélassié abolit l'esclavage le 26 août 1942.</p><p>En Mauritanie, l'abolition française de 1905 n'est pas appliquée. Un décret de 1981 abolit l'esclavage sans sanction pénale, et une loi de 2007 le criminalise. Les estimations actuelles divergent : 90 000 personnes selon le Global Slavery Index 2018, 600 000 selon la BBC en 2017.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Sokoto_Caliphate">Wikipedia, Sokoto Caliphate</a> (2nde main, Hogendorn et Lovejoy)</li><li><a href="https://en.wikipedia.org/wiki/History_of_the_Kingdom_of_Dahomey">Wikipedia, Kingdom of Dahomey</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Ethiopia">Wikipedia, Slavery in Ethiopia</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Mauritania">Wikipedia, Slavery in Mauritania</a> (2nde main)</li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, « Slave trades out of Africa »</a></li></ul></div></div></section>
+<section class="view" id="v-europe-medievale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Europe · IXe – XVIIIe s.</span><h1>Europe médiévale, Vikings et Méditerranée</h1><p class="lead">Le mot « esclave » vient de « Slave » : au Moyen Âge, les captifs d'Europe de l'Est étaient vendus vers le monde islamique et Byzance. L'esclavage a ensuite décliné à l'Ouest, mais pas en Méditerranée.</p></div><dl class="fiche"><div><dt>Période</dt><dd>IXe – XVIIIe s.</dd></div><div><dt>Angleterre, 1086</dt><dd>≈ 10 % de la population (Domesday Book)</dd></div><div><dt>Séville, 1565</dt><dd>≈ 7,4 % de la population</dd></div><div><dt>Asservissement</dt><dd>Guerre, razzias vikings, traite de la mer Noire</dd></div><div><dt>Critère</dt><dd>Religieux, puis de plus en plus africain</dd></div><div><dt>Fin</dt><dd>1102 (Angleterre), 1334 (Suède), Malte 1798</dd></div></dl><div class="stack read"><h2>Vikings et Slaves</h2><p>Du IXe au XIe siècle, les Vikings capturent des Irlandais, des Anglo-Saxons et des Francs, et acheminent des captifs slaves par la Volga et le Dniepr vers le califat abbasside et Byzance. Dublin devient un grand marché. Le projet d'Oxford « Dirhams for Slaves » estime que les esclaves comptaient parmi les principales exportations de l'Europe du Nord.</p><p>Au Xe siècle, les Slaves sont le groupe le plus présent dans la traite, d'où le latin <em>sclavus</em> puis le français « esclave » (William Phillips).</p></div><div class="stack read"><h2>Du déclin à l'Ouest à la traite méditerranéenne</h2><p>En Europe occidentale, l'esclavage recule entre le Xe et le XIIe siècle au profit du servage : la traite est interdite en Angleterre en 1102, la Suède abolit l'esclavage en 1334.</p><p>La Méditerranée garde des esclaves jusqu'à l'époque moderne. Venise et Gênes dominent la traite de la mer Noire à partir du XIIIe siècle, avec Caffa en Crimée pour grand marché. Au moins 10 000 esclaves sont vendus à Venise entre 1414 et 1423. En 1565, Séville compte 6 327 esclaves pour 85 538 habitants, majoritairement africains.</p></div><div class="callout blue read"><strong>Le chaînon vers l'Atlantique</strong><p>La première razzia portugaise en Afrique subsaharienne date de 1441. L'esclavage ibérique fait le lien entre la Méditerranée médiévale et la traite atlantique.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_medieval_Europe">Wikipedia, Slavery in medieval Europe</a> (2nde main)</li><li><a href="https://historyireland.com/?p=10176">History Ireland</a></li><li><a href="https://krc.web.ox.ac.uk/node/309951">Oxford, Dirhams for Slaves</a></li></ul></div></div></section>
+<section class="view" id="v-ottomans"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Empire ottoman · XIVe s. – 1908</span><h1>L'Empire ottoman : soldats, harem et domesticité</h1><p class="lead">Dans l'Empire ottoman, l'esclavage était d'abord politique et domestique : soldats d'élite, concubines du harem, eunuques et serviteurs. Un cinquième de la population de Constantinople était esclave à son apogée.</p></div><dl class="fiche"><div><dt>Période</dt><dd>XIVe s. – 1908 (fin du système datée de 1924)</dd></div><div><dt>Constantinople</dt><dd>≈ 1/5 de la population (XVIe-XVIIe s.)</dd></div><div><dt>Esclaves soldats</dt><dd>≈ 100 000 kapıkulu en 1609</dd></div><div><dt>Asservissement</dt><dd>Raids tatars, devchirmé, achats caucasiens et africains</dd></div><div><dt>Critère</dt><dd>Prix et fonctions selon l'origine</dd></div><div><dt>Affranchissement</dt><dd>Fréquent ; ascension sociale possible</dd></div></dl><div class="stack read"><h2>Des esclaves au sommet de l'État</h2><p>Les <em>kapıkulu</em>, esclaves de la Porte, dont les janissaires recrutés par le devchirmé, « impôt du sang » prélevé sur les garçons chrétiens des Balkans et d'Anatolie, sont environ 100 000 en 1609. Des esclaves pouvaient devenir vizirs.</p></div><div class="stack read"><h2>Le harem et les eunuques</h2><p>Les concubines du harem étaient achetées, le plus souvent d'origine chrétienne : Circassiennes, Abkhazes, Géorgiennes. Les eunuques noirs venaient d'Afrique subsaharienne, les blancs des Balkans ou du Caucase. Les prix variaient selon l'origine : une jeune fille blanche pour le service domestique coûtait environ 3 000 kuruş, une Africaine 1 500 à 2 500 (Madeline Zilfi).</p></div><div class="stack read"><h2>Une abolition largement nominale</h2><p>Firman de 1830 sur les esclaves blancs, fermeture « cosmétique » du marché d'Istanbul en 1847, interdiction de la traite circassienne et géorgienne en 1854-1855, puis de la traite des Noirs en 1857, non appliquée à Tripoli avant les années 1890. Des femmes esclaves sont encore vendues en 1908.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (2nde main)</li><li>Madeline Zilfi, <em>Women and Slavery in the Late Ottoman Empire</em>, Cambridge UP, 2010</li></ul></div></div></section>
+<section class="view" id="v-tatars"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Europe de l'Est · 1441-1783</span><h1>Les raids tatars de Crimée</h1><p class="lead">Pendant plus de trois siècles, les cavaliers tatars et nogaïs ont razzié la Pologne-Lituanie, l'Ukraine et la Moscovie pour alimenter les marchés d'esclaves de Crimée et de l'Empire ottoman. C'est l'une des plus grandes traites de l'époque moderne, et l'une des moins connues en France.</p></div><dl class="fiche"><div><dt>Période</dt><dd>1441 – 1783</dd></div><div><dt>Volume estimé</dt><dd>2 à 5 M de captifs</dd></div><div><dt>Grand marché</dt><dd>Caffa, ≈ 20 000 ventes par an vers 1570</dd></div><div><dt>Asservissement</dt><dd>Razzias</dd></div><div><dt>Critère</dt><dd>Religieux (chrétiens)</dd></div><div><dt>Sortie</dt><dd>Rachat</dd></div><div><dt>Fin</dt><dd>Annexion russe de la Crimée, 1783</dd></div></dl><div class="stack"><h2>Combien de captifs ?</h2><div class="scale"><div class="srow"><span>Baranowski (Pologne-Lituanie seule)</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">≤ 1 M</span></div><div class="srow"><span>İnalcık et Kołodziejczyk (1500-1700)</span><div class="sbar"><span style="left:0;width:40.0%"></span></div><span class="v">≈ 2 M</span></div><div class="srow"><span>Charnysh et Lall, décompte</span><div class="sbar"><span style="left:0;width:72.8%"></span></div><span class="v">≥ 3,64 M</span></div><div class="srow"><span>Charnysh et Lall, avec données manquantes</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 5 M</span></div></div><p class="muted" style="font-size:.82rem">Barres à l'échelle sur 0-5 millions. Flux cumulés.</p></div><div class="stack read"><h2>Une saignée pour l'Europe orientale</h2><p>Selon l'étude de Volha Charnysh et Ranjit Lall (<em>American Political Science Review</em>, 2026), au moins 3,64 millions de personnes ont été capturées entre 1441 et 1774, et environ 5 millions si l'on estime les données manquantes. Cela représenterait plus d'un quart de la population de l'Europe orientale en 1400.</p><p>Orest Subtelny note que certains raids emmenaient jusqu'à 30 000 personnes, mais que la moyenne tournait plutôt autour de 3 000. À Caffa, sous contrôle ottoman à partir de 1475, près de 20 000 esclaves étaient vendus chaque année dans les années 1570 (Halil İnalcık).</p></div><div class="callout read"><strong>Une estimation nouvelle, encore à discuter</strong><p>L'étude Charnysh-Lall est la plus récente et la plus élevée ; elle n'a pas encore été débattue par les spécialistes. L'historien Alan Fisher juge qu'aucun total fiable ne peut être calculé, les sources gonflant les nombres.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Crimean-Nogai_Raids">Wikipedia, Crimean–Nogai slave raids</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (2nde main)</li><li>Charnysh et Lall, <em>American Political Science Review</em>, 2026 (publication à confirmer)</li></ul></div></div></section>
+<section class="view" id="v-russie"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Russie · 1450-1861</span><h1>Russie : des kholops aux serfs</h1><p class="lead">La Russie a connu un esclavage proprement dit, le <em>kholopstvo</em>, puis un servage de masse qui touchait plus d'un tiers de la population en 1857. Les serfs russes ont été libérés en 1861, quatre ans avant les esclaves américains.</p></div><dl class="fiche"><div><dt>Kholops</dt><dd>≈ 10 % de la population moscovite (Hellie)</dd></div><div><dt>Serfs privés, 1857</dt><dd>23,1 M sur 62,5 M (≈ 37,7 %)</dd></div><div><dt>Asservissement</dt><dd>Vente de soi, dettes, capture ; servage par la loi</dd></div><div><dt>Héréditaire</dt><dd>Oui</dd></div><div><dt>Critère racial</dt><dd>Non</dd></div><div><dt>Fin</dt><dd>1679/1723 (kholops), 1861 (serfs)</dd></div></dl><div class="stack read"><h2>Les kholops, des Russes qui se vendaient eux-mêmes</h2><p>Selon Richard Hellie, les kholops auraient représenté environ 10 % de la population moscovite. Il y voit « l'un des systèmes esclavagistes les plus singuliers du monde », car les esclaves étaient majoritairement des Russes qui se vendaient eux-mêmes. Les kholops agricoles sont fondus dans le servage en 1679, les domestiques en 1723.</p></div><div class="stack read"><h2>Le servage</h2><p>Codifié en 1649, le servage attache les paysans à la terre et donne aux propriétaires des droits quasi totaux. Les serfs pouvaient être cédés sans la terre, mais gardaient des protections sur leurs biens, leur religion et un accès aux tribunaux. Alexandre II abolit le servage en 1861 ; les anciens serfs paient souvent leur terre plus cher que le marché, et les annuités de rachat ne sont supprimées qu'en 1907.</p></div><div class="callout blue read"><strong>1861 et 1865 : deux abolitions, deux systèmes</strong><p>La comparaison entre servage russe et esclavage américain, menée par Peter Kolchin, est éclairante mais discutée. Les serfs, de même nationalité et religion que leurs maîtres, n'étaient ni juridiquement des biens meubles ni assignés par la race.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.historytoday.com/archive/slaves-not-serfs">History Today, « Slaves, not serfs »</a> (sur Hellie)</li><li><a href="https://en.wikipedia.org/wiki/Serfdom_in_Russia">Wikipedia, Serfdom in Russia</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Kholop">Wikipedia, Kholop</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-ameriques"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← Toutes les civilisations</a><span class="eyebrow">Amériques · XIVe – XIXe s.</span><h1>Les Amériques avant et après Colomb</h1><p class="lead">Les sociétés amérindiennes connaissaient des formes variées de servitude. La colonisation a ensuite asservi des millions d'Amérindiens, et certaines nations amérindiennes ont elles-mêmes possédé des esclaves noirs.</p></div><dl class="fiche"><div><dt>Aztèques</dt><dd>Statut non héréditaire, enfants nés libres</dd></div><div><dt>Côte Nord-Ouest</dt><dd>Jusqu'à 1/4 de la population servile</dd></div><div><dt>Amérindiens asservis</dt><dd>2,5 à 5 M en quatre siècles (Reséndez)</dd></div><div><dt>Caroline, 1670-1715</dt><dd>24 000 à 51 000 exportés (Gallay)</dd></div><div><dt>Critère</dt><dd>Aucun avant 1492 ; puis racial</dd></div><div><dt>Fin</dt><dd>Conquête ; persistances jusqu'au XIXe s.</dd></div></dl><div class="stack read"><h2>Aztèques et Incas</h2><p>Chez les Aztèques, on devenait <em>tlacotli</em> par punition, guerre, dettes ou vente de soi, par exemple pendant la famine des années 1450. L'esclave pouvait se marier, posséder des biens et même des esclaves, et ses enfants naissaient libres (Ross Hassig). Mais des captifs étaient sacrifiés, et un esclave « incorrigible » revendu trois fois pouvait l'être pour le sacrifice.</p><p>Chez les Incas, les <em>yanakuna</em> forment une servitude héréditaire, parfois de haut statut ; le mot « esclave » est une traduction discutée.</p></div><div class="stack read"><h2>La côte Nord-Ouest</h2><p>Sur la côte Pacifique de l'Amérique du Nord, l'esclavage était intégré à des sociétés de chasseurs-pêcheurs et au potlatch. Leland Donald montre que cette servitude correspond à une définition interculturelle de l'esclavage ; dans certains groupes, jusqu'à un quart de la population était esclave.</p></div><div class="stack read"><h2>L'« autre esclavage »</h2><p>Andrés Reséndez (<em>The Other Slavery</em>, prix Bancroft 2017) estime à 2,5 à 5 millions le nombre d'Amérindiens asservis en quatre siècles. Sa définition, large, englobe l'encomienda, le repartimiento, le péonage pour dettes et le travail forcé qui ont survécu aux interdictions légales. Alan Gallay estime que 24 000 à 51 000 Amérindiens ont été exportés depuis les ports de Caroline entre 1670 et 1715.</p><p>Enfin, les « Cinq Tribus » (Cherokees, Creeks, Choctaws, Chickasaws, Séminoles) possédaient 4 500 à 5 000 esclaves noirs en Territoire indien vers 1839.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Aztec_Empire">Wikipedia, Slavery in the Aztec Empire</a> (2nde main)</li><li><a href="https://www.ucpress.edu/books/aboriginal-slavery-on-the-northwest-coast-of-north-america/hardcover">Leland Donald, Aboriginal Slavery on the Northwest Coast, UC Press, 1997</a></li><li><a href="https://en.wikipedia.org/wiki/The_Other_Slavery">Wikipedia, The Other Slavery</a> (2nde main)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_among_Native_Americans_in_the_United_States">Wikipedia, Slavery among Native Americans</a> (2nde main)</li></ul></div></div></section>
+<section class="view" id="v-abolitions"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Frise · de Solon à 2007</span><h1>Les abolitions</h1><p class="lead">L'abolition de l'esclavage comme politique d'État, portée à l'échelle mondiale, est née dans les sociétés atlantiques au XIXe siècle. La plupart des abolitions africaines, ottomanes et arabes ont été obtenues sous pression britannique ou internationale, parfois très tard.</p></div><div class="stack"><ol class="timeline"><li><span class="yr">VIe s. av. J.-C.</span><span><strong>Athènes</strong> · Solon interdit l'esclavage pour dettes des Athéniens.</span></li><li><span class="yr">9 apr. J.-C.</span><span><strong>Chine</strong> · Wang Mang abolit l'esclavage, rétabli en 12.</span></li><li><span class="yr">1102</span><span><strong>Angleterre</strong> · Interdiction de la traite.</span></li><li><span class="yr">1334</span><span><strong>Suède</strong> · Abolition de l'esclavage.</span></li><li><span class="yr">1723-1730</span><span><strong>Chine</strong> · Yongzheng libère la plupart des groupes serviles héréditaires.</span></li><li><span class="yr">1794</span><span><strong>France</strong> · Abolition de l'esclavage le 4 février ; la traite est rétablie par Bonaparte en 1802.</span></li><li><span class="yr">1801</span><span><strong>Corée</strong> · Libération des nobi d'État.</span></li><li><span class="yr">1807</span><span><strong>Grande-Bretagne</strong> · Abolition de la traite ; la Royal Navy la combat jusqu'en 1867.</span></li><li><span class="yr">1816</span><span><strong>Alger</strong> · Bombardement par lord Exmouth et libération d'esclaves européens.</span></li><li><span class="yr">1833</span><span><strong>Grande-Bretagne</strong> · Abolition de l'esclavage ; 20 M£ versés aux propriétaires.</span></li><li><span class="yr">1843</span><span><strong>Inde britannique</strong> · Fin de la reconnaissance légale de l'esclavage.</span></li><li><span class="yr">1848</span><span><strong>France</strong> · Abolition définitive (Victor Schœlcher). <span class="pill flag">à vérifier</span></span></li><li><span class="yr">1857</span><span><strong>Empire ottoman</strong> · Interdiction de la traite des Noirs, longtemps peu appliquée.</span></li><li><span class="yr">1861</span><span><strong>Russie</strong> · Abolition du servage.</span></li><li><span class="yr">1865</span><span><strong>États-Unis</strong> · 13e amendement. <span class="pill flag">à vérifier</span></span></li><li><span class="yr">1873</span><span><strong>Khiva</strong> · Abolition après la conquête russe.</span></li><li><span class="yr">1888</span><span><strong>Brésil</strong> · Loi d'or : dernière abolition des Amériques. <span class="pill flag">à vérifier</span></span></li><li><span class="yr">1894</span><span><strong>Corée</strong> · Réforme Gabo.</span></li><li><span class="yr">1897</span><span><strong>Zanzibar</strong> · Abolition, étendue aux concubines en 1909.</span></li><li><span class="yr">1901</span><span><strong>Nigeria du Nord</strong> · Fin du statut légal d'esclave à Sokoto.</span></li><li><span class="yr">1909-1910</span><span><strong>Chine</strong> · Abolition officielle.</span></li><li><span class="yr">1915</span><span><strong>Siam</strong> · Fin légale, après la loi de 1905.</span></li><li><span class="yr">1929</span><span><strong>Iran, Jordanie</strong> · Abolition.</span></li><li><span class="yr">1942</span><span><strong>Éthiopie</strong> · Abolition par Haïlé Sélassié.</span></li><li><span class="yr">1949-1952</span><span><strong>Koweït, Qatar</strong> · Abolition.</span></li><li><span class="yr">1962</span><span><strong>Arabie saoudite, Yémen</strong> · Abolition.</span></li><li><span class="yr">1970</span><span><strong>Oman</strong> · Abolition sous le sultan Qabous.</span></li><li><span class="yr">1981</span><span><strong>Mauritanie</strong> · Abolition par décret, sans sanction pénale.</span></li><li><span class="yr">2007</span><span><strong>Mauritanie</strong> · L'esclavage devient un crime.</span></li></ol></div><div class="stack"><h2>Deux constats à garder côte à côte</h2><div class="debate"><div><h3>Un mouvement né en Occident</h3><p>Le Royaume-Uni a consacré à la lutte contre la traite des moyens considérables : de 1808 à 1867, le West Africa Squadron capture environ 1 600 navires et libère environ 150 000 Africains. Kaufmann et Pape y voient « de loin l'action morale internationale la plus coûteuse de l'histoire moderne ».</p></div><div><h3>Payé aux maîtres, pas aux victimes</h3><p>Les abolitions britannique et française ont indemnisé les propriétaires, jamais les esclaves. À Haïti, ce sont les anciens esclaves qui ont payé une indemnité aux colons, jusqu'en 1921-1922. La lutte contre la traite a aussi servi à justifier la colonisation de l'Afrique.</p></div></div></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (2nde main)</li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">BnF Heritage</a></li><li>Dates de 1848, 1865 et 1888 : repères usuels, à vérifier dans une source primaire.</li></ul></div></div></section>
+<section class="view" id="v-debat"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Historiographie et mémoire</span><h1>Pourquoi la mémoire occidentale se concentre sur la traite atlantique</h1><p class="lead">Si l'esclavage a été universel, pourquoi le débat public en France, au Royaume-Uni ou aux États-Unis porte-t-il presque uniquement sur la traite atlantique ? Les historiens avancent plusieurs raisons, et s'opposent sur l'intérêt de la comparaison.</p></div><div class="stack read"><h2>Quatre raisons</h2><p><strong>Les descendants sont des citoyens.</strong> Les descendants des esclaves de l'Atlantique vivent dans les sociétés qui les ont asservis ou qui en sont issues (Antilles, États-Unis, Brésil, Haïti) et y portent des revendications de mémoire et de réparation : plan en dix points de la CARICOM (2014), année 2025 des réparations de l'Union africaine. Les traites orientales ont laissé peu de diasporas visibles.</p><p><strong>Les États légifèrent sur leurs propres crimes.</strong> La loi Taubira du 21 mai 2001 reconnaît comme crime contre l'humanité la traite transatlantique, la traite dans l'océan Indien et l'esclavage « perpétrés à partir du XVe siècle » ; elle ne nomme ni les traites transsahariennes ni les traites intra-africaines.</p><p><strong>C'est la traite la mieux documentée.</strong> Elle est la seule reconstituée voyage par voyage dans une base de données publique.</p><p><strong>La tradition d'autocritique des démocraties</strong> est souvent invoquée, mais aucune étude spécifique ne l'établit : c'est une hypothèse.</p></div><div class="stack"><h2>Comparer ou singulariser : les meilleurs arguments</h2><div class="debate"><div><h3>Pour une histoire globale</h3><p>Olivier Pétré-Grenouilleau (<em>Les Traites négrières</em>, 2004) avance environ 11 millions de déportés atlantiques, 17 millions pour les traites orientales et 14 millions pour les traites intra-africaines. L'esclavage est une institution quasi universelle, des États africains en ont été acteurs, et une histoire centrée sur l'Europe reste paradoxalement eurocentrée. Il refuse toute « échelle de Richter des souffrances » et juge que les traites ne sont pas des génocides, car elles visaient à exploiter, non à exterminer.</p></div><div><h3>Pour la spécificité atlantique</h3><p>Le système atlantique fut qualitativement différent : esclave bien meuble valant 30 à 60 % d'une plantation, statut héréditaire assigné par la couleur, décroissance naturelle de 20 % par décennie aux Caraïbes, tout cela au cœur de sociétés qui proclamaient la liberté et l'égalité. Ses effets se prolongent : racisme, dettes comme celle d'Haïti, inégalités.</p></div></div></div><div class="stack read"><h2>L'affaire Pétré-Grenouilleau</h2><p>En 2005, le Collectif des Antillais-Guyanais-Réunionnais assigne l'historien en justice en invoquant la loi Taubira, puis retire sa plainte début 2006. La plainte portait sur son refus du mot « génocide », pas sur ses chiffres comparatifs. Françoise Vergès, alors au Comité pour la mémoire de l'esclavage, jugeait la plainte « inacceptable ». L'appel « Liberté pour l'histoire », signé par près de 600 enseignants et chercheurs, demande alors que le législateur cesse de qualifier l'histoire.</p></div><div class="stack read"><h2>Le terrain commun</h2><p>Orlando Patterson (<em>Slavery and Social Death</em>, 1982) compare 66 sociétés et définit l'esclavage sans faire de la race un critère. Il sert aux deux camps : l'institution est universelle, mais la racialisation s'ajoute dans l'Atlantique. Les spécialistes de la Corée, du Siam ou de Sparte rappellent par ailleurs que beaucoup de systèmes ne répondent pas à la définition de l'esclave-chose, ce qui relativise les comparaisons purement chiffrées.</p><p>Le sociologue Jean-Michel Chaumont, auteur de <em>La Concurrence des victimes</em> (1997), met en garde contre la course à l'unicité entre mémoires.</p></div><div class="callout blue read"><strong>La ligne éditoriale de ce site</strong><p>Pas de verdict sur la traite « pire » que les autres. Chaque système est décrit critère par critère, avec ses chiffres signés, ses débats et ses acteurs de tous côtés : marchands européens, arabes et africains, États tatars et ottomans, mais aussi révoltes, débats internes et abolitionnismes.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia, loi Taubira</a> (texte à vérifier sur Légifrance)</li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">Entretien de Pétré-Grenouilleau au JDD (2005), reproduit par Herodote.net</a> (site de vulgarisation engagé)</li><li><a href="https://www.timeshighereducation.com/node/92737">Times Higher Education, sur l'affaire</a></li><li><a href="https://www.college-de-france.fr/fr/agenda/conferencier-invite/la-concurrence-des-victimes-25-ans-plus-tard/extension-du-domaine-de-la-lutte">Jean-Michel Chaumont, Collège de France, 2022</a></li><li><a href="https://scholar.harvard.edu/sites/scholar.harvard.edu/files/vbrown/files/brown-socialdeath.pdf">Vincent Brown, « Social Death and Political Life », AHR, 2009</a></li></ul></div></div></section>
+<section class="view" id="v-aujourdhui"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">Esclavage moderne · 2021</span><h1>L'esclavage aujourd'hui</h1><p class="lead">Interdit partout, l'esclavage n'a pas disparu. Selon l'Organisation internationale du travail, 50 millions de personnes vivaient en situation d'« esclavage moderne » en 2021.</p></div><div class="figures"><div class="fig"><span class="n">50 M</span><span class="l">Personnes en esclavage moderne</span><span class="s">Un jour donné de 2021, soit 10 M de plus qu'en 2016.</span></div><div class="fig"><span class="n">28 M</span><span class="l">Travail forcé</span><span class="s">86 % dans le secteur privé, 14 % imposé par des États.</span></div><div class="fig"><span class="n">22 M</span><span class="l">Mariages forcés</span><span class="s">65 % en Asie-Pacifique.</span></div><div class="fig"><span class="n">3,3 M</span><span class="l">Enfants en travail forcé</span><span class="s">Les migrants sont plus de trois fois plus exposés.</span></div></div><div class="stack read"><h2>Où ?</h2><p>Le Global Slavery Index 2023 place en tête, pour la part de la population concernée, la Corée du Nord, l'Érythrée et la Mauritanie. Les États arabes ont le taux de mariage forcé le plus élevé. Les pays du G20 importent chaque année environ 468 milliards de dollars de biens à risque de travail forcé, dont 170 milliards pour les États-Unis.</p></div><div class="callout read"><strong>Pourquoi ce chiffre ne se compare pas aux traites</strong><p>Les 50 millions sont un effectif mesuré un jour donné. Les 12,5 millions de l'Atlantique ou les 8 à 17 millions des traites orientales sont des totaux cumulés sur trois à douze siècles. Écrire qu'il y a « quatre fois plus d'esclaves aujourd'hui que pendant toute la traite atlantique » est donc faux. De plus, l'« esclavage moderne » inclut le mariage forcé et des situations sans propriété juridique, alors que l'esclavage historique était le plus souvent un statut légal, transmissible et vendable.</p></div><div class="stack read"><h2>Sources</h2><ul class="src"><li><a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0">OIT, communiqué de septembre 2022</a></li><li><a href="https://alliance87.org/sites/default/files/2023-06/Global%20Estimates%20of%20Modern%20Slavery%20Forced%20Labour%20and%20Forced%20Marriage.pdf">OIT, Walk Free et OIM, Global Estimates of Modern Slavery, 2022</a></li><li><a href="https://cdn.walkfree.org/content/uploads/2023/05/24144628/GSI-2023-Executive-Summary.pdf">Walk Free, Global Slavery Index 2023</a></li></ul></div></div></section>
+<!-- METHODE -->
+<section class="view" id="v-methode">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">Méthode et sources</span>
+      <h1>Comment les chiffres sont établis</h1>
+      <p class="lead">Les volumes de l'esclavage sont rarement des décomptes. Ce sont des reconstructions, plus ou moins solides selon les archives disponibles.</p>
+      <p><strong>La traite atlantique</strong> est reconstituée voyage par voyage dans la base SlaveVoyages (Eltis et Richardson), avec des imputations pour les lacunes. C'est la traite la mieux mesurée.</p>
+      <p><strong>Les traites orientales</strong> reposent sur des récits de voyageurs, des registres partiels et des extrapolations (Austen, Lovejoy, Manning). Les écarts entre auteurs vont du simple au triple.</p>
+      <p><strong>Les raids tatars et barbaresques</strong> sont estimés par calcul rétrospectif à partir d'effectifs ponctuels, une méthode discutée.</p>
+      <p><strong>Les parts de population</strong> (Rome, Corée, Sokoto, Siam) viennent de recensements ou d'estimations d'observateurs, et dépendent de la définition retenue de l'esclavage.</p>
+    </div>
+    <div class="stack read">
+      <h2>Étiquettes de fiabilité</h2>
+      <p><span class="pill flag">contesté</span> fourchette disputée entre spécialistes. <span class="pill flag">2nde main</span> chiffre connu par une synthèse et attribué à l'historien nommé. <span class="pill flag">à vérifier</span> donnée non contrôlée dans une source primaire pour ce prototype.</p>
+    </div>
+    <div class="stack read">
+      <h2>Ouvrages de référence</h2>
+      <ul class="src">
+        <li>Olivier Pétré-Grenouilleau, <em>Les traites négrières. Essai d'histoire globale</em>, Gallimard, 2004.</li>
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, 3e éd., Cambridge UP, 2012.</li>
+        <li>Orlando Patterson, <em>Slavery and Social Death</em>, Harvard UP, 1982.</li>
+        <li>David Eltis et David Richardson, <em>Atlas of the Transatlantic Slave Trade</em>, Yale UP, 2010 ; <a href="https://www.slavevoyages.org">slavevoyages.org</a>.</li>
+        <li>Andrés Reséndez, <em>The Other Slavery</em>, 2016.</li>
+        <li>OIT, Walk Free, OIM, <a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0"><em>Global Estimates of Modern Slavery</em></a>, 2022.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Prototype · Les esclavages du monde · Sources détaillées dans chaque page.</div></footer>
+
+<script>
+const D = [
+ {id:"meso",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Mésopotamie",region:"Antiquité",start:-2100,end:-539,per:"IIIe-Ier mill. av. J.-C.",vol:"Aucune estimation globale",src:"Guerre, dettes, achat",her:"non établi",race:"Non",aff:"Libération après 3 ans pour dettes (Hammurabi, loi 117)",fin:"—",flags:["2nde main"]},
+ {id:"egy",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"Égypte ancienne",region:"Antiquité",start:-3000,end:-30,per:"IIIe mill. av. J.-C. – 30 av. J.-C.",vol:"Aucune estimation ; les pyramides bâties par des ouvriers payés ou réquisitionnés",src:"Guerre, dettes, vente de soi ou d'enfants",her:"variable",race:"Non",aff:"Mariage, service au temple",fin:"—",flags:["2nde main"]},
+ {id:"ath",page:"grece",vmax:0.08,vtype:"eff",pmax:null,name:"Athènes",region:"Antiquité",start:-600,end:-300,per:"VIe-IVe s. av. J.-C.",vol:"20 000 à 80 000 esclaves",src:"Guerre, piraterie, commerce (surtout non-Grecs)",her:"oui",race:"Non (ethnique)",aff:"Fréquent au IVe s.",fin:"Solon interdit l'esclavage pour dettes des Athéniens",flags:["contesté"]},
+ {id:"spa",page:"grece",vmax:0.224,vtype:"eff",pmax:null,name:"Sparte (hilotes)",region:"Antiquité",start:-700,end:-146,per:"VIIIe-IIe s. av. J.-C.",vol:"170 000 à 224 000, bien plus que les citoyens",src:"Conquête de la Laconie et de la Messénie, naissance",her:"oui",race:"Non",aff:"Service militaire, rachat",fin:"Messénie libérée en 369 av. J.-C.",flags:["2nde main"]},
+ {id:"rome",page:"rome",vmax:3,vtype:"eff",pmax:15,name:"Rome",region:"Antiquité",start:-200,end:476,per:"IIe s. av. J.-C. – Ve s.",vol:"Italie : 1-1,5 M (Scheidel) à 3 M (Brunt) ; Empire : 10-15 %",src:"Guerre, naissance (≈ 3/4), enfants exposés, piraterie",her:"oui",race:"Non",aff:"Fréquent, donne la citoyenneté",fin:"Glissement vers le colonat et le servage",flags:["contesté"]},
+ {id:"chine",page:"chine",vmax:2,vtype:"eff",pmax:null,name:"Chine",region:"Asie",start:-1600,end:1910,per:"Shang – 1909/1910",vol:"Faible part ; ≈ 2 M à la conquête Qing",src:"Punition, guerre, dettes, vente d'enfants",her:"partiel",race:"Non",aff:"Émancipations impériales (1723-1730)",fin:"1909-1910 ; pratiques jusqu'en 1949",flags:["2nde main"]},
+ {id:"coree",page:"coree",vmax:null,vtype:null,pmax:40,name:"Corée (nobi)",region:"Asie",start:918,end:1894,per:"918 – 1894",vol:"≥ 30 % de la population (XVe-XVIIe s.), jusqu'à 40 % au sud",src:"Dettes, famine, naissance",her:"oui",race:"Non",aff:"Rachat, service militaire",fin:"1801, 1886, 1894",flags:["2nde main","contesté"]},
+ {id:"inde",page:"inde",vmax:9,vtype:"eff",pmax:null,name:"Inde",region:"Asie",start:1206,end:1861,per:"Sultanat de Delhi – 1861",vol:"1,1 M à 8-9 M vers 1840 selon la définition",src:"Guerre, défaut fiscal, servitude agraire des basses castes",her:"oui",race:"Non (recoupe la caste)",aff:"Non établi",fin:"1843, Code pénal de 1861",flags:["contesté"]},
+ {id:"siam",page:"siam",vmax:null,vtype:null,pmax:33,name:"Siam",region:"Asie",start:1600,end:1915,per:"XVIIe s. – 1915",vol:"1/4 à 1/3 de la population vers 1854 (Pallegoix)",src:"Dettes surtout, guerre, naissance",her:"possible",race:"Non",aff:"Rachat de droit",fin:"1874 → 1905 → 1915",flags:[]},
+ {id:"asiec",page:"asie-centrale",vmax:1,vtype:"flux",pmax:null,name:"Khiva et Boukhara",region:"Asie",start:1500,end:1873,per:"XVIe s. – 1873",vol:"≈ 1 M de Persans asservis (1re moitié XIXe s.)",src:"Raids turkmènes et kazakhs",her:"non établi",race:"Religieux (chiites, chrétiens)",aff:"Non établi",fin:"1873, sous pression russe",flags:["à vérifier"]},
+ {id:"orient",vmax:25,vtype:"flux",pmax:null,name:"Traites orientales",region:"Afrique et monde musulman",start:650,end:1900,per:"650 – 1900 (et au-delà)",vol:"8 M (Alencastro) à 17 M (Austen), 25 M (Bairoch) ; Sahara : 7,42 M (Lovejoy)",src:"Razzias, guerre, achat aux États africains",her:"variable",race:"Religieux surtout ; préjugé de couleur débattu",aff:"Fréquent, intégration",fin:"1908 à 1981 selon les pays",flags:["contesté"],page:"traites-orientales"},
+ {id:"afr",page:"afrique",vmax:2.5,vtype:"eff",pmax:50,name:"Sociétés africaines (Sokoto, Dahomey…)",region:"Afrique et monde musulman",start:1600,end:1942,per:"XVIIe s. – 1942 (Éthiopie)",vol:"Sokoto vers 1900 : 1 à 2,5 M, 1/4 à 1/2 de la population",src:"Guerre, razzias, tribut, dettes",her:"souvent",race:"Non",aff:"Variable",fin:"1901 (Nigeria du Nord), 1942 (Éthiopie), 1981 (Mauritanie)",flags:["2nde main"]},
+ {id:"eumed",page:"europe-medievale",vmax:null,vtype:null,pmax:10,name:"Europe médiévale et Vikings",region:"Europe et Méditerranée",start:800,end:1334,per:"IXe – XIVe s.",vol:"≈ 10 % de la population anglaise en 1086",src:"Guerre, razzias vikings",her:"oui",race:"Non (religieux)",aff:"Transition vers le servage",fin:"1102 (Angleterre), 1334 (Suède)",flags:[]},
+ {id:"medit",page:"europe-medievale",vmax:null,vtype:null,pmax:7.4,name:"Venise, Gênes, Ibérie",region:"Europe et Méditerranée",start:1250,end:1798,per:"XIIIe – XVIIIe s.",vol:"Séville 1565 : ≈ 7,4 % de la population",src:"Traite de la mer Noire, guerre, Afrique",her:"oui",race:"Religieux, puis de plus en plus africain",aff:"Possible",fin:"Malte 1798",flags:["2nde main"]},
+ {id:"otto",page:"ottomans",vmax:null,vtype:null,pmax:20,name:"Empire ottoman",region:"Europe et Méditerranée",start:1350,end:1908,per:"XIVe s. – 1908",vol:"≈ 1/5 de Constantinople (XVIe-XVIIe s.)",src:"Raids tatars, devchirmé, achats caucasiens et africains",her:"non (enfants de concubines)",race:"Prix et fonctions selon l'origine",aff:"Fréquent, ascension possible",fin:"1830-1908, largement nominal",flags:["2nde main"]},
+ {id:"tatar",page:"tatars",vmax:5,vtype:"flux",pmax:null,name:"Raids tatars de Crimée",region:"Europe et Méditerranée",start:1441,end:1783,per:"1441 – 1783",vol:"2 M (İnalcık, 1500-1700) à 5 M (Charnysh et Lall)",src:"Razzias en Pologne-Lituanie et Moscovie",her:"—",race:"Religieux (chrétiens)",aff:"Rachat",fin:"Annexion russe de la Crimée, 1783",flags:["contesté"]},
+ {id:"barb",vmax:1.25,vtype:"flux",pmax:null,name:"Corsaires barbaresques",region:"Europe et Méditerranée",start:1530,end:1830,per:"1530 – 1830",vol:"1 à 1,25 M (Davis) ; effectifs attestés 25 000-35 000",src:"Course en mer, razzias côtières",her:"non",race:"Religieux (chrétiens)",aff:"Rachat, conversion",fin:"1816, 1830",flags:["contesté"],page:"barbaresques"},
+ {id:"russie",page:"russie",vmax:null,vtype:null,pmax:37.7,name:"Russie (kholops, serfs)",region:"Europe et Méditerranée",start:1450,end:1861,per:"1450 – 1861",vol:"Kholops ≈ 10 % (Hellie) ; serfs privés 37,7 % en 1857",src:"Vente de soi, dettes ; servage par la loi (1649)",her:"oui",race:"Non",aff:"Rare pour les serfs",fin:"1861 (rachats jusqu'en 1907)",flags:[]},
+ {id:"azt",page:"ameriques",vmax:null,vtype:null,pmax:null,name:"Aztèques",region:"Amériques",start:1325,end:1521,per:"XIVe – XVIe s.",vol:"Aucune estimation",src:"Punition, guerre, dettes, vente de soi",her:"non",race:"Non",aff:"Oui ; enfants nés libres",fin:"Conquête espagnole",flags:["2nde main"]},
+ {id:"nwc",page:"ameriques",vmax:null,vtype:null,pmax:25,name:"Côte Nord-Ouest",region:"Amériques",start:1500,end:1880,per:"Précolonial – XIXe s.",vol:"Jusqu'à 1/4 de la population dans certains groupes",src:"Raids, achat entre groupes",her:"non établi",race:"Non",aff:"Non établi",fin:"Colonisation",flags:[]},
+ {id:"amind",page:"ameriques",vmax:5,vtype:"flux",pmax:null,name:"Esclavage des Amérindiens",region:"Amériques",start:1492,end:1900,per:"1492 – v. 1900",vol:"2,5 à 5 M (Reséndez, définition large)",src:"Guerre, razzias, encomienda, péonage",her:"variable",race:"Oui",aff:"Variable",fin:"Lois espagnoles de 1542 ; persistances",flags:["contesté"]},
+ {id:"atl",vmax:12.5,vtype:"flux",pmax:null,name:"Traite atlantique et colonies",region:"Amériques",start:1501,end:1888,per:"1501 – 1888",vol:"12,5 M embarqués, 10,7 M débarqués ; France 1,38 M",src:"Achat aux États et marchands africains, guerre, razzias",her:"oui",race:"Oui (couleur)",aff:"Faible ; très faible aux États-Unis",fin:"G.-B. 1833, France 1848, États-Unis 1865, Brésil 1888",flags:["à vérifier"],page:"traite-atlantique"}
+];
+const isRace = r => r.race.startsWith("Oui");
+
+/* Échelle de la frise : -3000→0 sur 22 %, 0→1500 sur 33 %, 1500→2000 sur 45 % */
+function x(y){
+  if(y<0) return 22*(y+3000)/3000;
+  if(y<1500) return 22+33*y/1500;
+  return 55+45*(Math.min(y,2000)-1500)/500;
+}
+function fmt(y){return y<0? (-y)+" av." : String(y);}
+
+function buildFrise(){
+  const f=document.getElementById("frise");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const row=document.createElement("div"); row.className="frow";
+    const n=document.createElement("span"); n.className="name"; n.textContent=r.name; n.title=r.name;
+    const t=document.createElement("div"); t.className="track";
+    const b=document.createElement("button"); b.type="button"; b.className="bar"+(isRace(r)?" race":"");
+    b.style.left=x(r.start)+"%"; b.style.width=Math.max(.6,x(r.end)-x(r.start))+"%";
+    b.setAttribute("aria-label",r.name+", "+r.per); b.title=r.name+" · "+r.per;
+    b.addEventListener("click",()=>{ document.getElementById("f-q").value=r.name; render(); location.hash="comparer"; });
+    t.appendChild(b); row.append(n,t); f.appendChild(row);
+  });
+  const ticks=document.getElementById("ticks");
+  [-3000,-2000,-1000,0,500,1000,1500,1700,1800,1900,2000].forEach(y=>{
+    const s=document.createElement("span"); s.style.left=x(y)+"%"; s.textContent=y===0?"0":fmt(y); ticks.appendChild(s);
+  });
+}
+function buildCards(){
+  const c=document.getElementById("cards");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const a=document.createElement("a"); a.className="card"+(r.page?" live":"");
+    a.href=r.page? "#"+r.page : "#comparer";
+    if(!r.page) a.addEventListener("click",()=>{document.getElementById("f-q").value=r.name; render();});
+    a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"Lire la page":"Page à venir · voir le tableau"}</span>`;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    c.appendChild(a);
+  });
+}
+
+let sortKey=null, sortDir=1;
+function render(){
+  const q=document.getElementById("f-q").value.trim().toLowerCase();
+  const reg=document.getElementById("f-region").value;
+  const her=document.getElementById("f-her").checked, race=document.getElementById("f-race").checked;
+  let rows=D.filter(r=>(!reg||r.region===reg)&&(!her||r.her==="oui")&&(!race||isRace(r))&&(!q||(r.name+" "+r.vol+" "+r.src+" "+r.region).toLowerCase().includes(q)));
+  const desc=(fa)=>(a,b)=>{const x=fa(a),y=fa(b); if(x==null&&y==null) return a.start-b.start; if(x==null) return 1; if(y==null) return -1; return y-x;};
+  const mode=document.getElementById("f-sort").value;
+  if(sortKey==="name") rows.sort((a,b)=>a.name.localeCompare(b.name,"fr")*sortDir);
+  else if(sortKey) rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+  else if(mode==="vol") rows.sort(desc(r=>r.vmax));
+  else if(mode==="part") rows.sort(desc(r=>r.pmax));
+  else if(mode==="dur") rows.sort(desc(r=>r.end-r.start));
+  else if(mode==="end") rows.sort(desc(r=>r.end));
+  else rows.sort((a,b)=>a.start-b.start);
+  const note=document.getElementById("sortnote");
+  note.textContent = sortKey? "" : mode==="vol" ? "Classement sur l'estimation haute de chaque fourchette. « Flux » = total cumulé sur toute la période ; « effectif » = nombre d'esclaves présents à un moment donné. Les deux ne se comparent pas directement. Systèmes sans estimation en fin de liste."
+    : mode==="part" ? "Classement sur la part maximale de la population servile, à une date donnée. Systèmes sans estimation en fin de liste." : "";
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      `<span class="civ"></span><br><span class="pill"></span>${r.vtype?`<span class="pill">${r.vtype==="flux"?"flux cumulé":"effectif"}</span>`:""}${r.flags.map(f=>`<span class="pill flag">${f}</span>`).join("")}${r.page?` <a href="#${r.page}">Lire</a>`:""}`,
+      r.per, r.vol, r.src,
+      r.her==="oui"?'<span class="yes">Oui</span>':r.her,
+      isRace(r)?`<span class="yes"></span>`:r.race,
+      r.aff, r.fin
+    ];
+    cells.forEach((h,i)=>{const td=document.createElement("td"); if(i===1) td.className="num";
+      if(i===0){td.innerHTML=h; td.querySelector(".civ").textContent=r.name; td.querySelector(".pill").textContent=r.region;}
+      else if(i===5&&isRace(r)){td.innerHTML=h; td.querySelector(".yes").textContent=r.race;}
+      else if(i===4&&r.her==="oui"){td.innerHTML=h;}
+      else td.textContent=h;
+      tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent=rows.length+" système"+(rows.length>1?"s":"")+" affiché"+(rows.length>1?"s":"")+" sur "+D.length;
+}
+function initFilters(){
+  const s=document.getElementById("f-region");
+  [...new Set(D.map(r=>r.region))].forEach(r=>{const o=document.createElement("option"); o.value=r; o.textContent=r; s.appendChild(o);});
+  ["f-q","f-region","f-her","f-race"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+  document.getElementById("f-sort").addEventListener("input",()=>{sortKey=null; render();});
+  document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.sort; sortDir = sortKey===k? -sortDir : 1; sortKey=k; render();}));
+}
+
+const CIV=[...new Set(D.map(r=>r.page))];
+const VIEWS=["accueil","comparer","civilisations","abolitions","debat","aujourdhui","methode",...CIV];
+function route(){
+  const h=location.hash.replace("#","");
+  const v=VIEWS.includes(h)?h:"accueil";
+  VIEWS.forEach(n=>document.getElementById("v-"+n).classList.toggle("active",n===v));
+  const navv=CIV.includes(v)?"civilisations":v;
+  document.querySelectorAll("nav.main a").forEach(a=>{ if(a.getAttribute("href")==="#"+navv) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+  window.scrollTo(0,0);
+}
+function buildCivGroups(){
+  const box=document.getElementById("civgroups"); const seen=new Set();
+  [...new Set(D.map(r=>r.region))].forEach(reg=>{
+    const g=document.createElement("div"); g.className="stack";
+    const h=document.createElement("h2"); h.textContent=reg; g.appendChild(h);
+    const c=document.createElement("div"); c.className="cards";
+    D.filter(r=>r.region===reg).sort((a,b)=>a.start-b.start).forEach(r=>{
+      if(seen.has(r.page)) return; seen.add(r.page);
+      const same=D.filter(x=>x.page===r.page);
+      const a=document.createElement("a"); a.className="card live"; a.href="#"+r.page;
+      a.innerHTML='<span class="per"></span><strong></strong><span class="soon">Lire la page</span>';
+      a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      c.appendChild(a);
+    });
+    g.appendChild(c); box.appendChild(g);
+  });
+}
+buildFrise(); buildCards(); buildCivGroups(); initFilters(); render(); route();
+window.addEventListener("hashchange",route);
+</script>
+</body>
+</html>
