@@ -42,6 +42,21 @@
       <div class="fig"><span class="n">1981</span><span class="l">Última abolición</span><span class="s">Mauritania, por decreto; la esclavitud no se tipifica allí como delito hasta 2007. Arabia Saudí y Yemen: 1962.</span></div>
     </div>
 
+    <div class="stack" id="worldmap">
+      <h2>Mapa de los sistemas esclavistas</h2>
+      <p class="muted read">Cada punto es un sistema esclavista y cada línea una gran ruta de trata. Desliza el cursor para ver qué existía en una fecha dada; haz clic en un punto para ver el detalle.</p>
+      <div class="map-wrap">
+        <div class="map-canvas"></div>
+        <div class="map-controls">
+          <label for="map-year">Época</label>
+          <input type="range" id="map-year" min="0" max="29" step="1">
+          <output id="map-year-out" for="map-year"></output>
+          <span class="map-count"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Estatus basado en la guerra, la deuda, el nacimiento o la religión</span><span><i style="background:var(--warn)"></i>Estatus asignado por el origen racial</span><span><i class="lr"></i>Ruta de trata</span></div>
+      </div>
+      <div class="map-info" aria-live="polite"><span class="muted">Haz clic en un punto del mapa para ver el sistema.</span></div>
+    </div>
     <div class="stack">
       <h2>Cronología de los sistemas esclavistas</h2>
       <p class="muted read">Cada barra abarca el periodo de existencia del sistema. En rojo, los sistemas en los que la condición de esclavo se asignaba según el origen racial. Haga clic en una barra para abrir la tabla comparativa.</p>
@@ -70,5 +85,10 @@
 </section></main>
 <footer><div class="wrap">Atlas de la esclavitud · Fuentes detalladas en cada página.</div></footer>
 <script src="/assets/app.es.js"></script>
+<script>window.MAP_T=Object.assign({"title": "Mapa de los sistemas esclavistas", "all": "Todas las épocas", "read": "Leer la página"},{fmt:y=>y<0?(-y)+' a. C.':String(y),count:(n,t)=>n+' de '+t+' sistemas'});</script>
+<script src="/assets/vendor/d3-array.min.js"></script>
+<script src="/assets/vendor/d3-geo.min.js"></script>
+<script src="/assets/vendor/topojson-client.min.js"></script>
+<script src="/assets/map.js"></script>
 </body>
 </html>

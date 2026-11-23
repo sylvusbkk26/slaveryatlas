@@ -42,6 +42,21 @@
       <div class="fig"><span class="n">1981</span><span class="l">最后一次废除</span><span class="s">毛里塔尼亚，以法令形式废除；直到2007年奴隶制才在该国被定为刑事犯罪。沙特阿拉伯和也门：1962年。</span></div>
     </div>
 
+    <div class="stack" id="worldmap">
+      <h2>奴隶制度地图</h2>
+      <p class="muted read">每个圆点代表一种奴隶制度，每条线代表一条主要的奴隶贸易路线。拖动滑块可查看某一年份存在的制度；点击圆点查看详情。</p>
+      <div class="map-wrap">
+        <div class="map-canvas"></div>
+        <div class="map-controls">
+          <label for="map-year">时期</label>
+          <input type="range" id="map-year" min="0" max="29" step="1">
+          <output id="map-year-out" for="map-year"></output>
+          <span class="map-count"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>基于战争、债务、出身或宗教的身份</span><span><i style="background:var(--warn)"></i>按种族出身划定的身份</span><span><i class="lr"></i>奴隶贸易路线</span></div>
+      </div>
+      <div class="map-info" aria-live="polite"><span class="muted">点击地图上的圆点以显示该制度。</span></div>
+    </div>
     <div class="stack">
       <h2>奴隶制度时间轴</h2>
       <p class="muted read">每根横条覆盖该制度存在的时期。红色表示奴隶身份依据种族出身而被指定的制度。点击横条可打开比较表。</p>
@@ -70,5 +85,10 @@
 </section></main>
 <footer><div class="wrap">奴隶制图谱 · 各页面均附有详细资料来源。</div></footer>
 <script src="/assets/app.zh.js"></script>
+<script>window.MAP_T=Object.assign({"title": "奴隶制度地图", "all": "所有时期", "read": "阅读页面"},{fmt:y=>y<0?'公元前'+(-y)+'年':y+'年',count:(n,t)=>'显示'+n+'个制度（共'+t+'个）'});</script>
+<script src="/assets/vendor/d3-array.min.js"></script>
+<script src="/assets/vendor/d3-geo.min.js"></script>
+<script src="/assets/vendor/topojson-client.min.js"></script>
+<script src="/assets/map.js"></script>
 </body>
 </html>

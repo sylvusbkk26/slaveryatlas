@@ -4,7 +4,9 @@ Sources : src/prototype.html (français, langue de référence) et
 src/i18n/<lang>.html (copies traduites, même structure). Chaque langue
 disponible produit /<lang>/<page>/index.html, avec hreflang croisés.
 """
-import re, os, shutil, pathlib
+import re, os, shutil, pathlib, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import map_i18n
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
@@ -69,7 +71,10 @@ def main():
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
 '''
+    css += map_i18n.CSS
     (OUT / 'assets/site.css').write_text(css, encoding='utf-8')
+    shutil.copytree(ROOT / 'src/static/vendor', OUT / 'assets/vendor')
+    shutil.copy(ROOT / 'src/static/map.js', OUT / 'assets/map.js')
 
     # pages par langue : {lang: {pid: body}}
     secs, meta = {}, {}
@@ -98,6 +103,14 @@ header.top .wrap{row-gap:4px}
             path = path_of(l, pid)
             urls.append(path)
             b = body.replace('href="#accueil"', f'href="/{l}/"')
+            extra_js = ''
+            if pid == 'accueil' and '<div class="frise"' in b:
+                i = b.rfind('<div class="stack">', 0, b.index('<div class="frise"'))
+                b = b[:i] + map_i18n.block(l) + b[i:]
+                extra_js = (map_i18n.script(l) + '\n<script src="/assets/vendor/d3-array.min.js"></script>'
+                            '\n<script src="/assets/vendor/d3-geo.min.js"></script>'
+                            '\n<script src="/assets/vendor/topojson-client.min.js"></script>'
+                            '\n<script src="/assets/map.js"></script>')
             b = re.sub(r'href="#([a-z-]+)"', lambda mm: f'href="/{l}/{mm.group(1)}/"', b)
             h1 = plain(re.search(r'<h1>(.*?)</h1>', b, re.S).group(1))
             lead = re.search(r'<p class="lead">(.*?)</p>', b, re.S)
@@ -142,6 +155,7 @@ header.top .wrap{row-gap:4px}
 <main><section class="view">{b}</section></main>
 {m["footer"]}
 <script src="/assets/app.{l}.js"></script>
+{extra_js}
 </body>
 </html>'''
             d = OUT / path.strip('/')

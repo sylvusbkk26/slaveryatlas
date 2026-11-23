@@ -42,6 +42,21 @@
       <div class="fig"><span class="n">1981</span><span class="l">Dernière abolition</span><span class="s">Mauritanie, par décret ; l'esclavage n'y est pénalisé qu'en 2007. Arabie saoudite et Yémen : 1962.</span></div>
     </div>
 
+    <div class="stack" id="worldmap">
+      <h2>Carte des systèmes esclavagistes</h2>
+      <p class="muted read">Chaque point est un système esclavagiste, chaque trait une grande route de traite. Faites glisser le curseur pour voir ce qui existait à une date donnée ; cliquez un point pour le détail.</p>
+      <div class="map-wrap">
+        <div class="map-canvas"></div>
+        <div class="map-controls">
+          <label for="map-year">Époque</label>
+          <input type="range" id="map-year" min="0" max="29" step="1">
+          <output id="map-year-out" for="map-year"></output>
+          <span class="map-count"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Statut fondé sur la guerre, la dette, la naissance ou la religion</span><span><i style="background:var(--warn)"></i>Statut assigné par l'origine raciale</span><span><i class="lr"></i>Route de traite</span></div>
+      </div>
+      <div class="map-info" aria-live="polite"><span class="muted">Cliquez un point sur la carte pour afficher le système.</span></div>
+    </div>
     <div class="stack">
       <h2>Frise des systèmes esclavagistes</h2>
       <p class="muted read">Chaque barre couvre la période d'existence du système. En rouge, les systèmes où le statut d'esclave était assigné selon l'origine raciale. Cliquez une barre pour ouvrir le tableau comparatif.</p>
@@ -70,5 +85,10 @@
 </section></main>
 <footer><div class="wrap">Les esclavages du monde · Sources détaillées dans chaque page.</div></footer>
 <script src="/assets/app.fr.js"></script>
+<script>window.MAP_T=Object.assign({"title": "Carte des systèmes esclavagistes", "all": "Toutes les époques", "read": "Lire la page"},{fmt:y=>y<0?(-y)+' av. J.-C.':String(y),count:(n,t)=>n+' système'+(n>1?'s':'')+' sur '+t});</script>
+<script src="/assets/vendor/d3-array.min.js"></script>
+<script src="/assets/vendor/d3-geo.min.js"></script>
+<script src="/assets/vendor/topojson-client.min.js"></script>
+<script src="/assets/map.js"></script>
 </body>
 </html>

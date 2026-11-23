@@ -42,6 +42,21 @@
       <div class="fig"><span class="n">1981</span><span class="l">Последняя отмена</span><span class="s">Мавритания, декретом; уголовно наказуемым рабство стало там лишь в 2007 году. Саудовская Аравия и Йемен — 1962.</span></div>
     </div>
 
+    <div class="stack" id="worldmap">
+      <h2>Карта систем рабства</h2>
+      <p class="muted read">Каждая точка — система рабства, каждая линия — крупный путь работорговли. Передвиньте ползунок, чтобы увидеть, что существовало в выбранный год; нажмите на точку, чтобы узнать подробности.</p>
+      <div class="map-wrap">
+        <div class="map-canvas"></div>
+        <div class="map-controls">
+          <label for="map-year">Эпоха</label>
+          <input type="range" id="map-year" min="0" max="29" step="1">
+          <output id="map-year-out" for="map-year"></output>
+          <span class="map-count"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Статус по войне, долгам, рождению или религии</span><span><i style="background:var(--warn)"></i>Статус по расовому происхождению</span><span><i class="lr"></i>Путь работорговли</span></div>
+      </div>
+      <div class="map-info" aria-live="polite"><span class="muted">Нажмите на точку на карте, чтобы увидеть систему.</span></div>
+    </div>
     <div class="stack">
       <h2>Временная шкала рабовладельческих систем</h2>
       <p class="muted read">Каждая полоса охватывает период существования системы. Красным отмечены системы, в которых статус раба определялся расовым происхождением. Нажмите на полосу, чтобы открыть сравнительную таблицу.</p>
@@ -70,5 +85,10 @@
 </section></main>
 <footer><div class="wrap">Атлас рабства · Подробные источники — на каждой странице.</div></footer>
 <script src="/assets/app.ru.js"></script>
+<script>window.MAP_T=Object.assign({"title": "Карта систем рабства", "all": "Все эпохи", "read": "Читать страницу"},{fmt:y=>y<0?(-y)+' до н. э.':y+' г.',count:(n,t)=>'Систем: '+n+' из '+t});</script>
+<script src="/assets/vendor/d3-array.min.js"></script>
+<script src="/assets/vendor/d3-geo.min.js"></script>
+<script src="/assets/vendor/topojson-client.min.js"></script>
+<script src="/assets/map.js"></script>
 </body>
 </html>

@@ -42,6 +42,21 @@
       <div class="fig"><span class="n">1981</span><span class="l">Last abolition</span><span class="s">Mauritania, by decree; slavery was not made a criminal offense there until 2007. Saudi Arabia and Yemen: 1962.</span></div>
     </div>
 
+    <div class="stack" id="worldmap">
+      <h2>Map of slave systems</h2>
+      <p class="muted read">Each dot is a slave system, each line a major slave-trade route. Drag the slider to see what existed at a given date; click a dot for details.</p>
+      <div class="map-wrap">
+        <div class="map-canvas"></div>
+        <div class="map-controls">
+          <label for="map-year">Period</label>
+          <input type="range" id="map-year" min="0" max="29" step="1">
+          <output id="map-year-out" for="map-year"></output>
+          <span class="map-count"></span>
+        </div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Status based on war, debt, birth or religion</span><span><i style="background:var(--warn)"></i>Status assigned by racial origin</span><span><i class="lr"></i>Slave-trade route</span></div>
+      </div>
+      <div class="map-info" aria-live="polite"><span class="muted">Click a dot on the map to show the system.</span></div>
+    </div>
     <div class="stack">
       <h2>Timeline of slave systems</h2>
       <p class="muted read">Each bar spans the period during which the system existed. In red, the systems in which slave status was assigned by racial origin. Click a bar to open the comparison table.</p>
@@ -70,5 +85,10 @@
 </section></main>
 <footer><div class="wrap">Slavery Atlas · Detailed sources on every page.</div></footer>
 <script src="/assets/app.en.js"></script>
+<script>window.MAP_T=Object.assign({"title": "Map of slave systems", "all": "All periods", "read": "Read the page"},{fmt:y=>y<0?(-y)+' BCE':String(y),count:(n,t)=>n+' of '+t+' systems'});</script>
+<script src="/assets/vendor/d3-array.min.js"></script>
+<script src="/assets/vendor/d3-geo.min.js"></script>
+<script src="/assets/vendor/topojson-client.min.js"></script>
+<script src="/assets/map.js"></script>
 </body>
 </html>
