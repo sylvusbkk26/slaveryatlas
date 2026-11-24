@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เปรียบเทียบระบบทาส · แผนที่ระบบทาส</title>
+<meta name="description" content="กรองตามภูมิภาค แยกดูเฉพาะระบบที่สืบทอดทางสายเลือดหรือที่อิงเชื้อชาติ หรือเรียงตามช่วงเวลา ป้ายกำกับ “มีข้อโต้แย้ง” “แหล่งข้อมูลทุติยภูมิ” และ “รอตรวจสอบ”…">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://slaveryatlas.org/th/comparer/">
+<link rel="alternate" hreflang="fr" href="https://slaveryatlas.org/fr/comparer/">
+<link rel="alternate" hreflang="en" href="https://slaveryatlas.org/en/comparer/">
+<link rel="alternate" hreflang="es" href="https://slaveryatlas.org/es/comparer/">
+<link rel="alternate" hreflang="de" href="https://slaveryatlas.org/de/comparer/">
+<link rel="alternate" hreflang="zh-Hans" href="https://slaveryatlas.org/zh/comparer/">
+<link rel="alternate" hreflang="ru" href="https://slaveryatlas.org/ru/comparer/">
+<link rel="alternate" hreflang="th" href="https://slaveryatlas.org/th/comparer/">
+<link rel="alternate" hreflang="x-default" href="https://slaveryatlas.org/en/comparer/">
+<meta property="og:title" content="เปรียบเทียบระบบทาส · แผนที่ระบบทาส">
+<meta property="og:description" content="กรองตามภูมิภาค แยกดูเฉพาะระบบที่สืบทอดทางสายเลือดหรือที่อิงเชื้อชาติ หรือเรียงตามช่วงเวลา ป้ายกำกับ “มีข้อโต้แย้ง” “แหล่งข้อมูลทุติยภูมิ” และ “รอตรวจสอบ”…">
+<meta property="og:url" content="https://slaveryatlas.org/th/comparer/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="th_TH">
+<meta property="og:site_name" content="Slavery Atlas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/th/">แผนที่ระบบทาส</a><nav class="main" aria-label="เมนูหลัก"><a href="/th/">หน้าแรก</a><a href="/th/comparer/" aria-current="page">เปรียบเทียบ</a><a href="/th/civilisations/">อารยธรรม</a><a href="/th/abolitions/">การเลิกทาส</a><a href="/th/debat/">ข้อถกเถียง</a><a href="/th/aujourdhui/">ปัจจุบัน</a><a href="/th/methode/">ระเบียบวิธี</a></nav><nav class="langs" aria-label="Language"><a href="/fr/comparer/" lang="fr">FR</a><a href="/en/comparer/" lang="en">EN</a><a href="/es/comparer/" lang="es">ES</a><a href="/de/comparer/" lang="de">DE</a><a href="/zh/comparer/" lang="zh-Hans">中文</a><a href="/ru/comparer/" lang="ru">RU</a><a href="/th/comparer/" lang="th" aria-current="true">ไทย</a></nav></div></header>
+<main><section class="view">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">เครื่องมือ</span>
+      <h1>เปรียบเทียบระบบทาส</h1>
+      <p class="lead">กรองตามภูมิภาค แยกดูเฉพาะระบบที่สืบทอดทางสายเลือดหรือที่อิงเชื้อชาติ หรือเรียงตามช่วงเวลา ป้ายกำกับ “มีข้อโต้แย้ง” “แหล่งข้อมูลทุติยภูมิ” และ “รอตรวจสอบ” บ่งบอกความหนักแน่นของตัวเลขแต่ละตัว</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">ค้นหา<input type="search" id="f-q" placeholder="โรม, nobi, ดาโฮมีย์…"></label>
+        <label for="f-region">ภูมิภาค<select id="f-region"><option value="">ทั้งหมด</option></select></label>
+        <label for="f-sort">เรียงตาม<select id="f-sort">
+          <option value="vol">จำนวนโดยประมาณ (มากไปน้อย)</option>
+          <option value="part">สัดส่วนต่อประชากร (มากไปน้อย)</option>
+          <option value="dur">ระยะเวลา (มากไปน้อย)</option>
+          <option value="end">สิ้นสุดล่าสุดก่อน</option>
+          <option value="start">ตามลำดับเวลา (เก่าสุดก่อน)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> เฉพาะที่สืบทอดทางสายเลือด</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> เฉพาะที่ใช้เกณฑ์เชื้อชาติ</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">ระบบ ↕</button></th>
+            <th><button type="button" data-sort="start">ช่วงเวลา ↕</button></th>
+            <th>จำนวนหรือสัดส่วนต่อประชากร</th>
+            <th>การตกเป็นทาส</th>
+            <th>สืบทอดทางสายเลือด</th>
+            <th>เกณฑ์เชื้อชาติ</th>
+            <th>การปลดปล่อยทาส</th>
+            <th><button type="button" data-sort="end">สิ้นสุด ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>ระบบทาสสมัยใหม่: ตัวเลขคนละลักษณะ</strong>
+        <p>ILO, Walk Free และ IOM ประมาณว่าในปี 2021 มีผู้ตกอยู่ในระบบทาสสมัยใหม่ 50 ล้านคน (แรงงานบังคับ 28 ล้านคน การบังคับแต่งงาน 22 ล้านคน) ตัวเลขนี้เป็นจำนวนที่วัด ณ วันใดวันหนึ่ง จึงนำไปเทียบกับ 12.5 ล้านคนของการค้าทาสแอตแลนติกไม่ได้ เพราะตัวเลขหลังเป็นยอดสะสมตลอด 375 ปี</p>
+      </div>
+    </div>
+  </div>
+</section></main>
+<footer><div class="wrap">แผนที่ระบบทาส · ดูแหล่งข้อมูลโดยละเอียดได้ในแต่ละหน้า · <a href="/th/contact/">ติดต่อเรา</a> · <a href="#" data-consent-reset>คุกกี้</a></div></footer>
+<script src="/assets/app.th.js"></script>
+<script>window.CONSENT_T={"text": "เว็บไซต์นี้ใช้ Google Analytics เพื่อวัดจำนวนผู้เข้าชม คุณยอมรับคุกกี้สำหรับการวิเคราะห์หรือไม่", "accept": "ยอมรับ", "decline": "ปฏิเสธ"};</script>
+<script src="/assets/consent.js" defer></script>
+
+</body>
+</html>

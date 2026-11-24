@@ -18,6 +18,7 @@ LANGS = [  # code, libellé du sélecteur, locale Open Graph
     ('de', 'DE', 'de_DE'),
     ('zh', '中文', 'zh_CN'),
     ('ru', 'RU', 'ru_RU'),
+    ('th', 'ไทย', 'th_TH'),
 ]
 HTML_LANG = {'zh': 'zh-Hans'}
 
@@ -76,6 +77,8 @@ def main():
 .langs a{color:var(--muted);text-decoration:none;padding:4px 7px;border-radius:5px;font-weight:500}
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
+:lang(th){--body:"IBM Plex Sans Thai","IBM Plex Sans",system-ui,sans-serif}
+:lang(th) h1,:lang(th) h2,:lang(th) h3,:lang(th) .brand{font-family:"IBM Plex Sans Thai","Source Serif 4",serif;line-height:1.35}
 '''
     css += map_i18n.CSS + consent_i18n.CSS + contact_i18n.CSS
     (OUT / 'assets/site.css').write_text(css, encoding='utf-8')
@@ -157,7 +160,7 @@ header.top .wrap{row-gap:4px}
 <meta property="og:site_name" content="Slavery Atlas">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600{'&family=IBM+Plex+Sans+Thai:wght@400;500;600' if l == 'th' else ''}&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>

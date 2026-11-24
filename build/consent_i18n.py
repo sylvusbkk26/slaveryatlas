@@ -5,6 +5,7 @@ C = {
  'es': dict(text="Este sitio utiliza Google Analytics para medir su audiencia. ¿Acepta las cookies de medición?", accept="Aceptar", decline="Rechazar", link="Cookies"),
  'de': dict(text="Diese Website nutzt Google Analytics zur Reichweitenmessung. Akzeptieren Sie Analyse-Cookies?", accept="Akzeptieren", decline="Ablehnen", link="Cookies"),
  'zh': dict(text="本网站使用 Google Analytics 统计访问量。您是否接受统计 Cookie？", accept="接受", decline="拒绝", link="Cookie 设置"),
+ 'th': dict(text="เว็บไซต์นี้ใช้ Google Analytics เพื่อวัดจำนวนผู้เข้าชม คุณยอมรับคุกกี้สำหรับการวิเคราะห์หรือไม่", accept="ยอมรับ", decline="ปฏิเสธ", link="คุกกี้"),
  'ru': dict(text="Этот сайт использует Google Analytics для измерения посещаемости. Вы принимаете аналитические файлы cookie?", accept="Принять", decline="Отклонить", link="Файлы cookie"),
 }
 def script(lang):

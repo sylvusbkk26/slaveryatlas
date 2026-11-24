@@ -1,6 +1,6 @@
 import { EmailMessage } from "cloudflare:email";
 
-const LANGS = ["fr", "en", "es", "de", "zh", "ru"];
+const LANGS = ["fr", "en", "es", "de", "zh", "ru", "th"];
 const DEFAULT = "en";
 const FROM = "contact@slaveryatlas.org";
 

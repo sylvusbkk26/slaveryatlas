@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แผนที่ระบบทาส</title>
+<meta name="description" content="ประวัติศาสตร์เปรียบเทียบของระบบทาสตามอารยธรรมและยุคสมัย: จำนวน สถานะทางกฎหมาย การเลิกทาส และข้อถกเถียงของนักประวัติศาสตร์">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan : atlas d'archives — encre bleu de fer sur papier gris froid, ocre pour les chiffres, rouge sombre pour les mises en garde.
+   Layout : bandeau de navigation fixe, colonne de lecture ~68ch, outils (frise, tableau) en pleine largeur. */
+:root{
+  --paper:#f3f4f2;
+  --panel:#ffffff;
+  --ink:#1b2431;
+  --muted:#5b6574;
+  --rule:#d5d9dd;
+  --accent:#1f4f7a;
+  --ochre:#a86a12;
+  --warn:#8e2b2b;
+  --chip:#e7ebef;
+  --display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+    --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12161c; --panel:#1a2029; --ink:#e4e7eb; --muted:#9aa4b2; --rule:#2c3440;
+  --accent:#7fb0dd; --ochre:#e0a64a; --warn:#e48b8b; --chip:#232b36; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:600}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.read{max-width:68ch}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack-lg{display:flex;flex-direction:column;gap:40px}
+
+/* Navigation */
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;color:var(--ink);text-decoration:none}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:.92rem;font-weight:500}
+nav.main a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.proto{background:var(--chip);color:var(--muted);font-size:.82rem;text-align:center;padding:6px 16px}
+.proto strong{color:var(--warn)}
+
+main{padding:40px 0 72px}
+section.view{display:none}
+section.view.active{display:block}
+
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);font-weight:600}
+.lead{font-size:1.15rem;color:var(--ink)}
+.muted{color:var(--muted)}
+
+/* Chiffres clés */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.fig .n{font-family:var(--display);font-size:2rem;font-weight:700;color:var(--ochre);font-variant-numeric:tabular-nums;line-height:1.1}
+.fig .l{font-weight:600}
+.fig .s{font-size:.85rem;color:var(--muted)}
+
+/* Frise */
+.frise{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:18px;overflow-x:auto}
+.frise-inner{min-width:760px;display:flex;flex-direction:column;gap:5px}
+.frow{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px}
+.frow .name{font-size:.84rem;text-align:right;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+.bar{position:absolute;top:2px;height:12px;border-radius:3px;background:var(--accent);opacity:.85;border:0;padding:0;cursor:pointer}
+.bar.race{background:var(--warn)}
+.bar:hover{opacity:1}
+.axis{display:grid;grid-template-columns:200px 1fr;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* Cartes civilisations */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--ink)}
+.card .vol{font-size:.86rem;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.card .per{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.card.live{border-left:4px solid var(--ochre)}
+.card .soon{font-size:.75rem;color:var(--muted)}
+.card.live .soon{color:var(--ochre);font-weight:600}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.principles div{border-top:2px solid var(--accent);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+
+/* Comparer */
+.filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+.filters select,.filters input[type=search]{font:inherit;font-size:.92rem;padding:7px 9px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:170px}
+.filters .chk{flex-direction:row;align-items:center;gap:6px;color:var(--ink);font-size:.9rem;padding-bottom:7px}
+.count{font-size:.88rem;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--chip);position:sticky;top:0}
+th button{all:unset;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--ochre)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+td .civ{font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);margin:2px 4px 0 0;white-space:nowrap}
+.pill.oui{color:var(--warn)}
+.pill.flag{border:1px solid var(--rule);background:transparent}
+.yes{color:var(--warn);font-weight:600}
+
+/* Page modèle */
+.fiche{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 8px;padding:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.fiche div{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fiche dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.fiche dd{margin:0;font-weight:500}
+.callout{border-left:4px solid var(--warn);background:var(--panel);padding:14px 16px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px}
+.callout.blue{border-left-color:var(--accent)}
+.debate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.debate>div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.scale{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:16px}
+.srow{display:grid;grid-template-columns:minmax(120px,210px) 1fr auto;gap:10px;align-items:center;font-size:.86rem}
+.sbar{height:14px;background:var(--chip);border-radius:3px;position:relative;overflow:hidden}
+.sbar span{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.sbar span.range{background:var(--ochre);opacity:.55}
+.srow .v{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+ul.src{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.back{font-size:.88rem;text-decoration:none;font-weight:500}
+ol.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--rule);display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.timeline li{display:grid;grid-template-columns:110px 1fr;gap:12px;position:relative;padding-left:16px}
+ol.timeline li::before{content:"";position:absolute;left:-6px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--ochre)}
+ol.timeline .yr{font-family:var(--display);font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+@media (max-width:560px){ ol.timeline li{grid-template-columns:1fr;gap:2px} }
+footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){
+  nav.main{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+  nav.main a{white-space:nowrap}
+  .srow{grid-template-columns:1fr auto}
+  .srow .sbar{grid-column:1 / -1;order:3}
+}
+@media (prefers-reduced-motion:no-preference){ .bar{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#accueil">แผนที่ระบบทาส</a>
+    <nav class="main" aria-label="เมนูหลัก">
+      <a href="#accueil">หน้าแรก</a>
+      <a href="#comparer">เปรียบเทียบ</a>
+      <a href="#civilisations">อารยธรรม</a>
+      <a href="#abolitions">การเลิกทาส</a>
+      <a href="#debat">ข้อถกเถียง</a>
+      <a href="#aujourdhui">ปัจจุบัน</a>
+      <a href="#methode">ระเบียบวิธี</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ACCUEIL -->
+<section class="view" id="v-accueil">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">ประวัติศาสตร์เปรียบเทียบ · จากฮัมมูราบีถึงปัจจุบัน</span>
+      <h1>ระบบทาส: ประวัติศาสตร์ของทุกอารยธรรม</h1>
+      <p class="lead">เมโสโปเตเมีย โรม จีน เกาหลี รัฐคอลีฟะฮ์ อาณาจักรในแอฟริกา จักรวรรดิออตโตมัน ชาวตาตาร์ไครเมีย โจรสลัดบาร์บารี ชาวแอซเท็ก และมหาอำนาจยุโรป: สังคมสำคัญเกือบทุกแห่งล้วนเคยมีระบบทาส เว็บไซต์นี้นำระบบเหล่านี้มาวางเทียบกัน พร้อมตัวเลข กฎเกณฑ์ และการสิ้นสุดของแต่ละระบบ เพื่อให้ทุกคนเปรียบเทียบได้จากหลักฐาน</p>
+    </div>
+
+    <div class="figures" aria-label="ตัวเลขสำคัญ">
+      <div class="fig"><span class="n">12.5 ล้าน</span><span class="l">การค้าทาสแอตแลนติก</span><span class="s">ชาวแอฟริกันที่ถูกนำขึ้นเรือระหว่างปี 1501 ถึง 1875 ในจำนวนนี้ 1.38 ล้านคนอยู่บนเรือที่ชักธงฝรั่งเศส (ฐานข้อมูล SlaveVoyages)</span></div>
+      <div class="fig"><span class="n">8 ถึง 17 ล้าน</span><span class="l">การค้าทาสสายตะวันออก</span><span class="s">ทะเลทรายซาฮารา ทะเลแดง และมหาสมุทรอินเดีย ราวปี 650 ถึง 1900 ตัวเลขประมาณการมีความไม่แน่นอนสูงมาก (Alencastro, Austen)</span></div>
+      <div class="fig"><span class="n">2 ถึง 5 ล้าน</span><span class="l">การจู่โจมของชาวตาตาร์ไครเมีย</span><span class="s">เชลยที่ถูกจับจากโปแลนด์-ลิทัวเนียและมัสโกวี ปี 1441-1774 (İnalcık, Charnysh และ Lall)</span></div>
+      <div class="fig"><span class="n">1981</span><span class="l">การเลิกทาสครั้งสุดท้าย</span><span class="s">มอริเตเนีย โดยกฤษฎีกา ทั้งนี้ระบบทาสเพิ่งมีโทษทางอาญาที่นั่นในปี 2007 ส่วนซาอุดีอาระเบียและเยเมน: ปี 1962</span></div>
+    </div>
+
+    <div class="stack">
+      <h2>เส้นเวลาของระบบทาส</h2>
+      <p class="muted read">แต่ละแถบครอบคลุมช่วงเวลาที่ระบบนั้นดำรงอยู่ แถบสีแดงคือระบบที่กำหนดสถานะทาสตามเชื้อชาติ คลิกที่แถบเพื่อเปิดตารางเปรียบเทียบ</p>
+      <div class="frise" role="group" aria-label="เส้นเวลา">
+        <div class="frise-inner" id="frise"></div>
+        <div class="axis"><span></span><div class="ticks" id="ticks"></div></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>สถานะที่เกิดจากสงคราม หนี้สิน การเกิด หรือศาสนา</span><span><i style="background:var(--warn)"></i>สถานะที่กำหนดตามเชื้อชาติ</span></div>
+      </div>
+      <p class="muted" style="font-size:.8rem">มาตราส่วนไม่เป็นเชิงเส้น: ช่วงสมัยโบราณถูกย่อให้สั้นลงเพื่อให้อ่านง่าย ปีที่มีเครื่องหมาย − หมายถึงก่อนคริสต์ศักราช</p>
+    </div>
+
+    <div class="stack">
+      <h2>ตามอารยธรรม</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="callout blue">
+        <strong>เหตุใดจึงพูดถึงการค้าทาสแอตแลนติกเป็นหลัก?</strong>
+        <p>ลูกหลานที่กลายเป็นพลเมือง กฎหมายว่าด้วยความทรงจำ หลักฐานจดหมายเหตุที่สมบูรณ์เป็นพิเศษ มรดกทางเชื้อชาติ และข้อเรียกร้องการชดใช้ความเสียหาย: หกเหตุผล และสิ่งที่นักประวัติศาสตร์ทั้งสองฝ่ายกล่าวถึงเหตุผลเหล่านั้น</p>
+        <p><a href="#pourquoi">อ่านบทวิเคราะห์ →</a></p>
+      </div>
+
+    <div class="stack">
+      <h2>เว็บไซต์นี้เปรียบเทียบอย่างไร</h2>
+      <div class="principles">
+        <div><h3>ทีละเกณฑ์</h3><p class="muted">จำนวน ระยะเวลา สัดส่วนต่อประชากร สถานะทางกฎหมาย การสืบทอดทางสายเลือด การปลดปล่อยทาส และการสิ้นสุด ไม่มีเกณฑ์ใดเพียงเกณฑ์เดียวที่เพียงพอสำหรับจัดอันดับระบบหนึ่ง</p></div>
+        <div><h3>ตัวเลขที่นำมาบวกกันไม่ได้</h3><p class="muted">ยอดการเคลื่อนย้ายสะสมตลอดสามศตวรรษ จำนวนที่มีอยู่ ณ วันใดวันหนึ่ง และสัดส่วนต่อประชากร เป็นการวัดสามแบบที่แตกต่างกัน ตัวเลขแต่ละตัวจะระบุว่าเป็นการวัดแบบใด</p></div>
+        <div><h3>ทุกตัวเลขประมาณการระบุผู้เสนอ</h3><p class="muted">ช่วงตัวเลขแต่ละช่วงระบุชื่อนักประวัติศาสตร์ผู้เสนอ และตัวเลขที่มีข้อโต้แย้งจะมีป้ายกำกับไว้</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARER -->
+<section class="view" id="v-comparer">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">เครื่องมือ</span>
+      <h1>เปรียบเทียบระบบทาส</h1>
+      <p class="lead">กรองตามภูมิภาค แยกดูเฉพาะระบบที่สืบทอดทางสายเลือดหรือที่อิงเชื้อชาติ หรือเรียงตามช่วงเวลา ป้ายกำกับ “มีข้อโต้แย้ง” “แหล่งข้อมูลทุติยภูมิ” และ “รอตรวจสอบ” บ่งบอกความหนักแน่นของตัวเลขแต่ละตัว</p>
+    </div>
+    <div class="stack">
+      <form class="filters" id="filters" onsubmit="event.preventDefault()">
+        <label for="f-q">ค้นหา<input type="search" id="f-q" placeholder="โรม, nobi, ดาโฮมีย์…"></label>
+        <label for="f-region">ภูมิภาค<select id="f-region"><option value="">ทั้งหมด</option></select></label>
+        <label for="f-sort">เรียงตาม<select id="f-sort">
+          <option value="vol">จำนวนโดยประมาณ (มากไปน้อย)</option>
+          <option value="part">สัดส่วนต่อประชากร (มากไปน้อย)</option>
+          <option value="dur">ระยะเวลา (มากไปน้อย)</option>
+          <option value="end">สิ้นสุดล่าสุดก่อน</option>
+          <option value="start">ตามลำดับเวลา (เก่าสุดก่อน)</option>
+        </select></label>
+        <label class="chk" for="f-her"><input type="checkbox" id="f-her"> เฉพาะที่สืบทอดทางสายเลือด</label>
+        <label class="chk" for="f-race"><input type="checkbox" id="f-race"> เฉพาะที่ใช้เกณฑ์เชื้อชาติ</label>
+      </form>
+      <p class="count" id="count" aria-live="polite"></p>
+      <p class="count" id="sortnote"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th><button type="button" data-sort="name">ระบบ ↕</button></th>
+            <th><button type="button" data-sort="start">ช่วงเวลา ↕</button></th>
+            <th>จำนวนหรือสัดส่วนต่อประชากร</th>
+            <th>การตกเป็นทาส</th>
+            <th>สืบทอดทางสายเลือด</th>
+            <th>เกณฑ์เชื้อชาติ</th>
+            <th>การปลดปล่อยทาส</th>
+            <th><button type="button" data-sort="end">สิ้นสุด ↕</button></th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>ระบบทาสสมัยใหม่: ตัวเลขคนละลักษณะ</strong>
+        <p>ILO, Walk Free และ IOM ประมาณว่าในปี 2021 มีผู้ตกอยู่ในระบบทาสสมัยใหม่ 50 ล้านคน (แรงงานบังคับ 28 ล้านคน การบังคับแต่งงาน 22 ล้านคน) ตัวเลขนี้เป็นจำนวนที่วัด ณ วันใดวันหนึ่ง จึงนำไปเทียบกับ 12.5 ล้านคนของการค้าทาสแอตแลนติกไม่ได้ เพราะตัวเลขหลังเป็นยอดสะสมตลอด 375 ปี</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARBARESQUES -->
+<section class="view" id="v-barbaresques">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เมดิเตอร์เรเนียน · 1530-1830</span>
+      <h1>โจรสลัดบาร์บารีและทาสชาวยุโรป</h1>
+      <p class="lead">ตลอดสามศตวรรษ โจรสลัดจากแอลเจียร์ ตูนิส ตริโปลี และซาเล จับกะลาสี ชาวประมง และชาวบ้านที่เป็นคริสเตียนทั้งในทะเลและตามชายฝั่งยุโรป แล้วนำไปขายหรือกักตัวไว้เพื่อเรียกค่าไถ่ในดินแดนมาเกร็บ</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>ช่วงเวลา</dt><dd>ราว 1530 ถึง 1830</dd></div>
+      <div><dt>จำนวนโดยประมาณ</dt><dd>1 ถึง 1.25 ล้าน (Davis, การอนุมานที่มีข้อโต้แย้ง)</dd></div>
+      <div><dt>จำนวนที่มีหลักฐานยืนยัน</dt><dd>25,000 ถึง 35,000 ในศตวรรษที่ 17</dd></div>
+      <div><dt>การตกเป็นทาส</dt><dd>การปล้นในทะเล การจู่โจมชายฝั่ง</dd></div>
+      <div><dt>สืบทอดทางสายเลือด</dt><dd>ไม่</dd></div>
+      <div><dt>เกณฑ์</dt><dd>ศาสนา (คริสเตียน)</dd></div>
+      <div><dt>ทางพ้นสภาพ</dt><dd>การไถ่ตัว การเปลี่ยนศาสนา การหลบหนี</dd></div>
+      <div><dt>สิ้นสุด</dt><dd>1816 (แอลเจียร์ถูกระดมยิง), 1830 (ฝรั่งเศสพิชิต)</dd></div>
+    </dl>
+
+    <div class="stack read">
+      <h2>เศรษฐกิจของการปล้นทางทะเลและค่าไถ่</h2>
+      <p>รัฐบาร์บารีซึ่งเป็นรัฐบริวารของจักรวรรดิออตโตมันที่มีอิสระมากน้อยต่างกัน ถือการปล้นทางทะเลเป็นกิจการของรัฐ เชลยถูกใช้เป็นฝีพายในเรือแกลลีย์ ใช้ในงานโยธา หรือในครัวเรือน และจำนวนมากถูกขายคืนให้แก่ครอบครัวหรือคณะนักบวช คณะตรีเอกภาพ (Trinitarians ก่อตั้งปี 1198) และคณะเมอร์เซดาเรียน (ตามธรรมเนียมถือว่าก่อตั้งปี 1218) ระดมทุนทั่วโลกคริสเตียนเพื่อไถ่ตัวเชลย</p>
+      <p>ราวปี 1650 แอลเจียร์เพียงเมืองเดียวมีทาสชาวยุโรปกว่า 30,000 คน การจู่โจมเกิดขึ้นในอิตาลี สเปน และแคว้นพรอว็องส์ ตลอดจนไอร์แลนด์ อังกฤษ และไอซ์แลนด์</p>
+      <p>จุดจบมาจากภายนอก ในปี 1816 กองเรืออังกฤษ-ดัตช์ของลอร์ดเอ็กซ์มัธระดมยิงแอลเจียร์และได้รับการปล่อยตัวทาสราว 1,200 คน (ตัวเลขแตกต่างกันไปตามแหล่งข้อมูล) การที่ฝรั่งเศสพิชิตแอลเจียร์ในปี 1830 ทำให้การปล้นทางทะเลยุติลง</p>
+    </div>
+
+    <div class="stack">
+      <h2>มีจำนวนเท่าใด? ตัวเลขของ Davis และข้อวิจารณ์</h2>
+      <div class="scale" aria-label="เปรียบเทียบลำดับขนาด">
+        <div class="srow"><span>จำนวนที่มีหลักฐาน (ศตวรรษที่ 17)</span><div class="sbar"><span style="left:0;width:2.8%"></span></div><span class="v">25,000-35,000</span></div>
+        <div class="srow"><span>บาร์บารี ยอดรวมโดยประมาณ</span><div class="sbar"><span style="left:0;width:80%"></span><span class="range" style="left:80%;width:20%"></span></div><span class="v">1-1.25 ล้าน</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-1.25 ล้าน ส่วนสีเหลืองอมน้ำตาลแสดงความไม่แน่นอนด้านสูงของตัวเลขประมาณการ</p>
+      <div class="debate">
+        <div>
+          <h3>การประมาณการของ Robert C. Davis</h3>
+          <p>ในหนังสือ <em>Christian Slaves, Muslim Masters</em> (2003) Davis ประมาณว่า “เกือบแน่นอนว่า 1 ล้านคน และอาจถึง 1.25 ล้านคน” ที่เป็นชาวยุโรปถูกจับเป็นทาสระหว่างปี 1530 ถึง 1780 เขาเริ่มจากจำนวนที่สังเกตได้ แล้วตั้งสมมติฐานว่าต้องมีการทดแทนหนึ่งในสี่ทุกปี (จากการเสียชีวิต การไถ่ตัว การเปลี่ยนศาสนา) คิดเป็นการจับกุมราว 8,500 คนต่อปี</p>
+          <p>เขายังเสนอว่าระหว่างปี 1500 ถึง 1650 ชาวคริสเตียนยุโรปที่ถูกนำไปยังดินแดนบาร์บารีน่าจะมีมากกว่าชาวแอฟริกันที่ถูกนำไปยังทวีปอเมริกา</p>
+        </div>
+        <div>
+          <h3>ข้อวิจารณ์</h3>
+          <p>Peter Earle เห็นว่าการอนุมานจากช่วงที่เข้มข้นที่สุด (1580-1680) ทำให้ยอดรวมสูงเกินจริง John Wright ชี้ถึงความเปราะบางของการคำนวณย้อนหลัง Ehud Toledano ติงว่าขาดแหล่งข้อมูลฝ่ายออตโตมัน และ Jarbel Rodriguez ติงเรื่องการปะปนระหว่างเชลยที่ไถ่ตัวได้กับทาส</p>
+          <p>Davis เองยอมรับว่าวิธีของเขาเป็นวิธีเดียวที่เป็นไปได้จากหลักฐานที่มีอยู่ ไม่ใช่วิธีที่ดีที่สุด</p>
+        </div>
+      </div>
+      <div class="callout blue read">
+        <strong>ข้อควรจำสำหรับการเปรียบเทียบ</strong>
+        <p>ชาวยุโรปก็ตกเป็นเหยื่อของการค้าทาสขนาดใหญ่เช่นกัน ทั้งในกรณีนี้และในการจู่โจมของชาวตาตาร์ (เชลย 2 ถึง 5 ล้านคน) ตัวเลขของ Davis เป็นลำดับขนาดด้านสูง ไม่ใช่การนับจริง เมื่อพิจารณาตลอดช่วงเวลาทั้งหมด การค้าทาสทั้งสองต่างกันหนึ่งลำดับขนาด: 1 ถึง 1.25 ล้านสำหรับบาร์บารี และ 12.5 ล้านสำหรับแอตแลนติก เชลยของบาร์บารีอาจได้รับการไถ่ตัว และสถานะของพวกเขาไม่ตกทอดไปถึงลูก</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>แหล่งข้อมูล</h2>
+      <ul class="src">
+        <li>Robert C. Davis, <em>Christian Slaves, Muslim Masters</em>, Palgrave Macmillan, 2003. บทแนะนำ: <a href="https://news.osu.edu/when-europeans-were-slaves--research-suggests-white-slavery-was-much-more-common-than-previously-believed/">Ohio State University News, 2004</a>.</li>
+        <li>ข้อถกเถียงและข้อวิจารณ์: <a href="https://mg.co.za/article/2004-03-11-book-reopens-arguments-about-slave-raids-on-europe/">Mail &amp; Guardian, 2004</a> ; <a href="https://en.wikipedia.org/wiki/Barbary_slave_trade">Wikipedia, Barbary slave trade</a> (แหล่งข้อมูลทุติยภูมิ).</li>
+        <li>คณะนักบวชผู้ไถ่ทาส: <a href="https://en.wikipedia.org/wiki/Mercedarians">Wikipedia, Mercedarians</a> (แหล่งข้อมูลทุติยภูมิ).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CIVILISATIONS -->
+<section class="view" id="v-civilisations">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">ตามอารยธรรม</span>
+      <h1>อารยธรรมทั้งหมด</h1>
+      <p class="lead">ทุกหน้าใช้โครงสร้างเดียวกัน: ช่วงเวลา จำนวน การตกเป็นทาส สถานะสืบทอดทางสายเลือดหรือไม่ การปลดปล่อยทาส การสิ้นสุดของระบบทาส ข้อถกเถียง และแหล่งข้อมูล</p>
+    </div>
+    <div class="stack-lg" id="civgroups"></div>
+  </div>
+</section>
+<!-- TRAITE ATLANTIQUE -->
+<section class="view" id="v-traite-atlantique">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">แอตแลนติก · 1501-1888</span>
+      <h1>การค้าทาสแอตแลนติกและระบบทาสในอาณานิคม</h1>
+      <p class="lead">ระหว่างปี 1501 ถึง 1875 เรือของชาวยุโรปและชาวอเมริกันขนส่งชาวแอฟริกันราว 12.5 ล้านคนไปยังทวีปอเมริกา โดยส่วนใหญ่ซื้อมาจากรัฐและพ่อค้าชาวแอฟริกัน คนเหล่านี้ถูกบังคับเป็นทาสในไร่เพาะปลูกของบราซิล หมู่เกาะแคริบเบียน และภาคใต้ของสหรัฐอเมริกา</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>ช่วงเวลา</dt><dd>1501 ถึง 1875 (การค้าทาส) ; ระบบทาสจนถึงปี 1888</dd></div>
+      <div><dt>ถูกนำขึ้นเรือ</dt><dd>12.5 ล้าน (SlaveVoyages)</dd></div>
+      <div><dt>ขึ้นฝั่งทั้งที่ยังมีชีวิต</dt><dd>≈ 10.7 ล้าน</dd></div>
+      <div><dt>อัตราการเสียชีวิตในทะเล</dt><dd>≈ 12 ถึง 16 %</dd></div>
+      <div><dt>การตกเป็นทาส</dt><dd>การซื้อจากรัฐและพ่อค้าชาวแอฟริกัน สงคราม การจู่โจม</dd></div>
+      <div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่</dd></div>
+      <div><dt>เกณฑ์</dt><dd>เชื้อชาติ (สีผิว)</dd></div>
+      <div><dt>สิ้นสุด</dt><dd>สหราชอาณาจักร 1833, ฝรั่งเศส 1848, สหรัฐอเมริกา 1865, บราซิล 1888</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>ใครเป็นผู้ขนส่งเชลย?</h2>
+      <div class="scale" aria-label="ชาวแอฟริกันที่ถูกนำขึ้นเรือ จำแนกตามธงเรือ">
+        <div class="srow"><span>โปรตุเกสและบราซิล</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">5.85 ล้าน</span></div>
+        <div class="srow"><span>สหราชอาณาจักร</span><div class="sbar"><span style="left:0;width:55.7%"></span></div><span class="v">3.26 ล้าน</span></div>
+        <div class="srow"><span>ฝรั่งเศส</span><div class="sbar"><span style="left:0;width:23.6%"></span></div><span class="v">1.38 ล้าน</span></div>
+        <div class="srow"><span>สเปนและอุรุกวัย</span><div class="sbar"><span style="left:0;width:18.2%"></span></div><span class="v">1.06 ล้าน</span></div>
+        <div class="srow"><span>เนเธอร์แลนด์</span><div class="sbar"><span style="left:0;width:9.5%"></span></div><span class="v">0.55 ล้าน</span></div>
+        <div class="srow"><span>สหรัฐอเมริกา</span><div class="sbar"><span style="left:0;width:5.2%"></span></div><span class="v">0.31 ล้าน</span></div>
+        <div class="srow"><span>เดนมาร์กและแถบทะเลบอลติก</span><div class="sbar"><span style="left:0;width:1.9%"></span></div><span class="v">0.11 ล้าน</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">ชาวแอฟริกันที่ถูกนำขึ้นเรือระหว่างปี 1501 ถึง 1875 จำแนกตามธงของเรือ ที่มา: ฐานข้อมูล SlaveVoyages, ตัวเลขประมาณการ</p>
+    </div>
+
+    <div class="stack read">
+      <h2>ฝรั่งเศส: น็องต์ แซ็ง-โดมัง และประมวลกฎหมายดำ</h2>
+      <p>ฝรั่งเศสจัดส่งเรือค้าทาส 4,118 เที่ยว ในจำนวนนี้ 44 % ออกจากน็องต์ ตามด้วยเลออาฟร์ ลาโรแชล แซ็ง-มาโล และอ็องเฟลอร์ ประมวลกฎหมายดำ (Code noir) ปี 1685 วางกรอบทางกฎหมายของระบบทาสในอาณานิคมของฝรั่งเศส และนิยามทาสว่าเป็นสังหาริมทรัพย์</p>
+      <p>ในปี 1789 แซ็ง-โดมังมีทาสมากกว่า 450,000 คน ต่อคนผิวขาวราว 30,000 คน และคนผิวสีที่เป็นไทราว 30,000 คน และเป็นผู้ผลิตน้ำตาลรายใหญ่ที่สุดของโลก Hilliard d'Auberteuil นักเขียนร่วมสมัย ระบุว่ามีชาวแอฟริกันกว่า 800,000 คนถูกนำมายังที่นั่นระหว่างปี 1680 ถึง 1776 และมีเพียง 290,000 คนที่ยังมีชีวิตอยู่</p>
+      <p>หลังการประกาศเอกราช พระราชกฤษฎีกาปี 1825 บังคับให้เฮติจ่ายค่าชดเชย 150 ล้านฟรังก์แก่อดีตเจ้าอาณานิคม ซึ่งลดลงเหลือ 90 ล้านในปี 1838 เมื่อรวมเงินกู้ที่เกี่ยวข้อง เฮติชำระหนี้นี้จนถึงปี 1921-1922</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>ความแตกต่างทางประชากรที่น่าตกใจ</strong>
+      <p>ชาวแอฟริกันเพียงราว 388,000 คนขึ้นฝั่งโดยตรงในอเมริกาเหนือ แต่สหรัฐอเมริกามีทาสเกือบ 4 ล้านคนในปี 1860: ประชากรทาสที่นั่นเพิ่มขึ้นราว 25 % ต่อทศวรรษ ในบราซิลและหมู่เกาะแคริบเบียน ประชากรทาสลดลงราว 20 % ต่อทศวรรษ (Michael Tadman) ระบบไร่อ้อยดำรงอยู่ได้ด้วยการนำเชลยใหม่เข้ามาอย่างต่อเนื่องเท่านั้น</p>
+    </div>
+
+    <div class="stack">
+      <h2>สิ่งที่นักประวัติศาสตร์เห็นว่าเป็นลักษณะเฉพาะของระบบนี้</h2>
+      <div class="debate">
+        <div>
+          <h3>การผสมผสานที่ไม่เหมือนใคร</h3>
+          <p>ไม่มีเกณฑ์ใดเพียงเกณฑ์เดียวที่ทำให้การค้าทาสแอตแลนติกแตกต่าง: การค้าทาสอื่นบางสายยาวนานกว่าหรือมีจำนวนใกล้เคียงกัน สิ่งที่ทำให้ระบบนี้โดดเด่นคือการผสมผสานของปัจจัยต่างๆ สถานะทาสสืบทอดทางสายเลือดและกำหนดตามสีผิว ไร่เพาะปลูกเพื่อการส่งออกผนวกเข้ากับระบบทุนนิยมยุโรป การเคลื่อนย้ายกระจุกตัวอยู่ในช่วงราว 350 ปี และปัจจุบันลูกหลานของทาสและของนายทาสเป็นพลเมืองร่วมชาติกัน</p>
+        </div>
+        <div>
+          <h3>ระบบทาสกับทุนนิยม</h3>
+          <p>Eric Williams (1944) เสนอว่ากำไรจากระบบทาสช่วยเป็นทุนให้แก่การปฏิวัติอุตสาหกรรม Stanley Engerman ประเมินว่ากำไรนั้นคิดเป็นไม่ถึง 5 % ของเศรษฐกิจอังกฤษ และ Seymour Drescher แสดงให้เห็นว่าระบบนี้ไม่ได้อยู่ในช่วงขาลงเมื่อสหราชอาณาจักรยกเลิกมัน ในทางตรงข้าม Joseph Inikori ยืนยันถึงความสำคัญของการค้าในแอตแลนติกโดยรวม</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>การเลิกทาส</h2>
+      <p>ฝรั่งเศสเลิกทาสเมื่อวันที่ 4 กุมภาพันธ์ 1794 ; โบนาปาร์ตฟื้นฟูการค้าทาสในปี 1802 และการเลิกทาสอย่างถาวรเกิดขึ้นในปี 1848 สหราชอาณาจักรห้ามการค้าทาสในปี 1807 และเลิกทาสในปี 1833 โดยจ่ายเงิน 20 ล้านปอนด์แก่เจ้าของทาส ; ตัวทาสไม่ได้รับสิ่งใดเลย</p>
+      <p>ระหว่างปี 1808 ถึง 1867 กองเรือแอฟริกาตะวันตก (West Africa Squadron) ของราชนาวีอังกฤษยึดเรือค้าทาสได้ราว 1,600 ลำ และปลดปล่อยชาวแอฟริกันราว 150,000 คน โดยแลกกับการเสียชีวิตของกะลาสีเกือบ 1,600 นาย Chaim Kaufmann และ Robert Pape เห็นว่านี่คือ “ปฏิบัติการทางศีลธรรมระหว่างประเทศที่มีต้นทุนสูงที่สุดในประวัติศาสตร์สมัยใหม่อย่างห่างไกล”</p>
+    </div>
+
+    <div class="stack read">
+      <h2>แหล่งข้อมูล</h2>
+      <ul class="src">
+        <li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages, ตัวเลขประมาณการ</a> (Eltis และ Richardson).</li>
+        <li>Henry Louis Gates Jr., <a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">“How many slaves landed in the US?”</a>, PBS.</li>
+        <li>BnF Heritage, <a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">“Slave trade”</a> และ <a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">“Haiti's independence debt”</a>.</li>
+        <li>UCL, <a href="https://www.ucl.ac.uk/lbs/project/context/">Legacies of British Slavery</a>.</li>
+        <li>Kaufmann และ Pape, <a href="https://www.cambridge.org/core/journals/international-organization/article/abs/explaining-costly-international-moral-action-britains-sixtyyear-campaign-against-the-atlantic-slave-trade/C13419C7C80556BF07280DAAFDC2C9DD"><em>International Organization</em>, 1999</a>.</li>
+        <li>ประชากรศาสตร์และข้อถกเถียงเรื่อง Williams: <a href="https://en.wikipedia.org/wiki/Atlantic_slave_trade">Wikipedia, Atlantic slave trade</a> และ <a href="https://en.wikipedia.org/wiki/Capitalism_and_Slavery">Capitalism and Slavery</a> (แหล่งข้อมูลทุติยภูมิ).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRAITES ORIENTALES -->
+<section class="view" id="v-traites-orientales">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">ซาฮารา ทะเลแดง มหาสมุทรอินเดีย · 650-1900</span>
+      <h1>การค้าทาสสายตะวันออก</h1>
+      <p class="lead">เป็นเวลาเกือบสิบสองศตวรรษ เชลยชาวแอฟริกันถูกลำเลียงข้ามทะเลทรายซาฮารา ผ่านทะเลแดง และจากชายฝั่งสวาฮิลีไปยังแอฟริกาเหนือ คาบสมุทรอาหรับ อ่าวเปอร์เซีย เปอร์เซีย และอินเดีย นี่คือการค้าทาสสายใหญ่ที่ยาวนานที่สุด และเป็นสายที่วัดได้แม่นยำน้อยที่สุด</p>
+    </div>
+
+    <dl class="fiche">
+      <div><dt>ช่วงเวลา</dt><dd>ราว 650 ถึง 1900 ; การเลิกทาสลากยาวจนถึงปี 1962-1981</dd></div>
+      <div><dt>จำนวนโดยประมาณ</dt><dd>8 ถึง 17 ล้าน และสูงถึง 25 ล้านตามผู้เขียนบางราย</dd></div>
+      <div><dt>เฉพาะซาฮารา</dt><dd>7.42 ล้าน (Lovejoy)</dd></div>
+      <div><dt>การตกเป็นทาส</dt><dd>การจู่โจม สงคราม การซื้อจากรัฐในแอฟริกา</dd></div>
+      <div><dt>สืบทอดทางสายเลือด</dt><dd>แตกต่างกันไป ; บุตรของนางบำเรอมักเป็นไท</dd></div>
+      <div><dt>เกณฑ์</dt><dd>ศาสนาเป็นหลัก ; อคติเรื่องสีผิวยังเป็นที่ถกเถียง</dd></div>
+      <div><dt>การใช้งาน</dt><dd>งานบ้าน ฮาเร็ม กองทัพ และไร่เพาะปลูกบางแห่ง</dd></div>
+      <div><dt>สิ้นสุด</dt><dd>ซาอุดีอาระเบียและเยเมน 1962, โอมาน 1970, มอริเตเนีย 1981</dd></div>
+    </dl>
+
+    <div class="stack">
+      <h2>มีจำนวนเท่าใด? ตัวเลขประมาณการต่างกันถึงสามเท่า</h2>
+      <div class="scale" aria-label="ตัวเลขประมาณการการค้าทาสสายตะวันออกตามผู้เขียนแต่ละราย">
+        <div class="srow"><span>Alencastro</span><div class="sbar"><span style="left:0;width:32%"></span></div><span class="v">≈ 8 ล้าน</span></div>
+        <div class="srow"><span>Segal</span><div class="sbar"><span style="left:0;width:46%"></span><span class="range" style="left:46%;width:10%"></span></div><span class="v">11.5-14 ล้าน</span></div>
+        <div class="srow"><span>M'Bokolo (1998)</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 ล้าน</span></div>
+        <div class="srow"><span>Austen ซึ่ง Pétré-Grenouilleau นำมาใช้</span><div class="sbar"><span style="left:0;width:68%"></span></div><span class="v">≈ 17 ล้าน</span></div>
+        <div class="srow"><span>Bairoch</span><div class="sbar"><span style="left:0;width:100%"></span></div><span class="v">≈ 25 ล้าน</span></div>
+        <div class="srow"><span>การค้าทาสแอตแลนติก เพื่อใช้อ้างอิง</span><div class="sbar"><span style="left:0;width:50%;background:var(--warn)"></span></div><span class="v">12.5 ล้าน</span></div>
+      </div>
+      <p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-25 ล้าน การค้าทาสสายตะวันออกครอบคลุมราว 1,250 ปี ส่วนการค้าทาสแอตแลนติกราว 375 ปี</p>
+      <div class="callout read">
+        <strong>เหตุใดจึงต่างกันมากเช่นนี้</strong>
+        <p>สำหรับศตวรรษระหว่างปี 650 ถึง 1400 ตัวเลข “ทำได้เพียงการคาดเดา” ดังที่นักประวัติศาสตร์ Klas Rönnbäck ย้ำเตือน: ความแตกต่างเกิดจากสมมติฐานเกี่ยวกับยุคกลางเป็นหลัก ซึ่งแทบไม่มีข้อมูลเลย ส่วนการค้าทาสแอตแลนติกนั้นถูกสร้างขึ้นใหม่ทีละลำเรือ ตัวเลขระดับ “หลายสิบหรือหลายร้อยล้าน” ที่แพร่หลายอยู่ ผู้เชี่ยวชาญเห็นว่าสูงเกินจริงอย่างมาก</p>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>การค้าทาสเพื่องานบ้าน การทหาร และมีผู้หญิงมากกว่า</h2>
+      <p>การค้าทาสแอตแลนติกส่งผู้ชายราวสองคนต่อผู้หญิงหนึ่งคน การค้าทาสสายตะวันออกต้องการผู้หญิงมากกว่า เพื่อเป็นนางบำเรอและทำงานบ้าน ผู้ชายถูกใช้เป็นคนรับใช้ ทหาร หรือกรรมกร เด็กผู้ชายส่วนน้อยถูกตอนเพื่อเป็นขันที ; มีการบรรยายว่าอัตราการเสียชีวิตจากการตอนสูง แต่ยังไม่มีตัวเลขร้อยละที่เชื่อถือได้</p>
+      <p>โลกมุสลิมยังทำให้อดีตทาสกลายเป็นชนชั้นนำได้: มัมลูก ซึ่งเป็นทหารทาสที่เปลี่ยนมานับถือศาสนาอิสลาม ปกครองอียิปต์ตั้งแต่ปี 1250 ถึง 1517</p>
+      <p>ไร่เพาะปลูกยังคงมีน้อย โดยมีข้อยกเว้นสองกรณี กบฏซันจ์ (869-883 ใกล้เมืองบัสรา) ระดมทาสจากนาเกลือได้กว่า 50,000 คน ในศตวรรษที่ 19 สวนกานพลูของแซนซิบาร์พึ่งพาทาสซึ่งมีจำนวนมากถึงสองในสามของประชากร</p>
+    </div>
+
+    <div class="callout blue read">
+      <strong>เหตุใดจึงมีลูกหลานน้อยนัก?</strong>
+      <p>ในตะวันออกกลางมีชุมชนชาวแอฟริกันพลัดถิ่นที่มองเห็นได้ชัดเพียงไม่มาก นักประวัติศาสตร์อธิบายว่าเป็นเพราะผู้ชายส่วนหนึ่งถูกตอน สัดส่วนผู้หญิงที่สูง และการผสมกลมกลืนของบุตรที่เกิดจากนางบำเรอซึ่งมักเป็นไท น้ำหนักของแต่ละปัจจัยยังไม่มีการวัดเป็นตัวเลข ความแตกต่างจากทวีปอเมริกานี้ยังอธิบายได้ส่วนหนึ่งว่าทำไมการค้าทาสสายนี้จึงมีที่ทางในความทรงจำน้อยกว่า</p>
+    </div>
+
+    <div class="stack">
+      <h2>ข้อถกเถียงเรื่อง “การฆ่าล้างเผ่าพันธุ์ที่ถูกปกปิด”</h2>
+      <div class="debate">
+        <div>
+          <h3>Tidiane N'Diaye</h3>
+          <p>ในหนังสือ <em>Le Génocide voilé</em> (2008) นักมานุษยวิทยาชาวฝรั่งเศส-เซเนกัลผู้นี้ประมาณว่ามีผู้ถูกส่งไปยังโลกตะวันออก 17 ล้านคน และเรียกสิ่งนี้ว่าการฆ่าล้างเผ่าพันธุ์ เขาเทียบลูกหลานราว 1 ล้านคน กับ 70 ล้านคนของการค้าทาสแอตแลนติก ลำดับขนาดของเขาใกล้เคียงกับงานวิชาการทั่วไป แต่ตัวเลขสองตัวหลังนี้ไม่มีการอ้างอิงแหล่งที่มา</p>
+        </div>
+        <div>
+          <h3>ข้อวิจารณ์</h3>
+          <p>ในบทวิจารณ์หนังสือปี 2010 Moritz Behrendt ติงว่าเขาอาศัยข้อมูลจากนักสำรวจชาวยุโรปเกือบทั้งหมด มองระบบที่แตกต่างกันมากเป็นก้อนเดียว และเรียกการค้าทาสนี้ว่า “อาหรับ-มุสลิม” โดยไม่เรียกการค้าทาสแอตแลนติกว่า “ยุโรป-คริสเตียน” ส่วนตัวเลขของ N'Diaye ที่ว่าสามในสี่ของผู้ถูกตอนเสียชีวิตนั้น ไม่พบแหล่งข้อมูลทางวิชาการใดสนับสนุน</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack read">
+      <h2>การเลิกทาสที่เกิดขึ้นล่าช้า</h2>
+      <p>ในจักรวรรดิออตโตมัน ยังมีการขายทาสหญิงในปี 1908 จากนั้นการเลิกทาสอย่างเป็นทางการก็ทยอยเกิดขึ้น: อิหร่านและจอร์แดน 1929, บาห์เรน 1937, คูเวต 1949, กาตาร์ 1952, ซาอุดีอาระเบียและเยเมน 1962, โอมาน 1970, มอริเตเนีย 1981 ในปี 1948 สมาคมต่อต้านระบบทาส (Anti-Slavery Society) ประมาณว่ามีทาสราว 1 ล้านคนในคาบสมุทรอาหรับ การเลิกทาสเกือบทั้งหมดนี้เกิดขึ้นภายใต้แรงกดดันจากอังกฤษหรือนานาชาติ</p>
+    </div>
+
+    <div class="stack read">
+      <h2>แหล่งข้อมูล</h2>
+      <ul class="src">
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, พิมพ์ครั้งที่ 3, 2012 : <a href="https://www.bu.edu/africa/files/2023/11/Slave-Trade-Tables.docx.pdf">ตาราง, Boston University</a>.</li>
+        <li>Klas Rönnbäck, <a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">“Slave trades out of Africa”</a>, African Economic History Network.</li>
+        <li>เปรียบเทียบตัวเลขประมาณการ: <a href="https://human.libretexts.org/Courses/Lumen_Learning/Book:_History_of_World_Civilization_II-2_(Lumen)/04:_2:_African_Slave_Trade/04.2:_TransSaharan_Slave_Trade">LibreTexts</a> (แหล่งข้อมูลทุติยภูมิ).</li>
+        <li>Moritz Behrendt, <a href="https://qantara.de/node/10064">บทวิจารณ์หนังสือ <em>Le Génocide voilé</em></a>, Qantara.de, 2010.</li>
+        <li>การเลิกทาสและกบฏซันจ์: <a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (แหล่งข้อมูลทุติยภูมิ).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-mesopotamie-egypte"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">สมัยโบราณ · สหัสวรรษที่ 3-1 ก่อน ค.ศ.</span><h1>เมโสโปเตเมียและอียิปต์โบราณ</h1><p class="lead">ประมวลกฎหมายที่เก่าแก่ที่สุดเท่าที่รู้จักก็มีบทบัญญัติว่าด้วยทาสแล้ว ทั้งในเมโสโปเตเมียและอียิปต์ ผู้คนตกเป็นทาสจากสงคราม หนี้สิน หรือการขายตัวเองเพื่อให้รอดพ้นจากความยากแค้น</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>สหัสวรรษที่ 3-1 ก่อน ค.ศ.</dd></div><div><dt>จำนวน</dt><dd>ไม่มีตัวเลขประมาณการที่เชื่อถือได้</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม หนี้สิน การขายตัวเองหรือขายบุตร</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ยังไม่มีหลักฐานชัดเจน</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่มี</dd></div><div><dt>เอกสารสำคัญ</dt><dd>ประมวลกฎหมายฮัมมูราบี ราว 1753 ก่อน ค.ศ.</dd></div></dl><div class="stack read"><h2>ประมวลกฎหมายฮัมมูราบี</h2><p>ประมวลกฎหมายนี้แบ่งบุคคลออกเป็นสามประเภท: <em>awīlum</em> (เสรีชนเต็มสิทธิ์) <em>muškēnum</em> และ <em>wardum</em> หรือ <em>amtum</em> คือทาสชายหรือหญิง ทาสเป็นทรัพย์สินที่ซื้อขายพร้อมการรับประกัน: มาตรา 278 ถึง 281 ว่าด้วยการรับประกันการขาย มาตรา 15 ถึง 20 ลงโทษผู้ซ่อนทาสหลบหนี และมาตรา 282 กำหนดให้ทาสที่ปฏิเสธนายของตนถูกตัดหู</p><p>กฎข้อหนึ่งที่มักถูกอ้างถึงคือมาตรา 117 ซึ่งว่ากันว่าปลดปล่อยผู้ถูกขายเพราะหนี้หลังผ่านไปสามปี ข้อนี้ยังต้องตรวจสอบกับฉบับแปลทางวิชาการ ไม่มีตัวเลขประมาณการสัดส่วนทาสในประชากรเมโสโปเตเมีย</p></div><div class="stack read"><h2>อียิปต์: คนรับใช้มากกว่าทาส</h2><p>คำในภาษาอียิปต์ที่แปลว่า “ทาส” นั้น แท้จริงหมายถึงคนงานหรือคนรับใช้มากกว่า ทาสสามารถมีทรัพย์สินและได้รับความคุ้มครองบางประการ ในสมัยอาณาจักรใหม่ ระบบทาสที่ใช้เชลยต่างชาติจากนูเบีย ลิเบีย และเอเชียขยายตัวขึ้น</p><p>ระบบทาสไม่ใช่รูปแบบการผลิตหลักของอียิปต์</p></div><div class="callout blue read"><strong>พีระมิดไม่ได้สร้างโดยทาส</strong><p>นักอียิปต์วิทยาเห็นพ้องกันว่า พีระมิดขนาดใหญ่สร้างโดยแรงงานที่ถูกเกณฑ์หรือได้รับค่าจ้าง ตัวเลข “ทาส 100,000 คน” ที่เฮโรโดตัสบันทึกไว้ไม่มีหลักฐานสนับสนุน</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Code_of_Hammurabi">Wikipedia, Code of Hammurabi</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Egypt">Wikipedia, Slavery in ancient Egypt</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-grece"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">สมัยโบราณ · ศตวรรษที่ 8-2 ก่อน ค.ศ.</span><h1>กรีซ: เอเธนส์และเฮลอตแห่งสปาร์ตา</h1><p class="lead">ประชาธิปไตยของเอเธนส์ส่วนหนึ่งตั้งอยู่บนแรงงานทาส ซึ่งส่วนใหญ่ไม่ใช่ชาวกรีก สปาร์ตาปกครองประชากรเฮลอตที่มีจำนวนมากกว่าพลเมืองของตนอย่างมาก</p></div><dl class="fiche"><div><dt>เอเธนส์</dt><dd>ทาส 20,000 ถึง 80,000 คน (มีข้อโต้แย้ง)</dd></div><div><dt>สปาร์ตา</dt><dd>เฮลอต 170,000 ถึง 224,000 คน</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม การปล้นสะดมทางทะเล การค้า ; การพิชิตดินแดนสำหรับเฮลอต</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่</dd></div><div><dt>เกณฑ์</dt><dd>ชาติพันธุ์ (ผู้ที่ไม่ใช่ชาวกรีก) ไม่ใช่เชื้อชาติ</dd></div><div><dt>การปลดปล่อยทาส</dt><dd>พบบ่อยในเอเธนส์ช่วงศตวรรษที่ 4</dd></div></dl><div class="stack"><h2>เอเธนส์: ตัวเลขที่ถกเถียงกันมาก</h2><div class="scale"><div class="srow"><span>ตัวเลขประมาณการต่ำสมัยใหม่</span><div class="sbar"><span style="left:0;width:5.0%"></span></div><span class="v">≈ 20,000</span></div><div class="srow"><span>ตัวเลขประมาณการสูงสมัยใหม่</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">80,000 ขึ้นไป</span></div><div class="srow"><span>สำมะโนประชากรสมัยโบราณ (น่าสงสัย)</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">400,000</span></div></div><p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-400,000 ตัวเลข 400,000 ซึ่งสืบทอดมาผ่านอะธีเนียส ถูกปฏิเสธโดยนักวิจัยส่วนใหญ่</p></div><div class="stack read"><h2>เอเธนส์</h2><p>สำมะโนของดีมีทริอุสแห่งฟาเลรุม (317-307 ก่อน ค.ศ.) นับพลเมืองได้ 21,000 คน ชาวต่างถิ่น (เมทิก) 10,000 คน และทาส 400,000 คน ซึ่งเป็นตัวเลขที่นักประวัติศาสตร์ส่วนใหญ่สงสัย ตัวเลขประมาณการสมัยใหม่อยู่ระหว่างราว 20,000 ถึง 80,000 คนหรือมากกว่า เหมืองเงินที่เลารีอองอาจใช้ทาสราว 30,000 คน</p><p>ทาสมาจากสงคราม การปล้นสะดมทางทะเล และการค้า และส่วนใหญ่เป็น “อนารยชน”: ในรายชื่อทาสที่ถูกริบ 32 คน มี 13 คนเป็นชาวเทรซ ในศตวรรษที่ 6 โซลอนห้ามการเป็นทาสเพราะหนี้ของชาวเอเธนส์ อริสโตเติลอธิบายทาสว่าเป็น “เครื่องมือที่มีชีวิต” และวางหลักว่าด้วยการเป็นทาส “โดยธรรมชาติ”</p></div><div class="stack read"><h2>เฮลอตแห่งสปาร์ตา</h2><p>เฮลอตแห่งลาโคเนียและเมสเซเนียเป็นทรัพย์สินร่วมของรัฐ ผูกติดกับที่ดิน และต้องส่งมอบผลผลิตส่วนหนึ่ง ตามที่อริสโตเติลกล่าว คณะเอฟอร์ประกาศสงครามกับพวกเขาทุกปี เพื่อให้ <em>krypteia</em> สามารถสังหารพวกเขาได้โดยไม่ต้องมลทินทางศาสนา ทิวซิดิดีสบันทึกการหายตัวไปของเฮลอตราว 2,000 คนที่เคยได้รับสัญญาว่าจะได้รับอิสรภาพ</p><p>เมสเซเนียได้รับการปลดปล่อยโดยเอพามินอนดัสในปี 369 ก่อน ค.ศ.</p></div><div class="callout blue read"><strong>ทาสหรือข้าติดที่ดิน?</strong><p>แม้แต่คนในสมัยโบราณเองก็ลังเล: คริเทียสกล่าวว่าเฮลอตเป็น “ทาสในระดับสูงสุด” ส่วนพอลลักซ์จัดพวกเขาไว้ “ระหว่างเสรีชนกับทาส” นักประวัติศาสตร์ Jean Ducat เรียกว่าระบบข้าติดที่ดิน</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Greece">Wikipedia, Slavery in ancient Greece</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Helots">Wikipedia, Helots</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-rome"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">สมัยโบราณ · ศตวรรษที่ 2 ก่อน ค.ศ. – ศตวรรษที่ 5</span><h1>โรม สังคมที่ตั้งอยู่บนระบบทาส</h1><p class="lead">โรมเป็นหนึ่งในสังคมทาสสำคัญของประวัติศาสตร์: เชลยสงครามนับล้านคนทำงานในที่ดิน เหมือง และบ้านเรือนของโรม แต่ทาสที่ได้รับการปลดปล่อยก็สามารถเป็นพลเมืองได้</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>ศตวรรษที่ 2 ก่อน ค.ศ. – ศตวรรษที่ 5</dd></div><div><dt>อิตาลี</dt><dd>1 ถึง 1.5 ล้าน (Scheidel) จนถึง 3 ล้าน (Brunt)</dd></div><div><dt>จักรวรรดิ (260-425)</dt><dd>≈ 10 ถึง 15 % ของประชากร</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม การเกิด เด็กที่ถูกทอดทิ้ง การปล้นสะดมทางทะเล</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่มี</dd></div><div><dt>การปลดปล่อยทาส</dt><dd>พบบ่อย ได้รับสถานะพลเมือง</dd></div><div><dt>สิ้นสุด</dt><dd>ค่อยๆ เปลี่ยนไปเป็นระบบโคโลนัสและระบบข้าติดที่ดิน</dd></div></dl><div class="stack"><h2>อิตาลีมีทาสกี่คน?</h2><div class="scale"><div class="srow"><span>Keith Hopkins (28 ก่อน ค.ศ.)</span><div class="sbar"><span style="left:0;width:26.7%"></span></div><span class="v">0.8 ล้าน</span></div><div class="srow"><span>Walter Scheidel</span><div class="sbar"><span style="left:0;width:33.3%"></span><span class="range" style="left:33.3%;width:16.7%"></span></div><span class="v">1-1.5 ล้าน</span></div><div class="srow"><span>Julius Beloch</span><div class="sbar"><span style="left:0;width:66.7%"></span></div><span class="v">≈ 2 ล้าน</span></div><div class="srow"><span>Peter Brunt</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 3 ล้าน</span></div></div><p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-3 ล้าน เป็นจำนวน ณ ช่วงเวลาหนึ่ง ไม่ใช่ยอดการเคลื่อนย้ายสะสม</p></div><div class="stack read"><h2>ประชากรที่คงอยู่ได้ด้วยสงครามและการเกิด</h2><p>ตามที่ Walter Scheidel ระบุ การก่อตัวของประชากรทาสในอิตาลีต้องอาศัยการนำเข้าทาส 2 ถึง 4 ล้านคนในช่วงสองศตวรรษสุดท้ายก่อนคริสตกาล อย่างไรก็ตาม ราวสามในสี่ของทาสในอิตาลีน่าจะเกิดมาเป็นทาส</p><p>ในทางกฎหมาย ทาสเป็นสิ่งของ (<em>res</em>) ไม่มีสภาพบุคคลทางกฎหมาย และคำให้การของทาสจะรับฟังได้ก็ต่อเมื่อผ่านการทรมานเท่านั้น การกบฏของสปาร์ตาคัส (73-71 ก่อน ค.ศ.) เป็นเหตุการณ์ที่มีชื่อเสียงที่สุด</p></div><div class="callout blue read"><strong>โรมคล้ายบราซิล ไม่ใช่สหรัฐอเมริกา</strong><p>อัตราส่วนระหว่างการนำเข้ากับประชากรทาส (ราว 3 ต่อ 1) ทำให้โรมใกล้เคียงกับบราซิลในยุคทาสมากกว่าภาคใต้ของสหรัฐอเมริกา ซึ่งประชากรทาสเพิ่มจาก 1.2 ล้านคนในปี 1810 เป็นเกือบ 4 ล้านคนในปี 1860 โดยมีการนำเข้าเพียง 600,000 ถึง 650,000 คน (Scheidel)</p></div><div class="stack read"><h2>ทางออกที่มีอยู่จริง</h2><p>การปลดปล่อยทาสอย่างเป็นทางการโดยทั่วไปจะให้สถานะพลเมืองโรมัน และบุตรของทาสที่ได้รับการปลดปล่อยเกิดมาเป็นไท การปลดปล่อยเกิดขึ้นบ่อยจนจักรพรรดิออกัสตัสต้องจำกัดจำนวนด้วย <em>lex Fufia Caninia</em> (2 ก่อน ค.ศ.) และ <em>lex Aelia Sentia</em> (ค.ศ. 4) นี่คือความแตกต่างสำคัญจากระบบทาสที่อิงเชื้อชาติในทวีปอเมริกา</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://www.cambridge.org/core/journals/journal-of-roman-studies/article/human-mobility-in-roman-italy-ii-the-slave-population/72D80C5839817A1F4C456A33C9F62E7A">Walter Scheidel, “The slave population”, Journal of Roman Studies, 2005</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_ancient_Rome">Wikipedia, Slavery in ancient Rome</a> (แหล่งข้อมูลทุติยภูมิ ; ตัวเลขของจักรวรรดิน่าจะมาจาก Kyle Harper รอตรวจสอบ)</li></ul></div></div></section>
+<section class="view" id="v-chine"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เอเชีย · ราชวงศ์ซาง – 1910</span><h1>จีน: ความเป็นทาสของคนส่วนน้อยที่ยาวนานนับพันปี</h1><p class="lead">ระบบทาสปรากฏตลอดประวัติศาสตร์จีน ตั้งแต่เชลยที่ถูกบูชายัญในสมัยราชวงศ์ซาง ไปจนถึงเด็กหญิงที่ถูกขายเป็นคนรับใช้ในศตวรรษที่ 20 แต่ไม่เคยกลายเป็นรากฐานของเศรษฐกิจ</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>ราชวงศ์ซาง – 1909/1910</dd></div><div><dt>จำนวน</dt><dd>สัดส่วนน้อย ; ≈ 2 ล้าน เมื่อราชวงศ์ชิงพิชิตจีน</dd></div><div><dt>การตกเป็นทาส</dt><dd>การลงโทษ สงคราม หนี้สิน การขายบุตร</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>สำหรับบางกลุ่ม</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่</dd></div><div><dt>สิ้นสุด</dt><dd>1909-1910 ; ยังมีการปฏิบัติจนถึงปี 1949</dd></div></dl><div class="stack read"><h2>จากราชวงศ์ฮั่นถึงราชวงศ์ชิง</h2><p>ในสมัยราชวงศ์ฮั่น ทาสเป็นเพียง “ส่วนที่เล็กมากของประชากร” และการถือครองทาสถูกจำกัดจำนวน: 200 คนสำหรับอ๋องและกง (ดยุก) 30 คนสำหรับข้าราชการ หวังหมั่งผู้ชิงราชสมบัติยกเลิกระบบทาสในปี ค.ศ. 9 แล้วนำกลับมาใช้อีกในปี 12</p><p>กฎหมายราชวงศ์ถังห้ามนำเสรีชนมาเป็นทาส แต่อนุญาตสำหรับอาชญากร ชาวต่างชาติ และเด็กกำพร้า ซึ่งถูกจัดเป็น “ชนชั้นต่ำ” ที่กฎหมายถือเสมือนปศุสัตว์ เมื่อชาวแมนจูพิชิตจีน ราชวงศ์ชิงมีทาสราว 2 ล้านคน จักรพรรดิยงเจิ้งปลดปล่อยกลุ่มทาสที่สืบทอดทางสายเลือดส่วนใหญ่ระหว่างปี 1723 ถึง 1730</p></div><div class="callout read"><strong>การเลิกทาสที่ล่าช้าและไม่สมบูรณ์</strong><p>ระบบทาสถูกยกเลิกอย่างเป็นทางการในปี 1909 (บางแหล่งระบุ 1910) แต่การปฏิบัติยังคงอยู่จนถึงปี 1949 โดยเฉพาะ <em>mui tsai</em> เด็กหญิงที่ถูกขายเป็นคนรับใช้</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_China">Wikipedia, Slavery in China</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-coree"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เอเชีย · 918 – 1894</span><h1>เกาหลี: nobi มากถึง 40 % ของประชากร</h1><p class="lead">ในสมัยราชวงศ์โชซอน เกาหลีมีสัดส่วนประชากรทาสสูงที่สุดแห่งหนึ่งของโลก แต่ธรรมชาติของระบบนี้ซึ่งนักประวัติศาสตร์จำนวนมากเห็นว่าใกล้เคียงกับระบบข้าติดที่ดินมากกว่า ยังคงเป็นที่ถกเถียง</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>918 – 1894</dd></div><div><dt>สัดส่วนต่อประชากร</dt><dd>≥ 30 % (ศตวรรษที่ 15-17) สูงถึง 40 % ในภาคใต้</dd></div><div><dt>ในปี 1858</dt><dd>≈ 1.5 %</dd></div><div><dt>การตกเป็นทาส</dt><dd>หนี้สิน ทุพภิกขภัย การเกิด</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่ (nobi เป็นชาวเกาหลี)</dd></div><div><dt>สิ้นสุด</dt><dd>1801, 1886-1887, 1894</dd></div></dl><div class="stack"><h2>สัดส่วนของ nobi ในประชากร</h2><div class="scale"><div class="srow"><span>ก่อนราชวงศ์โชซอน</span><div class="sbar"><span style="left:0;width:25.0%"></span></div><span class="v">≤ 10 %</span></div><div class="srow"><span>ศตวรรษที่ 15-17</span><div class="sbar"><span style="left:0;width:75.0%"></span><span class="range" style="left:75.0%;width:25.0%"></span></div><span class="v">30-40 %</span></div><div class="srow"><span>1858</span><div class="sbar"><span style="left:0;width:3.8%"></span></div><span class="v">≈ 1.5 %</span></div></div><p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-40 % ที่มา: Kye (2021), Kim Sun Joo (2023), Kim (2003)</p></div><div class="stack read"><h2>สถานะที่สืบทอดทางสายเลือด</h2><p>สถานะ nobi สืบทอดผ่านการเกิด และเพิ่มพูนจากหนี้สินและการขายตัวเองในยามทุพภิกขภัย ทะเบียนของกรุงโซลปี 1663 นับ nobi ได้ 73 % ของผู้อยู่อาศัยที่ลงทะเบียน แต่เป็นเพียงกลุ่มตัวอย่างในท้องถิ่น</p><p>nobi ของรัฐได้รับการปลดปล่อยในปี 1801 สถานะที่สืบทอดทางสายเลือดถูกยกเลิกในปี 1886-1887 และระบบนี้หมดไปในปี 1894 พร้อมการปฏิรูปกาโบ</p></div><div class="stack"><h2>ทาสหรือข้าติดที่ดิน?</h2><div class="debate"><div><h3>เกณฑ์เชิงจำนวน</h3><p>ด้วยสัดส่วน 30 ถึง 40 % ของประชากร เกาหลีสมัยโชซอนจัดอยู่ในกลุ่มสังคมทาสสำคัญ ในระดับเดียวกับภาคใต้ของสหรัฐอเมริกาหรือโรม</p></div><div><h3>สิทธิและการผสมกลมกลืน</h3><p>nobi สามารถถือครองทรัพย์สินและที่ดินได้ และผู้ที่อาศัยอยู่นอกบ้านนายก็มีครัวเรือนของตนเอง Kim เรียกว่า “ระบบข้าติดที่ดินที่พัฒนาขึ้นภายใต้ระบบทาส” James Palais เห็นว่าพวกเขาใกล้เคียงกับข้าติดที่ดินมากกว่า ส่วน Rhee และ Yang เห็นว่าคำว่า “ทาส” ไม่เหมาะสม</p></div></div></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Korea">Wikipedia, Slavery in Korea</a> (แหล่งข้อมูลทุติยภูมิ สรุปจาก Kye 2021, Kim 2023, Palais 1998)</li></ul></div></div></section>
+<section class="view" id="v-inde"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เอเชีย · ศตวรรษที่ 13 – 1861</span><h1>อินเดีย: รัฐสุลต่าน ความเป็นทาสในภาคเกษตร และการเลิกทาสของอังกฤษ</h1><p class="lead">ในอนุทวีปอินเดีย ระบบทาสปรากฏในรูปของเชลยสงครามในสมัยรัฐสุลต่าน การส่งออกทาสไปยังเอเชียกลาง และความเป็นทาสในภาคเกษตรที่สืบทอดทางสายเลือดซึ่งเกิดกับวรรณะต่ำ</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>รัฐสุลต่านเดลี – 1861</dd></div><div><dt>ราวปี 1840</dt><dd>1.1 ล้าน ถึง 8-9 ล้าน ขึ้นอยู่กับนิยาม</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม การค้างชำระภาษี ความเป็นทาสในภาคเกษตร</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่ (ความเป็นทาสในภาคเกษตร)</dd></div><div><dt>เกณฑ์</dt><dd>ซ้อนทับกับวรรณะ ไม่ใช่เชื้อชาติ</dd></div><div><dt>สิ้นสุด</dt><dd>1843, ประมวลกฎหมายอาญาปี 1861</dd></div></dl><div class="stack read"><h2>ตัวเลขจากพงศาวดาร</h2><p>พงศาวดารของรัฐสุลต่านเดลีให้ตัวเลขที่น่าจะสูงเกินจริง: ทาสหนุ่มสาว 50,000 คนในสมัยอะลาอุดดีน คิลจี และ 180,000 คนในสมัยฟีรูซ ชาห์ ตุฆลุก นักประวัติศาสตร์ Scott Levi เชื่อมโยงการส่งออกชาวฮินดูไปยังเอเชียกลางเข้ากับการสร้างรัฐสุลต่านและรัฐโมกุล ในศตวรรษที่ 17 บริษัทอินเดียตะวันออกของดัตช์ก็ส่งออกทาสปีละ 150 ถึง 400 คนจากอาระกันและเบงกอล</p></div><div class="callout blue read"><strong>เหตุใดตัวเลขประมาณการจึงต่างกันถึงแปดเท่า</strong><p>สำหรับทศวรรษ 1840 ตัวเลขประมาณการอยู่ระหว่างราว 1.1 ล้าน ถึง 8-9 ล้าน (Bartle Frere, 1841) ทุกอย่างขึ้นอยู่กับนิยาม: จะนับแรงงานเกษตรที่ถูกผูกมัดจากวรรณะต่ำ เช่น ปุลายาร์ หรือปาไรยาร์ ว่าเป็นทาสหรือไม่?</p></div><div class="stack read"><h2>การเลิกทาส “ด้วยการปฏิเสธ”</h2><p>อินเดียของอังกฤษเพิกถอนการรับรองระบบทาสทางกฎหมายในปี 1843 แล้วจึงทำให้เป็นความผิดทางอาญาในทางปฏิบัติด้วยประมวลกฎหมายอาญาปี 1861 นักประวัติศาสตร์ Indrani Chatterjee เรียกสิ่งนี้ว่า “การเลิกทาสด้วยการปฏิเสธ” เพราะความเป็นทาสในภาคเกษตรยังคงอยู่รอดมาได้เป็นส่วนใหญ่</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_India">Wikipedia, Slavery in India</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-siam"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เอเชียตะวันออกเฉียงใต้ · ศตวรรษที่ 17 – 1915</span><h1>สยามและหมู่เกาะ: หนี้สินและการจู่โจม</h1><p class="lead">ในสยาม ระบบทาสส่วนใหญ่เป็นการตกเป็นทาสเพราะหนี้ซึ่งไถ่ถอนได้ ส่วนในหมู่เกาะฟิลิปปินส์ กองเรือแห่งซูลูออกจู่โจมชายฝั่งทั่วทั้งเอเชียตะวันออกเฉียงใต้</p></div><dl class="fiche"><div><dt>สยาม ราวปี 1854</dt><dd>1/4 ถึง 1/3 ของประชากร (Pallegoix)</dd></div><div><dt>ซูลู, 1770-1870</dt><dd>ถูกจับเป็นทาส 200,000 ถึง 300,000 คน</dd></div><div><dt>การตกเป็นทาส</dt><dd>หนี้สิน สงคราม การจู่โจมทางทะเล</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>เป็นไปได้</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่</dd></div><div><dt>สิ้นสุดในสยาม</dt><dd>1874 → 1905 → 1915</dd></div></dl><div class="stack read"><h2>สยาม: ความเป็นทาสที่ไถ่ถอนได้</h2><p>ราวปี 1854 สังฆราชปาลเลอกัวซ์ (Pallegoix) ประมาณว่าหนึ่งในสี่ถึงหนึ่งในสามของประชากรราว 6 ล้านคนเป็นทาสเพราะหนี้ ตัวเลขนี้เป็นการประมาณของผู้สังเกตการณ์ ไม่ใช่สำมะโนประชากร</p><p>นายไม่อาจฆ่าหรือทำให้ทาสพิการได้ ทาสสามารถมีทรัพย์สิน รับมรดก ทำสัญญา ฟ้องร้องต่อศาล และไถ่ตัวเองได้ นักประวัติศาสตร์ Cruikshank เห็นว่าแบบแผนระบบทาสของตะวันตกไม่เหมาะจะนำมาใช้กับระบบนี้</p></div><div class="stack read"><h2>การเลิกทาสทีละขั้นของพระบาทสมเด็จพระจุลจอมเกล้าเจ้าอยู่หัว</h2><p>รัชกาลที่ 5 ทรงดำเนินการเลิกทาสเป็นขั้นตอน ประกาศปี 1874 กำหนดให้บุตรของทาสที่เกิดหลังปี 1868 เป็นไทเมื่ออายุ 21 ปี กฎหมายเลิกทาสตราขึ้นในปี 1905 ประมวลกฎหมายอาญาปี 1908 กำหนดให้การซื้อขายทาสเป็นความผิด และระบบทาสสิ้นสุดลงตามกฎหมายในปี 1915</p></div><div class="stack read"><h2>การจู่โจมของซูลู</h2><p>กองเรือชาวอีรานุนและบางกิงกีของรัฐสุลต่านซูลูและมากินดาเนาน่าจะจับผู้คน 200,000 ถึง 300,000 คนเป็นทาสระหว่างปี 1770 ถึง 1870 โดยออกจู่โจมไกลถึงช่องแคบมะละกา เกาะชวา และจีนตอนใต้ คำภาษามลายู <em>lanun</em> ที่แปลว่า “โจรสลัด” มาจากชื่อของชาวอีรานุน</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://thesiamsociety.org/wp-content/uploads/1975/03/JSS_063_2j_Cruikshank_SlaveryIn19thCenturySiam.pdf">R. B. Cruikshank, “Slavery in Nineteenth Century Siam”, Journal of the Siam Society, 1975</a></li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Thailand">Wikipedia, Slavery in Thailand</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Philippines">Wikipedia, Slavery in the Philippines</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-asie-centrale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">เอเชียกลาง · ศตวรรษที่ 16 – 1873</span><h1>คีวาและบูคารา ตลาดค้าทาส</h1><p class="lead">จนกระทั่งรัสเซียเข้ายึดครอง รัฐข่านแห่งคีวาและบูคาราเป็นตลาดค้าทาสขนาดใหญ่ ซึ่งได้ทาสจากการจู่โจมของชาวเติร์กเมนและคาซัคต่อชาวเปอร์เซียและผู้ตั้งถิ่นฐานชาวรัสเซีย</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>ศตวรรษที่ 16 – 1873</dd></div><div><dt>จำนวน</dt><dd>≈ ชาวเปอร์เซีย 1 ล้านคน (ครึ่งแรกของศตวรรษที่ 19) มีแหล่งอ้างอิงน้อย</dd></div><div><dt>การตกเป็นทาส</dt><dd>การจู่โจมของชาวเติร์กเมนและคาซัค</dd></div><div><dt>เกณฑ์</dt><dd>ศาสนา: ชีอะห์และคริสเตียน</dd></div><div><dt>สิ้นสุด</dt><dd>1873 ภายใต้แรงกดดันของรัสเซีย</dd></div></dl><div class="stack read"><h2>ศาสนาในฐานะเส้นแบ่ง</h2><p>เนื่องจากศาสนาอิสลามห้ามนำมุสลิมมาเป็นทาส รัฐข่านนิกายซุนนีจึงถือว่าชาวเปอร์เซียนิกายชีอะห์เป็นเป้าหมายที่ชอบธรรม เช่นเดียวกับชาวคริสเตียน มิชชันนารี Josef Wolff นับทาสชาวเปอร์เซียในบูคาราได้ 200,000 คนในทศวรรษ 1840</p></div><div class="callout read"><strong>ตัวเลขที่เปราะบาง</strong><p>ตัวเลขชาวเปอร์เซียที่ถูกจับเป็นทาสราว 1 ล้านคน และตัวเลขของ Wolff อาศัยบันทึกของนักเดินทาง จึงควรถือเป็นเพียงลำดับขนาด</p></div><div class="stack read"><h2>จุดสิ้นสุด</h2><p>ทาสชาวรัสเซียได้รับการปลดปล่อยในปี 1840 ภายใต้แรงกดดันของเซนต์ปีเตอร์สเบิร์ก การที่รัสเซียพิชิตคีวาในปี 1873 ก่อให้เกิดการลุกฮือของทาสและการเลิกทาสตามที่นายพล Kaufman เรียกร้อง</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Khivan_slave_trade">Wikipedia, Khivan slave trade</a> (แหล่งข้อมูลทุติยภูมิ)</li><li>Jeff Eden, <em>Slavery and Empire in Central Asia</em>, Cambridge UP, 2018 (<a href="https://dash.harvard.edu/bitstream/handle/1/33493418/EDEN-DISSERTATION-2016.pdf">วิทยานิพนธ์</a>)</li></ul></div></div></section>
+<section class="view" id="v-afrique"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">แอฟริกา · ศตวรรษที่ 17 – 1981</span><h1>สังคมทาสในแอฟริกา</h1><p class="lead">ระบบทาสมีอยู่ในแอฟริกาก่อนการค้าทาสข้ามทวีป และยังทวีความเข้มข้นขึ้นในศตวรรษที่ 19 รัฐอย่างรัฐคอลีฟะฮ์โซโกโตหรืออาณาจักรดาโฮมีย์จัดอยู่ในกลุ่มสังคมทาสสำคัญในยุคของตน</p></div><dl class="fiche"><div><dt>โซโกโต ราวปี 1900</dt><dd>ทาส 1 ถึง 2.5 ล้าน หรือ 1/4 ถึง 1/2 ของประชากร</dd></div><div><dt>เอธิโอเปีย ราวปี 1932</dt><dd>ทาส ≥ 2 ล้าน (Anti-Slavery Society)</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม การจู่โจม บรรณาการ หนี้สิน</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>บ่อยครั้ง</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่</dd></div><div><dt>สิ้นสุด</dt><dd>1901 (ไนจีเรียตอนเหนือ), 1942 (เอธิโอเปีย), 1981 (มอริเตเนีย)</dd></div></dl><div class="stack read"><h2>รัฐคอลีฟะฮ์โซโกโต</h2><p>รัฐคอลีฟะฮ์ซึ่งก่อตั้งขึ้นในต้นศตวรรษที่ 19 ในพื้นที่ที่ปัจจุบันคือภาคเหนือของไนจีเรีย มีทาสอย่างน้อย 1 ล้านคน และอาจถึง 2.5 ล้านคนในราวปี 1900 Jan Hogendorn และ Paul Lovejoy ประมาณว่าทาสมีสัดส่วนระหว่างหนึ่งในสี่ถึงครึ่งหนึ่งของประชากรราว 10 ล้านคน โซโกโตจึงจัดอยู่ในกลุ่มสังคมทาสสำคัญของยุคสมัยใหม่ รองจากสหรัฐอเมริกาในปี 1860 (ราว 4 ล้านคน) และบราซิล</p><p>Lugard ชาวอังกฤษยกเลิกสถานะทาสทางกฎหมายในปี 1901 โดยไม่มีการชดเชย</p></div><div class="stack read"><h2>ดาโฮมีย์ ผู้มีบทบาทในการค้าทาสแอตแลนติก</h2><p>การค้าทาสเป็นแหล่งรายได้หลักของราชสำนักดาโฮมีย์ พระเจ้าเกโซยอมลงนามในสนธิสัญญายุติการส่งออกทาสหลังการปิดล้อมของอังกฤษในปี 1851-1852 เท่านั้น และการส่งออกก็กลับมาอีกในปี 1857-1858 ในราชสำนักมีการถกเถียงอย่างจริงจังระหว่างฝ่ายสนับสนุนการค้าทาสกับฝ่ายที่ต้องการเปลี่ยนไปค้าน้ำมันปาล์ม ท่าเรือวีดาห์ บอนนี และลูอันดารวมกันส่งเชลยกว่า 2 ล้านคนข้ามมหาสมุทรแอตแลนติก</p></div><div class="callout blue read"><strong>อย่าเหมารวม</strong><p>สัดส่วนทาส “หนึ่งในสี่ถึงครึ่งหนึ่ง” ใช้ได้กับรัฐทาสขนาดใหญ่ในศตวรรษที่ 19 ไม่ใช่กับทั้งทวีปแอฟริกา</p></div><div class="stack read"><h2>เอธิโอเปียและมอริเตเนีย: การเลิกทาสครั้งสุดท้าย</h2><p>เอธิโอเปียได้รับการรับเข้าเป็นสมาชิกสันนิบาตชาติในปี 1923 โดยมีเงื่อนไขว่าต้องยกเลิกระบบทาส กฎหมายของอิตาลีในปี 1935-1936 ปลดปล่อยทาสราว 420,000 คน และจักรพรรดิไฮเล เซลาสซีเลิกทาสเมื่อวันที่ 26 สิงหาคม 1942</p><p>ในมอริเตเนีย การเลิกทาสของฝรั่งเศสในปี 1905 ไม่ได้ถูกบังคับใช้ กฤษฎีกาปี 1981 ยกเลิกระบบทาสโดยไม่มีบทลงโทษทางอาญา และกฎหมายปี 2007 กำหนดให้เป็นความผิดทางอาญา ตัวเลขประมาณการในปัจจุบันแตกต่างกัน: 90,000 คนตาม Global Slavery Index 2018 และ 600,000 คนตาม BBC ในปี 2017</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Sokoto_Caliphate">Wikipedia, Sokoto Caliphate</a> (แหล่งข้อมูลทุติยภูมิ, Hogendorn และ Lovejoy)</li><li><a href="https://en.wikipedia.org/wiki/History_of_the_Kingdom_of_Dahomey">Wikipedia, Kingdom of Dahomey</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Ethiopia">Wikipedia, Slavery in Ethiopia</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_Mauritania">Wikipedia, Slavery in Mauritania</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, “Slave trades out of Africa”</a></li></ul></div></div></section>
+<section class="view" id="v-europe-medievale"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">ยุโรป · ศตวรรษที่ 9 – 18</span><h1>ยุโรปยุคกลาง ชาวไวกิง และเมดิเตอร์เรเนียน</h1><p class="lead">คำว่า “esclave” (ทาส) ในภาษาฝรั่งเศสมาจากคำว่า “Slave” (ชาวสลาฟ): ในยุคกลาง เชลยจากยุโรปตะวันออกถูกขายไปยังโลกอิสลามและไบแซนไทน์ ต่อมาระบบทาสเสื่อมถอยลงในยุโรปตะวันตก แต่ไม่ใช่ในเมดิเตอร์เรเนียน</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>ศตวรรษที่ 9 – 18</dd></div><div><dt>อังกฤษ, 1086</dt><dd>≈ 10 % ของประชากร (Domesday Book)</dd></div><div><dt>เซบียา, 1565</dt><dd>≈ 7.4 % ของประชากร</dd></div><div><dt>การตกเป็นทาส</dt><dd>สงคราม การจู่โจมของไวกิง การค้าทาสในทะเลดำ</dd></div><div><dt>เกณฑ์</dt><dd>ศาสนา แล้วจึงกลายเป็นชาวแอฟริกันมากขึ้นเรื่อยๆ</dd></div><div><dt>สิ้นสุด</dt><dd>1102 (อังกฤษ), 1334 (สวีเดน), มอลตา 1798</dd></div></dl><div class="stack read"><h2>ไวกิงและชาวสลาฟ</h2><p>ตั้งแต่ศตวรรษที่ 9 ถึง 11 ชาวไวกิงจับชาวไอริช ชาวแองโกล-แซกซอน และชาวแฟรงก์ และลำเลียงเชลยชาวสลาฟผ่านแม่น้ำวอลกาและแม่น้ำนีเปอร์ไปยังรัฐคอลีฟะฮ์อับบาซียะฮ์และไบแซนไทน์ ดับลินกลายเป็นตลาดใหญ่ โครงการ “Dirhams for Slaves” ของมหาวิทยาลัยออกซฟอร์ดประมาณว่าทาสเป็นสินค้าส่งออกหลักอย่างหนึ่งของยุโรปเหนือ</p><p>ในศตวรรษที่ 10 ชาวสลาฟเป็นกลุ่มที่พบมากที่สุดในการค้าทาส จึงเป็นที่มาของคำละติน <em>sclavus</em> และคำฝรั่งเศส “esclave” ในเวลาต่อมา (William Phillips)</p></div><div class="stack read"><h2>จากความเสื่อมถอยในตะวันตกสู่การค้าทาสในเมดิเตอร์เรเนียน</h2><p>ในยุโรปตะวันตก ระบบทาสลดลงระหว่างศตวรรษที่ 10 ถึง 12 และระบบข้าติดที่ดินเข้ามาแทนที่: อังกฤษห้ามการค้าทาสในปี 1102 สวีเดนเลิกทาสในปี 1334</p><p>เมดิเตอร์เรเนียนยังคงมีทาสจนถึงยุคสมัยใหม่ตอนต้น เวนิสและเจนัวครองการค้าทาสในทะเลดำตั้งแต่ศตวรรษที่ 13 โดยมีเมืองคัฟฟาในไครเมียเป็นตลาดใหญ่ มีทาสอย่างน้อย 10,000 คนถูกขายในเวนิสระหว่างปี 1414 ถึง 1423 ในปี 1565 เซบียามีทาส 6,327 คนจากประชากร 85,538 คน ส่วนใหญ่เป็นชาวแอฟริกัน</p></div><div class="callout blue read"><strong>ข้อต่อสู่แอตแลนติก</strong><p>การจู่โจมครั้งแรกของโปรตุเกสในแอฟริกาใต้สะฮาราเกิดขึ้นในปี 1441 ระบบทาสในคาบสมุทรไอบีเรียเป็นตัวเชื่อมระหว่างเมดิเตอร์เรเนียนยุคกลางกับการค้าทาสแอตแลนติก</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_medieval_Europe">Wikipedia, Slavery in medieval Europe</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://historyireland.com/?p=10176">History Ireland</a></li><li><a href="https://krc.web.ox.ac.uk/node/309951">Oxford, Dirhams for Slaves</a></li></ul></div></div></section>
+<section class="view" id="v-ottomans"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">จักรวรรดิออตโตมัน · ศตวรรษที่ 14 – 1908</span><h1>จักรวรรดิออตโตมัน: ทหาร ฮาเร็ม และคนรับใช้</h1><p class="lead">ในจักรวรรดิออตโตมัน ระบบทาสเป็นเรื่องทางการเมืองและในครัวเรือนเป็นหลัก: ทหารชั้นยอด นางบำเรอในฮาเร็ม ขันที และคนรับใช้ ในช่วงรุ่งเรืองสูงสุด หนึ่งในห้าของประชากรคอนสแตนติโนเปิลเป็นทาส</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>ศตวรรษที่ 14 – 1908 (การสิ้นสุดของระบบนับเป็นปี 1924)</dd></div><div><dt>คอนสแตนติโนเปิล</dt><dd>≈ 1/5 ของประชากร (ศตวรรษที่ 16-17)</dd></div><div><dt>ทหารทาส</dt><dd>≈ kapıkulu 100,000 คน ในปี 1609</dd></div><div><dt>การตกเป็นทาส</dt><dd>การจู่โจมของชาวตาตาร์ ระบบเดฟชีร์เม การซื้อจากคอเคซัสและแอฟริกา</dd></div><div><dt>เกณฑ์</dt><dd>ราคาและหน้าที่ขึ้นอยู่กับแหล่งกำเนิด</dd></div><div><dt>การปลดปล่อยทาส</dt><dd>พบบ่อย ; เลื่อนสถานะทางสังคมได้</dd></div></dl><div class="stack read"><h2>ทาสบนยอดสุดของรัฐ</h2><p><em>kapıkulu</em> หรือทาสแห่งราชสำนัก (Porte) ซึ่งรวมถึงทหารเยนิเซรีที่เกณฑ์มาด้วยระบบเดฟชีร์เม “ภาษีเลือด” ที่เก็บจากเด็กชายคริสเตียนในคาบสมุทรบอลข่านและอานาโตเลีย มีจำนวนราว 100,000 คนในปี 1609 ทาสบางคนสามารถเป็นถึงอัครมหาเสนาบดี (vizier)</p></div><div class="stack read"><h2>ฮาเร็มและขันที</h2><p>นางบำเรอในฮาเร็มได้มาจากการซื้อ ส่วนใหญ่มีเชื้อสายคริสเตียน: ชาวเซอร์คาสเซีย ชาวอับฮาเซีย ชาวจอร์เจีย ขันทีผิวดำมาจากแอฟริกาใต้สะฮารา ขันทีผิวขาวมาจากบอลข่านหรือคอเคซัส ราคาแตกต่างกันตามแหล่งกำเนิด: เด็กสาวผิวขาวสำหรับงานบ้านมีราคาราว 3,000 kuruş ส่วนหญิงแอฟริกัน 1,500 ถึง 2,500 (Madeline Zilfi)</p></div><div class="stack read"><h2>การเลิกทาสที่เป็นเพียงในนามเป็นส่วนใหญ่</h2><p>ฟัรมานปี 1830 ว่าด้วยทาสผิวขาว การปิดตลาดทาสในอิสตันบูลแบบ “ฉาบหน้า” ในปี 1847 การห้ามค้าทาสชาวเซอร์คาสเซียและจอร์เจียในปี 1854-1855 แล้วจึงห้ามค้าทาสผิวดำในปี 1857 ซึ่งไม่ได้บังคับใช้ในตริโปลีจนถึงทศวรรษ 1890 ยังมีการขายทาสหญิงในปี 1908</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (แหล่งข้อมูลทุติยภูมิ)</li><li>Madeline Zilfi, <em>Women and Slavery in the Late Ottoman Empire</em>, Cambridge UP, 2010</li></ul></div></div></section>
+<section class="view" id="v-tatars"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">ยุโรปตะวันออก · 1441-1783</span><h1>การจู่โจมของชาวตาตาร์ไครเมีย</h1><p class="lead">เป็นเวลากว่าสามศตวรรษ ทหารม้าชาวตาตาร์และโนไกจู่โจมโปแลนด์-ลิทัวเนีย ยูเครน และมัสโกวี เพื่อป้อนทาสให้แก่ตลาดค้าทาสในไครเมียและจักรวรรดิออตโตมัน นี่คือการค้าทาสสายใหญ่ที่สุดสายหนึ่งของยุคสมัยใหม่ตอนต้น และเป็นสายที่คนในฝรั่งเศสรู้จักน้อยที่สุดสายหนึ่ง</p></div><dl class="fiche"><div><dt>ช่วงเวลา</dt><dd>1441 – 1783</dd></div><div><dt>จำนวนโดยประมาณ</dt><dd>เชลย 2 ถึง 5 ล้านคน</dd></div><div><dt>ตลาดใหญ่</dt><dd>คัฟฟา ≈ ขาย 20,000 คนต่อปี ราวปี 1570</dd></div><div><dt>การตกเป็นทาส</dt><dd>การจู่โจม</dd></div><div><dt>เกณฑ์</dt><dd>ศาสนา (คริสเตียน)</dd></div><div><dt>ทางพ้นสภาพ</dt><dd>การไถ่ตัว</dd></div><div><dt>สิ้นสุด</dt><dd>รัสเซียผนวกไครเมีย, 1783</dd></div></dl><div class="stack"><h2>มีเชลยกี่คน?</h2><div class="scale"><div class="srow"><span>Baranowski (เฉพาะโปแลนด์-ลิทัวเนีย)</span><div class="sbar"><span style="left:0;width:20.0%"></span></div><span class="v">≤ 1 ล้าน</span></div><div class="srow"><span>İnalcık และ Kołodziejczyk (1500-1700)</span><div class="sbar"><span style="left:0;width:40.0%"></span></div><span class="v">≈ 2 ล้าน</span></div><div class="srow"><span>Charnysh และ Lall, ยอดที่นับได้</span><div class="sbar"><span style="left:0;width:72.8%"></span></div><span class="v">≥ 3.64 ล้าน</span></div><div class="srow"><span>Charnysh และ Lall, รวมข้อมูลที่ขาดหาย</span><div class="sbar"><span style="left:0;width:100.0%"></span></div><span class="v">≈ 5 ล้าน</span></div></div><p class="muted" style="font-size:.82rem">แถบแสดงตามมาตราส่วน 0-5 ล้าน เป็นยอดการเคลื่อนย้ายสะสม</p></div><div class="stack read"><h2>การสูญเสียประชากรครั้งใหญ่ของยุโรปตะวันออก</h2><p>ตามการศึกษาของ Volha Charnysh และ Ranjit Lall (<em>American Political Science Review</em>, 2026) มีผู้ถูกจับอย่างน้อย 3.64 ล้านคนระหว่างปี 1441 ถึง 1774 และราว 5 ล้านคนหากประมาณรวมข้อมูลที่ขาดหาย ซึ่งคิดเป็นมากกว่าหนึ่งในสี่ของประชากรยุโรปตะวันออกในปี 1400</p><p>Orest Subtelny ตั้งข้อสังเกตว่าการจู่โจมบางครั้งกวาดผู้คนไปถึง 30,000 คน แต่โดยเฉลี่ยอยู่ที่ราว 3,000 คน ที่คัฟฟาซึ่งอยู่ใต้การควบคุมของออตโตมันตั้งแต่ปี 1475 มีทาสถูกขายเกือบ 20,000 คนต่อปีในทศวรรษ 1570 (Halil İnalcık)</p></div><div class="callout read"><strong>ตัวเลขประมาณการใหม่ที่ยังต้องอภิปราย</strong><p>การศึกษาของ Charnysh-Lall เป็นงานล่าสุดและให้ตัวเลขสูงที่สุด ; ยังไม่ได้ผ่านการอภิปรายในหมู่ผู้เชี่ยวชาญ นักประวัติศาสตร์ Alan Fisher เห็นว่าไม่สามารถคำนวณยอดรวมที่เชื่อถือได้ เพราะแหล่งข้อมูลมักขยายตัวเลขเกินจริง</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Crimean-Nogai_Raids">Wikipedia, Crimean–Nogai slave raids</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Ottoman_Empire">Wikipedia, Slavery in the Ottoman Empire</a> (แหล่งข้อมูลทุติยภูมิ)</li><li>Charnysh และ Lall, <em>American Political Science Review</em>, 2026 (การตีพิมพ์รอการยืนยัน)</li></ul></div></div></section>
+<section class="view" id="v-russie"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">รัสเซีย · 1450-1861</span><h1>รัสเซีย: จาก kholops สู่ข้าติดที่ดิน</h1><p class="lead">รัสเซียเคยมีระบบทาสในความหมายที่แท้จริง คือ <em>kholopstvo</em> แล้วจึงมีระบบข้าติดที่ดินขนาดใหญ่ซึ่งครอบคลุมกว่าหนึ่งในสามของประชากรในปี 1857 ข้าติดที่ดินชาวรัสเซียได้รับการปลดปล่อยในปี 1861 สี่ปีก่อนทาสชาวอเมริกัน</p></div><dl class="fiche"><div><dt>Kholops</dt><dd>≈ 10 % ของประชากรมัสโกวี (Hellie)</dd></div><div><dt>ข้าติดที่ดินของเอกชน, 1857</dt><dd>23.1 ล้าน จาก 62.5 ล้าน (≈ 37.7 %)</dd></div><div><dt>การตกเป็นทาส</dt><dd>การขายตัวเอง หนี้สิน การจับเป็นเชลย ; ระบบข้าติดที่ดินโดยกฎหมาย</dd></div><div><dt>สืบทอดทางสายเลือด</dt><dd>ใช่</dd></div><div><dt>เกณฑ์เชื้อชาติ</dt><dd>ไม่</dd></div><div><dt>สิ้นสุด</dt><dd>1679/1723 (kholops), 1861 (ข้าติดที่ดิน)</dd></div></dl><div class="stack read"><h2>Kholops ชาวรัสเซียผู้ขายตัวเอง</h2><p>ตามที่ Richard Hellie ระบุ kholops น่าจะคิดเป็นราว 10 % ของประชากรมัสโกวี เขาเห็นว่านี่คือ “หนึ่งในระบบทาสที่แปลกประหลาดที่สุดในโลก” เพราะทาสส่วนใหญ่เป็นชาวรัสเซียที่ขายตัวเอง kholops ในภาคเกษตรถูกรวมเข้ากับระบบข้าติดที่ดินในปี 1679 และ kholops ที่เป็นคนรับใช้ในปี 1723</p></div><div class="stack read"><h2>ระบบข้าติดที่ดิน</h2><p>ระบบข้าติดที่ดินซึ่งถูกประมวลเป็นกฎหมายในปี 1649 ผูกชาวนาไว้กับที่ดินและให้สิทธิแก่เจ้าของที่ดินแทบทุกประการ ข้าติดที่ดินอาจถูกโอนโดยไม่รวมที่ดินได้ แต่ยังคงได้รับความคุ้มครองเรื่องทรัพย์สิน ศาสนา และการเข้าถึงศาล จักรพรรดิอะเล็กซานเดอร์ที่ 2 ยกเลิกระบบข้าติดที่ดินในปี 1861 ; อดีตข้าติดที่ดินมักต้องจ่ายค่าที่ดินแพงกว่าราคาตลาด และเงินผ่อนชำระค่าไถ่ถอนเพิ่งถูกยกเลิกในปี 1907</p></div><div class="callout blue read"><strong>1861 และ 1865: การเลิกสองครั้ง สองระบบ</strong><p>การเปรียบเทียบระหว่างระบบข้าติดที่ดินของรัสเซียกับระบบทาสของอเมริกาที่ Peter Kolchin ทำไว้นั้นให้ความกระจ่าง แต่ก็เป็นที่ถกเถียง ข้าติดที่ดินซึ่งมีสัญชาติและศาสนาเดียวกับนายของตน ไม่ได้เป็นสังหาริมทรัพย์ในทางกฎหมาย และไม่ได้ถูกกำหนดสถานะตามเชื้อชาติ</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://www.historytoday.com/archive/slaves-not-serfs">History Today, “Slaves, not serfs”</a> (เกี่ยวกับ Hellie)</li><li><a href="https://en.wikipedia.org/wiki/Serfdom_in_Russia">Wikipedia, Serfdom in Russia</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Kholop">Wikipedia, Kholop</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-ameriques"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#civilisations">← อารยธรรมทั้งหมด</a><span class="eyebrow">ทวีปอเมริกา · ศตวรรษที่ 14 – 19</span><h1>ทวีปอเมริกาก่อนและหลังโคลัมบัส</h1><p class="lead">สังคมชนพื้นเมืองอเมริกันรู้จักความเป็นทาสหลายรูปแบบ ต่อมาการล่าอาณานิคมได้บังคับชนพื้นเมืองอเมริกันนับล้านคนให้เป็นทาส และชนชาติพื้นเมืองอเมริกันบางกลุ่มเองก็เคยมีทาสผิวดำ</p></div><dl class="fiche"><div><dt>แอซเท็ก</dt><dd>สถานะไม่สืบทอดทางสายเลือด บุตรเกิดมาเป็นไท</dd></div><div><dt>ชายฝั่งตะวันตกเฉียงเหนือ</dt><dd>ประชากรทาสสูงถึง 1/4</dd></div><div><dt>ชนพื้นเมืองอเมริกันที่ถูกบังคับเป็นทาส</dt><dd>2.5 ถึง 5 ล้านคนตลอดสี่ศตวรรษ (Reséndez)</dd></div><div><dt>แคโรไลนา, 1670-1715</dt><dd>ถูกส่งออก 24,000 ถึง 51,000 คน (Gallay)</dd></div><div><dt>เกณฑ์</dt><dd>ไม่มีก่อนปี 1492 ; ต่อมาอิงเชื้อชาติ</dd></div><div><dt>สิ้นสุด</dt><dd>การพิชิต ; ยังคงหลงเหลือจนถึงศตวรรษที่ 19</dd></div></dl><div class="stack read"><h2>แอซเท็กและอินคา</h2><p>ในหมู่ชาวแอซเท็ก ผู้คนกลายเป็น <em>tlacotli</em> จากการลงโทษ สงคราม หนี้สิน หรือการขายตัวเอง เช่นในช่วงทุพภิกขภัยทศวรรษ 1450 ทาสสามารถแต่งงาน มีทรัพย์สิน และแม้แต่มีทาสของตนเอง และบุตรของทาสเกิดมาเป็นไท (Ross Hassig) แต่เชลยบางส่วนถูกบูชายัญ และทาสที่ “ดัดนิสัยไม่ได้” ซึ่งถูกขายต่อสามครั้งอาจถูกนำไปบูชายัญได้</p><p>ในหมู่ชาวอินคา <em>yanakuna</em> เป็นความเป็นทาสที่สืบทอดทางสายเลือด บางครั้งมีสถานะสูง ; การแปลว่า “ทาส” ยังเป็นที่ถกเถียง</p></div><div class="stack read"><h2>ชายฝั่งตะวันตกเฉียงเหนือ</h2><p>บนชายฝั่งแปซิฟิกของอเมริกาเหนือ ระบบทาสผนวกอยู่ในสังคมนักล่าและชาวประมง และในพิธีพอตแลตช์ Leland Donald แสดงให้เห็นว่าความเป็นทาสแบบนี้สอดคล้องกับนิยามของระบบทาสในเชิงข้ามวัฒนธรรม ; ในบางกลุ่ม ประชากรมากถึงหนึ่งในสี่เป็นทาส</p></div><div class="stack read"><h2>“ระบบทาสอีกแบบหนึ่ง”</h2><p>Andrés Reséndez (<em>The Other Slavery</em>, รางวัล Bancroft ปี 2017) ประมาณว่ามีชนพื้นเมืองอเมริกัน 2.5 ถึง 5 ล้านคนถูกบังคับเป็นทาสตลอดสี่ศตวรรษ นิยามที่กว้างของเขาครอบคลุมระบบเอนโกมิเอนดา ระบบเรปาร์ติมิเอนโต แรงงานขัดหนี้ และแรงงานบังคับที่อยู่รอดมาได้แม้มีข้อห้ามทางกฎหมาย Alan Gallay ประมาณว่ามีชนพื้นเมืองอเมริกัน 24,000 ถึง 51,000 คนถูกส่งออกจากท่าเรือในแคโรไลนาระหว่างปี 1670 ถึง 1715</p><p>ท้ายที่สุด “ห้าชนเผ่า” (เชอโรกี ครีก ช็อกทอว์ ชิคคาซอว์ เซมิโนล) มีทาสผิวดำ 4,500 ถึง 5,000 คนในดินแดนอินเดียนราวปี 1839</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/Slavery_in_the_Aztec_Empire">Wikipedia, Slavery in the Aztec Empire</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://www.ucpress.edu/books/aboriginal-slavery-on-the-northwest-coast-of-north-america/hardcover">Leland Donald, Aboriginal Slavery on the Northwest Coast, UC Press, 1997</a></li><li><a href="https://en.wikipedia.org/wiki/The_Other_Slavery">Wikipedia, The Other Slavery</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://en.wikipedia.org/wiki/Slavery_among_Native_Americans_in_the_United_States">Wikipedia, Slavery among Native Americans</a> (แหล่งข้อมูลทุติยภูมิ)</li></ul></div></div></section>
+<section class="view" id="v-abolitions"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">เส้นเวลา · จากโซลอนถึงปี 2007</span><h1>การเลิกทาส</h1><p class="lead">การเลิกทาสในฐานะนโยบายของรัฐที่ผลักดันในระดับโลก ถือกำเนิดขึ้นในสังคมแถบแอตแลนติกในศตวรรษที่ 19 การเลิกทาสส่วนใหญ่ในแอฟริกา จักรวรรดิออตโตมัน และโลกอาหรับเกิดขึ้นภายใต้แรงกดดันจากอังกฤษหรือนานาชาติ บางครั้งล่าช้ามาก</p></div><div class="stack"><ol class="timeline"><li><span class="yr">ศตวรรษที่ 6 ก่อน ค.ศ.</span><span><strong>เอเธนส์</strong> · โซลอนห้ามการเป็นทาสเพราะหนี้ของชาวเอเธนส์</span></li><li><span class="yr">ค.ศ. 9</span><span><strong>จีน</strong> · หวังหมั่งยกเลิกระบบทาส ซึ่งถูกนำกลับมาในปี 12</span></li><li><span class="yr">1102</span><span><strong>อังกฤษ</strong> · ห้ามการค้าทาส</span></li><li><span class="yr">1334</span><span><strong>สวีเดน</strong> · เลิกทาส</span></li><li><span class="yr">1723-1730</span><span><strong>จีน</strong> · จักรพรรดิยงเจิ้งปลดปล่อยกลุ่มทาสที่สืบทอดทางสายเลือดส่วนใหญ่</span></li><li><span class="yr">1794</span><span><strong>ฝรั่งเศส</strong> · เลิกทาสเมื่อวันที่ 4 กุมภาพันธ์ ; โบนาปาร์ตฟื้นฟูการค้าทาสในปี 1802</span></li><li><span class="yr">1801</span><span><strong>เกาหลี</strong> · ปลดปล่อย nobi ของรัฐ</span></li><li><span class="yr">1807</span><span><strong>สหราชอาณาจักร</strong> · ยกเลิกการค้าทาส ; ราชนาวีอังกฤษปราบปรามการค้าทาสจนถึงปี 1867</span></li><li><span class="yr">1816</span><span><strong>แอลเจียร์</strong> · ลอร์ดเอ็กซ์มัธระดมยิงและปลดปล่อยทาสชาวยุโรป</span></li><li><span class="yr">1833</span><span><strong>สหราชอาณาจักร</strong> · เลิกทาส ; จ่ายเงิน 20 ล้านปอนด์แก่เจ้าของทาส</span></li><li><span class="yr">1843</span><span><strong>อินเดียของอังกฤษ</strong> · ยุติการรับรองระบบทาสทางกฎหมาย</span></li><li><span class="yr">1848</span><span><strong>ฝรั่งเศส</strong> · เลิกทาสอย่างถาวร (Victor Schœlcher) <span class="pill flag">รอตรวจสอบ</span></span></li><li><span class="yr">1857</span><span><strong>จักรวรรดิออตโตมัน</strong> · ห้ามการค้าทาสผิวดำ ซึ่งแทบไม่ได้บังคับใช้เป็นเวลานาน</span></li><li><span class="yr">1861</span><span><strong>รัสเซีย</strong> · เลิกระบบข้าติดที่ดิน</span></li><li><span class="yr">1865</span><span><strong>สหรัฐอเมริกา</strong> · บทแก้ไขเพิ่มเติมรัฐธรรมนูญครั้งที่ 13 <span class="pill flag">รอตรวจสอบ</span></span></li><li><span class="yr">1873</span><span><strong>คีวา</strong> · เลิกทาสหลังรัสเซียเข้ายึดครอง</span></li><li><span class="yr">1888</span><span><strong>บราซิล</strong> · กฎหมายทองคำ (Lei Áurea): การเลิกทาสครั้งสุดท้ายในทวีปอเมริกา <span class="pill flag">รอตรวจสอบ</span></span></li><li><span class="yr">1894</span><span><strong>เกาหลี</strong> · การปฏิรูปกาโบ</span></li><li><span class="yr">1897</span><span><strong>แซนซิบาร์</strong> · เลิกทาส และขยายครอบคลุมนางบำเรอในปี 1909</span></li><li><span class="yr">1901</span><span><strong>ไนจีเรียตอนเหนือ</strong> · สิ้นสุดสถานะทาสทางกฎหมายในโซโกโต</span></li><li><span class="yr">1909-1910</span><span><strong>จีน</strong> · เลิกทาสอย่างเป็นทางการ</span></li><li><span class="yr">1915</span><span><strong>สยาม</strong> · สิ้นสุดตามกฎหมาย หลังกฎหมายปี 1905</span></li><li><span class="yr">1929</span><span><strong>อิหร่าน จอร์แดน</strong> · เลิกทาส</span></li><li><span class="yr">1942</span><span><strong>เอธิโอเปีย</strong> · จักรพรรดิไฮเล เซลาสซีเลิกทาส</span></li><li><span class="yr">1949-1952</span><span><strong>คูเวต กาตาร์</strong> · เลิกทาส</span></li><li><span class="yr">1962</span><span><strong>ซาอุดีอาระเบีย เยเมน</strong> · เลิกทาส</span></li><li><span class="yr">1970</span><span><strong>โอมาน</strong> · เลิกทาสในสมัยสุลต่านกาบูส</span></li><li><span class="yr">1981</span><span><strong>มอริเตเนีย</strong> · เลิกทาสโดยกฤษฎีกา โดยไม่มีบทลงโทษทางอาญา</span></li><li><span class="yr">2007</span><span><strong>มอริเตเนีย</strong> · ระบบทาสกลายเป็นอาชญากรรม</span></li></ol></div><div class="stack"><h2>ข้อเท็จจริงสองประการที่ควรวางไว้เคียงกัน</h2><div class="debate"><div><h3>ขบวนการที่ถือกำเนิดในโลกตะวันตก</h3><p>สหราชอาณาจักรทุ่มทรัพยากรมหาศาลให้กับการต่อต้านการค้าทาส: ระหว่างปี 1808 ถึง 1867 กองเรือแอฟริกาตะวันตก (West Africa Squadron) ยึดเรือได้ราว 1,600 ลำ และปลดปล่อยชาวแอฟริกันราว 150,000 คน Kaufmann และ Pape เห็นว่านี่คือ “ปฏิบัติการทางศีลธรรมระหว่างประเทศที่มีต้นทุนสูงที่สุดในประวัติศาสตร์สมัยใหม่อย่างห่างไกล”</p></div><div><h3>จ่ายให้นายทาส ไม่ใช่ผู้ถูกกระทำ</h3><p>การเลิกทาสของอังกฤษและฝรั่งเศสชดเชยให้แก่เจ้าของทาส ไม่เคยชดเชยให้แก่ทาส ในเฮติ อดีตทาสกลับเป็นฝ่ายที่ต้องจ่ายค่าชดเชยให้แก่เจ้าอาณานิคมจนถึงปี 1921-1922 การต่อต้านการค้าทาสยังถูกใช้เป็นข้ออ้างในการล่าอาณานิคมแอฟริกาด้วย</p></div></div></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://en.wikipedia.org/wiki/History_of_slavery_in_the_Muslim_world">Wikipedia, History of slavery in the Muslim world</a> (แหล่งข้อมูลทุติยภูมิ)</li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/slave-trade-1">BnF Heritage</a></li><li>ปี 1848, 1865 และ 1888: เป็นหมุดหมายที่ใช้กันทั่วไป รอตรวจสอบกับแหล่งข้อมูลปฐมภูมิ</li></ul></div></div></section>
+<section class="view" id="v-debat"><div class="wrap stack-lg"><div class="stack read"><a class="back" href="#pourquoi">→ เหตุใดจึงพูดถึงการค้าทาสแอตแลนติกเป็นหลัก?</a><span class="eyebrow">ประวัติศาสตรนิพนธ์และความทรงจำ</span><h1>เหตุใดความทรงจำของโลกตะวันตกจึงมุ่งอยู่ที่การค้าทาสแอตแลนติก</h1><p class="lead">หากระบบทาสมีอยู่ทั่วไปทุกแห่ง เหตุใดการถกเถียงสาธารณะในฝรั่งเศส สหราชอาณาจักร หรือสหรัฐอเมริกาจึงแทบจะพูดถึงแต่การค้าทาสแอตแลนติก? นักประวัติศาสตร์เสนอเหตุผลหลายประการ และมีความเห็นขัดแย้งกันในเรื่องประโยชน์ของการเปรียบเทียบ</p></div><div class="stack read"><h2>สี่เหตุผล</h2><p><strong>ลูกหลานเป็นพลเมือง</strong> ลูกหลานของทาสในแอตแลนติกอาศัยอยู่ในสังคมที่เคยกดขี่พวกเขาเป็นทาส หรือในสังคมที่ก่อกำเนิดจากสังคมเหล่านั้น (หมู่เกาะแอนทิลลีส สหรัฐอเมริกา บราซิล เฮติ) และเรียกร้องเรื่องความทรงจำและการชดใช้ความเสียหาย: แผนสิบประการของประชาคมแคริบเบียน (CARICOM, 2014) และปี 2025 ซึ่งสหภาพแอฟริกากำหนดให้เป็นปีแห่งการชดใช้ความเสียหาย การค้าทาสสายตะวันออกทิ้งชุมชนพลัดถิ่นที่มองเห็นได้ไว้เพียงไม่มาก</p><p><strong>รัฐออกกฎหมายเกี่ยวกับอาชญากรรมของตนเอง</strong> กฎหมาย Taubira ลงวันที่ 21 พฤษภาคม 2001 รับรองว่าการค้าทาสข้ามมหาสมุทรแอตแลนติก การค้าทาสในมหาสมุทรอินเดีย และระบบทาส “ที่กระทำตั้งแต่ศตวรรษที่ 15” เป็นอาชญากรรมต่อมนุษยชาติ ; กฎหมายนี้ไม่ได้ระบุถึงการค้าทาสข้ามทะเลทรายซาฮาราหรือการค้าทาสภายในแอฟริกา</p><p><strong>เป็นการค้าทาสที่มีหลักฐานมากที่สุด</strong> เป็นการค้าทาสสายเดียวที่ถูกสร้างขึ้นใหม่ทีละเที่ยวเรือในฐานข้อมูลสาธารณะ</p><p><strong>ธรรมเนียมการวิพากษ์ตนเองของประเทศประชาธิปไตย</strong> มักถูกยกขึ้นอ้าง แต่ไม่มีงานศึกษาเฉพาะใดยืนยันได้: นี่เป็นเพียงสมมติฐาน</p></div><div class="stack"><h2>เปรียบเทียบหรือเน้นความเป็นเอกลักษณ์: ข้อโต้แย้งที่ดีที่สุด</h2><div class="debate"><div><h3>เพื่อประวัติศาสตร์แบบองค์รวม</h3><p>Olivier Pétré-Grenouilleau (<em>Les Traites négrières</em>, 2004) เสนอตัวเลขผู้ถูกส่งข้ามแอตแลนติกราว 11 ล้านคน 17 ล้านคนสำหรับการค้าทาสสายตะวันออก และ 14 ล้านคนสำหรับการค้าทาสภายในแอฟริกา ระบบทาสเป็นสถาบันที่มีอยู่แทบทุกแห่ง รัฐในแอฟริกาก็มีส่วนร่วม และประวัติศาสตร์ที่มุ่งเน้นแต่ยุโรปก็กลับกลายเป็นประวัติศาสตร์ที่ยึดยุโรปเป็นศูนย์กลางอย่างย้อนแย้ง เขาปฏิเสธ “มาตราริกเตอร์ของความทุกข์ทรมาน” ทุกรูปแบบ และเห็นว่าการค้าทาสไม่ใช่การฆ่าล้างเผ่าพันธุ์ เพราะมุ่งแสวงประโยชน์ ไม่ใช่มุ่งกำจัด</p></div><div><h3>เพื่อความเฉพาะของแอตแลนติก</h3><p>ระบบแอตแลนติกแตกต่างในเชิงคุณภาพ: ทาสเป็นสังหาริมทรัพย์ที่มีมูลค่า 30 ถึง 60 % ของไร่เพาะปลูก สถานะสืบทอดทางสายเลือดที่กำหนดตามสีผิว ประชากรลดลงตามธรรมชาติ 20 % ต่อทศวรรษในหมู่เกาะแคริบเบียน ทั้งหมดนี้เกิดขึ้นใจกลางสังคมที่ประกาศเรื่องเสรีภาพและความเสมอภาค ผลของมันยังสืบเนื่องมา: การเหยียดเชื้อชาติ หนี้สินอย่างกรณีของเฮติ และความเหลื่อมล้ำ</p></div></div></div><div class="stack read"><h2>กรณี Pétré-Grenouilleau</h2><p>ในปี 2005 กลุ่ม Collectif des Antillais-Guyanais-Réunionnais ฟ้องนักประวัติศาสตร์ผู้นี้ต่อศาลโดยอ้างกฎหมาย Taubira แล้วถอนฟ้องในต้นปี 2006 คำฟ้องมุ่งที่การที่เขาปฏิเสธคำว่า “การฆ่าล้างเผ่าพันธุ์” ไม่ใช่ตัวเลขเปรียบเทียบของเขา Françoise Vergès ซึ่งขณะนั้นอยู่ในคณะกรรมการเพื่อความทรงจำเรื่องระบบทาส เห็นว่าคำฟ้องนี้ “ยอมรับไม่ได้” แถลงการณ์ “เสรีภาพเพื่อประวัติศาสตร์” (Liberté pour l'histoire) ซึ่งมีครูและนักวิจัยเกือบ 600 คนลงนาม จึงเรียกร้องให้ฝ่ายนิติบัญญัติเลิกตัดสินชี้ขาดประวัติศาสตร์</p></div><div class="stack read"><h2>จุดร่วม</h2><p>Orlando Patterson (<em>Slavery and Social Death</em>, 1982) เปรียบเทียบ 66 สังคม และนิยามระบบทาสโดยไม่ใช้เชื้อชาติเป็นเกณฑ์ งานของเขาเป็นประโยชน์ต่อทั้งสองฝ่าย: สถาบันนี้มีอยู่ทั่วไป แต่การแบ่งแยกตามเชื้อชาติเป็นสิ่งที่เพิ่มเข้ามาในแอตแลนติก นอกจากนี้ ผู้เชี่ยวชาญด้านเกาหลี สยาม หรือสปาร์ตายังย้ำว่าระบบจำนวนมากไม่ตรงกับนิยามของทาสในฐานะสิ่งของ ซึ่งทำให้การเปรียบเทียบด้วยตัวเลขล้วนๆ มีข้อจำกัด</p><p>นักสังคมวิทยา Jean-Michel Chaumont ผู้เขียน <em>La Concurrence des victimes</em> (1997) เตือนถึงการแข่งขันกันอ้างความเป็นหนึ่งเดียวระหว่างความทรงจำต่างๆ</p></div><div class="callout blue read"><strong>แนวทางบรรณาธิการของเว็บไซต์นี้</strong><p>ไม่มีการตัดสินว่าการค้าทาสสายใด “เลวร้ายกว่า” สายอื่น แต่ละระบบได้รับการบรรยายทีละเกณฑ์ พร้อมตัวเลขที่ระบุผู้เสนอ ข้อถกเถียง และผู้มีบทบาททุกฝ่าย: พ่อค้าชาวยุโรป อาหรับ และแอฟริกัน รัฐตาตาร์และออตโตมัน ตลอดจนการกบฏ การถกเถียงภายใน และขบวนการเลิกทาส</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia, กฎหมาย Taubira</a> (ตัวบทรอตรวจสอบใน Légifrance)</li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">บทสัมภาษณ์ Pétré-Grenouilleau ใน JDD (2005) ตีพิมพ์ซ้ำโดย Herodote.net</a> (เว็บไซต์เผยแพร่ความรู้ที่มีจุดยืนชัดเจน)</li><li><a href="https://www.timeshighereducation.com/node/92737">Times Higher Education เกี่ยวกับกรณีนี้</a></li><li><a href="https://www.college-de-france.fr/fr/agenda/conferencier-invite/la-concurrence-des-victimes-25-ans-plus-tard/extension-du-domaine-de-la-lutte">Jean-Michel Chaumont, Collège de France, 2022</a></li><li><a href="https://scholar.harvard.edu/sites/scholar.harvard.edu/files/vbrown/files/brown-socialdeath.pdf">Vincent Brown, “Social Death and Political Life”, AHR, 2009</a></li></ul></div></div></section>
+<section class="view" id="v-aujourdhui"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">ระบบทาสสมัยใหม่ · 2021</span><h1>ระบบทาสในปัจจุบัน</h1><p class="lead">แม้จะถูกห้ามทุกแห่ง ระบบทาสก็ยังไม่หมดไป ตามข้อมูลขององค์การแรงงานระหว่างประเทศ ในปี 2021 มีผู้คน 50 ล้านคนอยู่ในสภาพ “ระบบทาสสมัยใหม่”</p></div><div class="figures"><div class="fig"><span class="n">50 ล้าน</span><span class="l">ผู้คนในระบบทาสสมัยใหม่</span><span class="s">ณ วันใดวันหนึ่งในปี 2021 เพิ่มขึ้น 10 ล้านคนจากปี 2016</span></div><div class="fig"><span class="n">28 ล้าน</span><span class="l">แรงงานบังคับ</span><span class="s">86 % อยู่ในภาคเอกชน 14 % ถูกบังคับโดยรัฐ</span></div><div class="fig"><span class="n">22 ล้าน</span><span class="l">การบังคับแต่งงาน</span><span class="s">65 % อยู่ในภูมิภาคเอเชีย-แปซิฟิก</span></div><div class="fig"><span class="n">3.3 ล้าน</span><span class="l">เด็กที่ตกเป็นแรงงานบังคับ</span><span class="s">ผู้ย้ายถิ่นมีความเสี่ยงสูงกว่าเกินสามเท่า</span></div></div><div class="stack read"><h2>ที่ใดบ้าง?</h2><p>Global Slavery Index 2023 จัดให้เกาหลีเหนือ เอริเทรีย และมอริเตเนีย อยู่ในอันดับต้นในแง่สัดส่วนของประชากรที่ได้รับผลกระทบ รัฐอาหรับมีอัตราการบังคับแต่งงานสูงที่สุด ประเทศกลุ่ม G20 นำเข้าสินค้าที่มีความเสี่ยงด้านแรงงานบังคับมูลค่าราว 468,000 ล้านดอลลาร์สหรัฐต่อปี ในจำนวนนี้ 170,000 ล้านดอลลาร์เป็นของสหรัฐอเมริกา</p></div><div class="callout read"><strong>เหตุใดตัวเลขนี้จึงเทียบกับการค้าทาสไม่ได้</strong><p>ตัวเลข 50 ล้านเป็นจำนวนที่วัด ณ วันใดวันหนึ่ง ส่วน 12.5 ล้านของแอตแลนติก หรือ 8 ถึง 17 ล้านของการค้าทาสสายตะวันออก เป็นยอดสะสมตลอดสามถึงสิบสองศตวรรษ การเขียนว่า “ปัจจุบันมีทาสมากกว่าตลอดช่วงการค้าทาสแอตแลนติกถึงสี่เท่า” จึงไม่ถูกต้อง นอกจากนี้ “ระบบทาสสมัยใหม่” ยังรวมการบังคับแต่งงานและสถานการณ์ที่ไม่มีการถือกรรมสิทธิ์ทางกฎหมาย ขณะที่ระบบทาสในประวัติศาสตร์ส่วนใหญ่เป็นสถานะทางกฎหมายที่สืบทอดและซื้อขายได้</p></div><div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0">ILO, แถลงข่าวเดือนกันยายน 2022</a></li><li><a href="https://alliance87.org/sites/default/files/2023-06/Global%20Estimates%20of%20Modern%20Slavery%20Forced%20Labour%20and%20Forced%20Marriage.pdf">ILO, Walk Free และ IOM, Global Estimates of Modern Slavery, 2022</a></li><li><a href="https://cdn.walkfree.org/content/uploads/2023/05/24144628/GSI-2023-Executive-Summary.pdf">Walk Free, Global Slavery Index 2023</a></li></ul></div></div></section>
+<section class="view" id="v-pourquoi"><div class="wrap stack-lg"><div class="stack read"><span class="eyebrow">ความทรงจำและการถกเถียงสาธารณะ</span><h1>เหตุใดจึงพูดถึงการค้าทาสแอตแลนติกเป็นหลัก?</h1><p class="lead">ระบบทาสเคยมีอยู่ในทุกทวีป และการค้าทาสสายอื่นก็ยาวนานหรือมีขนาดใหญ่ไม่แพ้กัน แต่ในฝรั่งเศส สหราชอาณาจักร หรือสหรัฐอเมริกา การถกเถียงสาธารณะเกือบทั้งหมดมุ่งอยู่ที่การค้าทาสแอตแลนติก นี่ไม่ใช่เรื่องบังเอิญ: มีหกเหตุผลที่อธิบายเรื่องนี้ได้ แม้แต่ละข้อจะได้รับการพิสูจน์มากน้อยไม่เท่ากัน</p></div>
+<div class="figures"><div class="fig"><span class="n">≈ 4 ล้าน</span><span class="l">ทาสในสหรัฐอเมริกาปี 1860</span><span class="s">เทียบกับชาวแอฟริกันราว 388,000 คนที่ขึ้นฝั่งโดยตรงในอเมริกาเหนือ: เป็นประชากรที่สืบเผ่าพันธุ์ต่อมา และลูกหลานในปัจจุบันเป็นพลเมือง</span></div><div class="fig"><span class="n">2001</span><span class="l">กฎหมาย Taubira</span><span class="s">ฝรั่งเศสรับรองว่าการค้าทาสแอตแลนติกและการค้าทาสในมหาสมุทรอินเดียเป็นอาชญากรรมต่อมนุษยชาติ โดยไม่ระบุถึงการค้าทาสสายอื่น</span></div><div class="fig"><span class="n">1888</span><span class="l">การเลิกทาสครั้งสุดท้ายในทวีปอเมริกา</span><span class="s">ในบราซิล เมื่อเทียบกับความยาวของประวัติศาสตร์ นี่เป็นเหมือนเมื่อวาน: เพียงสี่ถึงห้าชั่วคน</span></div></div>
+<div class="stack read"><h2>1. ลูกหลานอาศัยอยู่ในประเทศที่เกี่ยวข้อง</h2><p>นี่คือเหตุผลที่ถูกยกขึ้นมาบ่อยที่สุด ลูกหลานของชาวแอฟริกันที่ถูกส่งไปยังทวีปอเมริกาเป็นพลเมืองของประเทศที่เคยกดขี่พวกเขาเป็นทาส หรือของประเทศที่ก่อกำเนิดจากประเทศเหล่านั้น: หมู่เกาะแอนทิลลีสและเฟรนช์เกียนา สหรัฐอเมริกา บราซิล เฮติ และหมู่เกาะแคริบเบียนของอังกฤษ พวกเขานำความทรงจำนี้เข้าสู่การถกเถียงสาธารณะ ในรัฐสภา ในพิพิธภัณฑ์ และในครอบครัว</p><p>การค้าทาสสายตะวันออกทิ้งชุมชนพลัดถิ่นที่มองเห็นได้ไว้น้อยกว่ามาก นักประวัติศาสตร์อธิบายว่าเป็นเพราะผู้ชายส่วนหนึ่งถูกตอน สัดส่วนผู้หญิงที่ถูกส่งไปสูง และการผสมกลมกลืนของบุตรที่เกิดจากนางบำเรอซึ่งมักเกิดมาเป็นไท Tidiane N'Diaye เทียบลูกหลานของการค้าทาสสายตะวันออกราว 1 ล้านคน กับ 70 ล้านคนของการค้าทาสแอตแลนติก แต่ตัวเลขทั้งสองนี้ไม่มีการอ้างอิงแหล่งที่มา</p></div>
+<div class="stack read"><h2>2. รัฐออกกฎหมายเกี่ยวกับอาชญากรรมของตนเอง</h2><p>กฎหมายฝรั่งเศสลงวันที่ 21 พฤษภาคม 2001 ที่เรียกว่ากฎหมาย Taubira รับรองว่าการค้าทาสข้ามมหาสมุทรแอตแลนติก การค้าทาสในมหาสมุทรอินเดีย และระบบทาส “ที่กระทำตั้งแต่ศตวรรษที่ 15” ต่อประชากรแอฟริกัน ชนพื้นเมืองอเมริกัน ชาวมาลากาซี และชาวอินเดีย เป็นอาชญากรรมต่อมนุษยชาติ กฎหมายนี้ไม่ได้ระบุถึงการค้าทาสข้ามทะเลทรายซาฮาราหรือการค้าทาสภายในแอฟริกา การตีความที่เป็นไปได้ประการหนึ่ง ซึ่งผู้สนับสนุนกฎหมายไม่ได้กล่าวไว้ด้วยถ้อยคำเช่นนี้ คือสาธารณรัฐที่ยอมรับอาชญากรรมของตนย่อมมุ่งไปที่อาชญากรรมที่ตนมีส่วนเกี่ยวข้องก่อน</p><p>สถาบันต่างๆ ตามมา: อนุสรณ์สถานการเลิกทาสที่น็องต์ (2012) อนุสรณ์สถาน ACTe ในกัวเดอลูป (2015) และมูลนิธิเพื่อความทรงจำเรื่องระบบทาส (2019) ในเดือนเมษายน 2025 Emmanuel Macron ยอมรับว่าค่าชดเชยที่บังคับให้เฮติจ่ายในปี 1825 ทำให้เฮติต้องเผชิญ “พลังอันอยุติธรรมของประวัติศาสตร์” ส่วนสหราชอาณาจักรได้เปิดเผยเอกสารจดหมายเหตุเกี่ยวกับเงิน 20 ล้านปอนด์ที่จ่ายให้แก่เจ้าของทาสในปี 1833</p></div>
+<div class="stack read"><h2>3. เป็นการค้าทาสที่มีหลักฐานมากที่สุด</h2><p>การค้าทาสแอตแลนติกเป็นสายเดียวที่ถูกสร้างขึ้นใหม่ทีละเที่ยวเรือ ฐานข้อมูล SlaveVoyages บันทึกการเดินเรือหลายหมื่นเที่ยว และคำนวณว่ามีชาวแอฟริกันถูกนำขึ้นเรือ 12.5 ล้านคนระหว่างปี 1501 ถึง 1875 สำหรับการค้าทาสสายตะวันออก ตัวเลขประมาณการอยู่ระหว่าง 8 ถึง 25 ล้านตามแต่ผู้เขียน และนักประวัติศาสตร์ Klas Rönnbäck ย้ำว่าสำหรับศตวรรษระหว่างปี 650 ถึง 1400 ตัวเลข “ทำได้เพียงการคาดเดา” เราพูดถึงสิ่งที่วัด สอน และแสดงให้เห็นได้ง่ายกว่า</p></div>
+<div class="stack read"><h2>4. ระบบทาสที่อิงสีผิว ซึ่งมรดกยังมองเห็นได้</h2><p>ในทวีปอเมริกา สถานะทาสสืบทอดทางสายเลือดและกำหนดตามสีผิว ซึ่งไม่ใช่กรณีของโรม เกาหลี หรือการค้าทาสสายตะวันออกส่วนใหญ่ ที่เส้นแบ่งเป็นเรื่องศาสนาเป็นหลัก การแบ่งแยกตามเชื้อชาตินี้อยู่รอดมาหลังการเลิกทาส: การแบ่งแยกสีผิวในสหรัฐอเมริกาจนถึงทศวรรษ 1960 การเลือกปฏิบัติ และความเหลื่อมล้ำทางทรัพย์สิน อดีตของระบบทาสจึงยังผูกพันกับประเด็นการเมืองในปัจจุบัน ทำให้ยังเป็นเรื่องร่วมสมัยอยู่เสมอ</p></div>
+<div class="stack read"><h2>5. อดีตที่ใกล้ตัว ผูกพันกับหนี้สินและการชดใช้ความเสียหาย</h2><p>บราซิลเพิ่งเลิกทาสในปี 1888 เฮติชำระค่าชดเชยปี 1825 และเงินกู้ที่เกี่ยวข้องจนถึงปี 1921-1922 การเลิกทาสชดเชยให้แก่นายทาส ไม่เคยชดเชยให้แก่ทาส ข้อเท็จจริงเหล่านี้หล่อเลี้ยงข้อเรียกร้องการชดใช้ความเสียหาย: แผนสิบประการของ CARICOM (2014) และหัวข้อประจำปี 2025 ของสหภาพแอฟริกาซึ่งอุทิศให้กับการชดใช้ความเสียหาย การถกเถียงที่เกี่ยวกับเงินและความรับผิดชอบของรัฐย่อมยังคงมีชีวิตชีวาอยู่เสมอ</p></div>
+<div class="stack read"><h2>6. ธรรมเนียมการวิพากษ์ตนเอง? เป็นเพียงสมมติฐาน</h2><p>มักมีการเสนอว่าประเทศประชาธิปไตยตะวันตก ซึ่งมีหอจดหมายเหตุที่เปิดกว้าง เสรีภาพสื่อ และธรรมเนียมการต่อต้านระบบทาส ยินดีพิจารณาอดีตของตนเองมากกว่าสังคมอื่น ข้อโต้แย้งนี้ฟังขึ้น แต่ไม่มีงานศึกษาใดยืนยัน: จึงต้องนำเสนอในฐานะสมมติฐาน</p></div>
+<div class="debate"><div><h3>สิ่งที่นักประวัติศาสตร์สายเปรียบเทียบวิจารณ์</h3><p>สำหรับ Olivier Pétré-Grenouilleau การมุ่งความสนใจเช่นนี้ก่อให้เกิดประวัติศาสตร์ที่ยึดยุโรปเป็นศูนย์กลางอย่างย้อนแย้ง: มันทิ้งการค้าทาสสายตะวันออกและการค้าทาสภายในแอฟริกาไว้ในเงามืด รวมถึงบทบาทของรัฐในแอฟริกาอย่างดาโฮมีย์หรือรัฐคอลีฟะฮ์โซโกโต เขาเรียกร้อง “ประวัติศาสตร์แบบองค์รวม” ของการค้าทาส Tidiane N'Diaye พูดถึงการค้าทาสสายตะวันออกที่ “ถูกปิดบัง” นักประวัติศาสตร์อย่าง Pierre Nora, Pierre Vidal-Naquet และ Guy Pervillé ก็วิจารณ์ความทรงจำที่พวกเขาเห็นว่าเลือกสรร และการที่ฝ่ายนิติบัญญัติตัดสินชี้ขาดประวัติศาสตร์</p></div><div><h3>สิ่งที่นักประวัติศาสตร์อีกฝ่ายตอบโต้</h3><p>สำหรับ Marcel Dorigny, Gérard Noiriel หรือ Catherine Coquery-Vidrovitch เป็นเรื่องสมเหตุสมผลที่ประเทศหนึ่งจะพิจารณาอาชญากรรมของตนเองก่อน และกฎหมาย Taubira ไม่ได้คุกคามงานวิจัย พวกเขายังย้ำว่าการเปรียบเทียบการค้าทาสบางครั้งถูกใช้เพื่อลดทอนความร้ายแรง: เรื่องเล่าว่าด้วยการค้าทาส “มุสลิม” เคยถูกใช้เป็นข้ออ้างในการล่าอาณานิคมแอฟริกาในศตวรรษที่ 19 และข้อโต้แย้งเรื่องการค้าทาสสายอื่นก็มักถูกยกขึ้นมาค้านข้อเรียกร้องการชดใช้ความเสียหาย</p></div></div>
+<div class="callout blue read"><strong>สิ่งที่ไม่ได้หมายความ</strong><p>การที่มีการพูดถึงการค้าทาสแอตแลนติกมากกว่า ไม่ได้หมายความว่าระบบอื่นอ่อนโยนกว่า หรือควรถูกปล่อยให้เงียบหาย และก็ไม่ได้หมายความในทางกลับกันเช่นกัน เว็บไซต์นี้บรรยายแต่ละระบบด้วยตัวเลข กฎเกณฑ์ และข้อถกเถียงของระบบนั้นเอง เพื่อให้ทุกคนเปรียบเทียบได้จากหลักฐาน โดยไม่จัดลำดับความทุกข์ทรมาน</p></div>
+<div class="stack read"><h2>อ่านเพิ่มเติม</h2><p><a href="#debat">ข้อถกเถียงทางประวัติศาสตรนิพนธ์โดยละเอียด</a> · <a href="#traite-atlantique">การค้าทาสแอตแลนติก</a> · <a href="#traites-orientales">การค้าทาสสายตะวันออก</a> · <a href="#comparer">เปรียบเทียบทุกระบบ</a></p></div>
+<div class="stack read"><h2>แหล่งข้อมูล</h2><ul class="src"><li><a href="https://fr.wikipedia.org/wiki/Loi_tendant_%C3%A0_la_reconnaissance_de_la_traite_et_de_l%27esclavage_en_tant_que_crime_contre_l%27humanit%C3%A9">Wikipédia, กฎหมาย Taubira</a> (แหล่งข้อมูลทุติยภูมิ ; ตัวบทรอตรวจสอบใน Légifrance)</li><li><a href="https://legacy.slavevoyages.org/assessment/estimates">SlaveVoyages, ตัวเลขประมาณการ</a></li><li><a href="https://www.pbs.org/wnet/african-americans-many-rivers-to-cross/history/how-many-slaves-landed-in-the-us/">Henry Louis Gates Jr., PBS</a></li><li><a href="https://www.aehnetwork.org/wp-content/uploads/2020/05/Ronnback_Slave_Trades_out_of_Africa.pdf">Klas Rönnbäck, “Slave trades out of Africa”</a></li><li><a href="https://heritage.bnf.fr/france-ameriques/en/haitis-independence-debt-slave-unit-account-1794-1922">BnF Heritage, หนี้ของเฮติ</a> ; <a href="https://www.elysee.fr/emmanuel-macron/2025/04/17/declaration-du-president-de-la-republique-sur-la-relation-entre-la-france-et-haiti">ทำเนียบเอลิเซ, แถลงการณ์วันที่ 17 เมษายน 2025</a></li><li><a href="https://www.ucl.ac.uk/lbs/project/context/">UCL, Legacies of British Slavery</a></li><li><a href="https://www.hrw.org/news/2025/09/04/african-caribbean-summit-should-address-reparations">Human Rights Watch, 2025</a> ; <a href="https://caricom.org/category/ten-point-plan-for-reparatory-justice">CARICOM, แผนสิบประการ</a></li><li><a href="https://www.herodote.net/L_histoire_de_l_esclavage_sans_prejuges-article-291.php">บทสัมภาษณ์ Pétré-Grenouilleau ใน JDD (2005) ตีพิมพ์ซ้ำโดย Herodote.net</a> (เว็บไซต์เผยแพร่ความรู้ที่มีจุดยืนชัดเจน)</li><li><a href="https://qantara.de/node/10064">Moritz Behrendt, บทวิจารณ์หนังสือ <em>Le Génocide voilé</em>, Qantara.de</a></li></ul></div>
+</div></section>
+
+<!-- METHODE -->
+<section class="view" id="v-methode">
+  <div class="wrap stack-lg">
+    <div class="stack read">
+      <span class="eyebrow">ระเบียบวิธีและแหล่งข้อมูล</span>
+      <h1>ตัวเลขได้มาอย่างไร</h1>
+      <p class="lead">จำนวนทาสแทบไม่เคยเป็นการนับจริง แต่เป็นการสร้างขึ้นใหม่ ซึ่งมีความหนักแน่นมากน้อยต่างกันตามหลักฐานจดหมายเหตุที่มีอยู่</p>
+      <p><strong>การค้าทาสแอตแลนติก</strong> ถูกสร้างขึ้นใหม่ทีละเที่ยวเรือในฐานข้อมูล SlaveVoyages (Eltis และ Richardson) โดยมีการประมาณค่าแทนในส่วนที่ขาดหาย นี่คือการค้าทาสที่วัดได้ดีที่สุด</p>
+      <p><strong>การค้าทาสสายตะวันออก</strong> อาศัยบันทึกของนักเดินทาง ทะเบียนที่ไม่สมบูรณ์ และการอนุมาน (Austen, Lovejoy, Manning) ตัวเลขของผู้เขียนแต่ละรายต่างกันได้ถึงสามเท่า</p>
+      <p><strong>การจู่โจมของชาวตาตาร์และบาร์บารี</strong> ประมาณโดยการคำนวณย้อนหลังจากจำนวนที่บันทึกไว้เป็นครั้งคราว ซึ่งเป็นวิธีที่ยังเป็นที่ถกเถียง</p>
+      <p><strong>สัดส่วนต่อประชากร</strong> (โรม เกาหลี โซโกโต สยาม) มาจากสำมะโนประชากรหรือการประมาณของผู้สังเกตการณ์ และขึ้นอยู่กับนิยามของระบบทาสที่เลือกใช้</p>
+    </div>
+    <div class="stack read">
+      <h2>ป้ายกำกับความน่าเชื่อถือ</h2>
+      <p><span class="pill flag">มีข้อโต้แย้ง</span> ช่วงตัวเลขที่ผู้เชี่ยวชาญยังถกเถียงกัน <span class="pill flag">แหล่งข้อมูลทุติยภูมิ</span> ตัวเลขที่ทราบจากงานสังเคราะห์ และอ้างถึงนักประวัติศาสตร์ที่ระบุชื่อ <span class="pill flag">รอตรวจสอบ</span> ข้อมูลที่ยังไม่ได้ตรวจสอบกับแหล่งข้อมูลปฐมภูมิสำหรับต้นแบบนี้</p>
+    </div>
+    <div class="stack read">
+      <h2>หนังสืออ้างอิง</h2>
+      <ul class="src">
+        <li>Olivier Pétré-Grenouilleau, <em>Les traites négrières. Essai d'histoire globale</em>, Gallimard, 2004.</li>
+        <li>Paul Lovejoy, <em>Transformations in Slavery</em>, พิมพ์ครั้งที่ 3, Cambridge UP, 2012.</li>
+        <li>Orlando Patterson, <em>Slavery and Social Death</em>, Harvard UP, 1982.</li>
+        <li>David Eltis และ David Richardson, <em>Atlas of the Transatlantic Slave Trade</em>, Yale UP, 2010 ; <a href="https://www.slavevoyages.org">slavevoyages.org</a>.</li>
+        <li>Andrés Reséndez, <em>The Other Slavery</em>, 2016.</li>
+        <li>ILO, Walk Free, IOM, <a href="https://www.ilo.org/resource/news/50-million-people-worldwide-modern-slavery-0"><em>Global Estimates of Modern Slavery</em></a>, 2022.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">แผนที่ระบบทาส · ดูแหล่งข้อมูลโดยละเอียดได้ในแต่ละหน้า</div></footer>
+
+<script>
+const D = [
+ {id:"meso",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"เมโสโปเตเมีย",region:"สมัยโบราณ",start:-2100,end:-539,per:"สหัสวรรษที่ 3-1 ก่อน ค.ศ.",vol:"ไม่มีตัวเลขประมาณการโดยรวม",src:"สงคราม หนี้สิน การซื้อ",her:"ยังไม่มีหลักฐานชัดเจน",race:"ไม่",aff:"ปลดปล่อยหลัง 3 ปีสำหรับผู้เป็นทาสเพราะหนี้ (ฮัมมูราบี มาตรา 117)",fin:"—",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"egy",page:"mesopotamie-egypte",vmax:null,vtype:null,pmax:null,name:"อียิปต์โบราณ",region:"สมัยโบราณ",start:-3000,end:-30,per:"สหัสวรรษที่ 3 ก่อน ค.ศ. – 30 ก่อน ค.ศ.",vol:"ไม่มีตัวเลขประมาณการ ; พีระมิดสร้างโดยแรงงานที่ได้รับค่าจ้างหรือถูกเกณฑ์",src:"สงคราม หนี้สิน การขายตัวเองหรือขายบุตร",her:"แตกต่างกันไป",race:"ไม่",aff:"การแต่งงาน การรับใช้ในวิหาร",fin:"—",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"ath",page:"grece",vmax:0.08,vtype:"eff",pmax:null,name:"เอเธนส์",region:"สมัยโบราณ",start:-600,end:-300,per:"ศตวรรษที่ 6-4 ก่อน ค.ศ.",vol:"ทาส 20,000 ถึง 80,000 คน",src:"สงคราม การปล้นสะดมทางทะเล การค้า (ส่วนใหญ่ไม่ใช่ชาวกรีก)",her:"oui",race:"ไม่ (ชาติพันธุ์)",aff:"พบบ่อยในศตวรรษที่ 4",fin:"โซลอนห้ามการเป็นทาสเพราะหนี้ของชาวเอเธนส์",flags:["มีข้อโต้แย้ง"]},
+ {id:"spa",page:"grece",vmax:0.224,vtype:"eff",pmax:null,name:"สปาร์ตา (เฮลอต)",region:"สมัยโบราณ",start:-700,end:-146,per:"ศตวรรษที่ 8-2 ก่อน ค.ศ.",vol:"170,000 ถึง 224,000 คน มากกว่าพลเมืองอย่างมาก",src:"การพิชิตลาโคเนียและเมสเซเนีย การเกิด",her:"oui",race:"ไม่",aff:"การรับราชการทหาร การไถ่ตัว",fin:"เมสเซเนียได้รับการปลดปล่อยในปี 369 ก่อน ค.ศ.",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"rome",page:"rome",vmax:3,vtype:"eff",pmax:15,name:"โรม",region:"สมัยโบราณ",start:-200,end:476,per:"ศตวรรษที่ 2 ก่อน ค.ศ. – ศตวรรษที่ 5",vol:"อิตาลี: 1-1.5 ล้าน (Scheidel) ถึง 3 ล้าน (Brunt) ; จักรวรรดิ: 10-15 %",src:"สงคราม การเกิด (≈ 3/4) เด็กที่ถูกทอดทิ้ง การปล้นสะดมทางทะเล",her:"oui",race:"ไม่",aff:"พบบ่อย ได้รับสถานะพลเมือง",fin:"ค่อยๆ เปลี่ยนไปเป็นระบบโคโลนัสและระบบข้าติดที่ดิน",flags:["มีข้อโต้แย้ง"]},
+ {id:"chine",page:"chine",vmax:2,vtype:"eff",pmax:null,name:"จีน",region:"เอเชีย",start:-1600,end:1910,per:"ราชวงศ์ซาง – 1909/1910",vol:"สัดส่วนน้อย ; ≈ 2 ล้าน เมื่อราชวงศ์ชิงพิชิตจีน",src:"การลงโทษ สงคราม หนี้สิน การขายบุตร",her:"บางส่วน",race:"ไม่",aff:"การปลดปล่อยโดยจักรพรรดิ (1723-1730)",fin:"1909-1910 ; ยังมีการปฏิบัติจนถึงปี 1949",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"coree",page:"coree",vmax:null,vtype:null,pmax:40,name:"เกาหลี (nobi)",region:"เอเชีย",start:918,end:1894,per:"918 – 1894",vol:"≥ 30 % ของประชากร (ศตวรรษที่ 15-17) สูงถึง 40 % ในภาคใต้",src:"หนี้สิน ทุพภิกขภัย การเกิด",her:"oui",race:"ไม่",aff:"การไถ่ตัว การรับราชการทหาร",fin:"1801, 1886, 1894",flags:["แหล่งข้อมูลทุติยภูมิ","มีข้อโต้แย้ง"]},
+ {id:"inde",page:"inde",vmax:9,vtype:"eff",pmax:null,name:"อินเดีย",region:"เอเชีย",start:1206,end:1861,per:"รัฐสุลต่านเดลี – 1861",vol:"1.1 ล้าน ถึง 8-9 ล้าน ราวปี 1840 ขึ้นอยู่กับนิยาม",src:"สงคราม การค้างชำระภาษี ความเป็นทาสในภาคเกษตรของวรรณะต่ำ",her:"oui",race:"ไม่ (ซ้อนทับกับวรรณะ)",aff:"ยังไม่มีหลักฐานชัดเจน",fin:"1843, ประมวลกฎหมายอาญาปี 1861",flags:["มีข้อโต้แย้ง"]},
+ {id:"siam",page:"siam",vmax:null,vtype:null,pmax:33,name:"สยาม",region:"เอเชีย",start:1600,end:1915,per:"ศตวรรษที่ 17 – 1915",vol:"1/4 ถึง 1/3 ของประชากร ราวปี 1854 (Pallegoix)",src:"หนี้สินเป็นหลัก สงคราม การเกิด",her:"เป็นไปได้",race:"ไม่",aff:"ไถ่ตัวได้ตามกฎหมาย",fin:"1874 → 1905 → 1915",flags:[]},
+ {id:"asiec",page:"asie-centrale",vmax:1,vtype:"flux",pmax:null,name:"คีวาและบูคารา",region:"เอเชีย",start:1500,end:1873,per:"ศตวรรษที่ 16 – 1873",vol:"≈ ชาวเปอร์เซีย 1 ล้านคนถูกจับเป็นทาส (ครึ่งแรกของศตวรรษที่ 19)",src:"การจู่โจมของชาวเติร์กเมนและคาซัค",her:"ยังไม่มีหลักฐานชัดเจน",race:"ศาสนา (ชีอะห์ คริสเตียน)",aff:"ยังไม่มีหลักฐานชัดเจน",fin:"1873 ภายใต้แรงกดดันของรัสเซีย",flags:["รอตรวจสอบ"]},
+ {id:"orient",vmax:25,vtype:"flux",pmax:null,name:"การค้าทาสสายตะวันออก",region:"แอฟริกาและโลกมุสลิม",start:650,end:1900,per:"650 – 1900 (และหลังจากนั้น)",vol:"8 ล้าน (Alencastro) ถึง 17 ล้าน (Austen), 25 ล้าน (Bairoch) ; ซาฮารา: 7.42 ล้าน (Lovejoy)",src:"การจู่โจม สงคราม การซื้อจากรัฐในแอฟริกา",her:"แตกต่างกันไป",race:"ศาสนาเป็นหลัก ; อคติเรื่องสีผิวยังเป็นที่ถกเถียง",aff:"พบบ่อย มีการผสมกลมกลืน",fin:"1908 ถึง 1981 แล้วแต่ประเทศ",flags:["มีข้อโต้แย้ง"],page:"traites-orientales"},
+ {id:"afr",page:"afrique",vmax:2.5,vtype:"eff",pmax:50,name:"สังคมในแอฟริกา (โซโกโต ดาโฮมีย์…)",region:"แอฟริกาและโลกมุสลิม",start:1600,end:1942,per:"ศตวรรษที่ 17 – 1942 (เอธิโอเปีย)",vol:"โซโกโต ราวปี 1900: 1 ถึง 2.5 ล้าน หรือ 1/4 ถึง 1/2 ของประชากร",src:"สงคราม การจู่โจม บรรณาการ หนี้สิน",her:"บ่อยครั้ง",race:"ไม่",aff:"แตกต่างกันไป",fin:"1901 (ไนจีเรียตอนเหนือ), 1942 (เอธิโอเปีย), 1981 (มอริเตเนีย)",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"eumed",page:"europe-medievale",vmax:null,vtype:null,pmax:10,name:"ยุโรปยุคกลางและไวกิง",region:"ยุโรปและเมดิเตอร์เรเนียน",start:800,end:1334,per:"ศตวรรษที่ 9 – 14",vol:"≈ 10 % ของประชากรอังกฤษในปี 1086",src:"สงคราม การจู่โจมของไวกิง",her:"oui",race:"ไม่ (ศาสนา)",aff:"เปลี่ยนผ่านสู่ระบบข้าติดที่ดิน",fin:"1102 (อังกฤษ), 1334 (สวีเดน)",flags:[]},
+ {id:"medit",page:"europe-medievale",vmax:null,vtype:null,pmax:7.4,name:"เวนิส เจนัว ไอบีเรีย",region:"ยุโรปและเมดิเตอร์เรเนียน",start:1250,end:1798,per:"ศตวรรษที่ 13 – 18",vol:"เซบียา 1565: ≈ 7.4 % ของประชากร",src:"การค้าทาสในทะเลดำ สงคราม แอฟริกา",her:"oui",race:"ศาสนา แล้วจึงกลายเป็นชาวแอฟริกันมากขึ้นเรื่อยๆ",aff:"เป็นไปได้",fin:"มอลตา 1798",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"otto",page:"ottomans",vmax:null,vtype:null,pmax:20,name:"จักรวรรดิออตโตมัน",region:"ยุโรปและเมดิเตอร์เรเนียน",start:1350,end:1908,per:"ศตวรรษที่ 14 – 1908",vol:"≈ 1/5 ของคอนสแตนติโนเปิล (ศตวรรษที่ 16-17)",src:"การจู่โจมของชาวตาตาร์ ระบบเดฟชีร์เม การซื้อจากคอเคซัสและแอฟริกา",her:"ไม่ (บุตรของนางบำเรอ)",race:"ราคาและหน้าที่ขึ้นอยู่กับแหล่งกำเนิด",aff:"พบบ่อย เลื่อนสถานะได้",fin:"1830-1908 เป็นเพียงในนามเป็นส่วนใหญ่",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"tatar",page:"tatars",vmax:5,vtype:"flux",pmax:null,name:"การจู่โจมของชาวตาตาร์ไครเมีย",region:"ยุโรปและเมดิเตอร์เรเนียน",start:1441,end:1783,per:"1441 – 1783",vol:"2 ล้าน (İnalcık, 1500-1700) ถึง 5 ล้าน (Charnysh และ Lall)",src:"การจู่โจมในโปแลนด์-ลิทัวเนียและมัสโกวี",her:"—",race:"ศาสนา (คริสเตียน)",aff:"การไถ่ตัว",fin:"รัสเซียผนวกไครเมีย, 1783",flags:["มีข้อโต้แย้ง"]},
+ {id:"barb",vmax:1.25,vtype:"flux",pmax:null,name:"โจรสลัดบาร์บารี",region:"ยุโรปและเมดิเตอร์เรเนียน",start:1530,end:1830,per:"1530 – 1830",vol:"1 ถึง 1.25 ล้าน (Davis) ; จำนวนที่มีหลักฐาน 25,000-35,000",src:"การปล้นในทะเล การจู่โจมชายฝั่ง",her:"ไม่",race:"ศาสนา (คริสเตียน)",aff:"การไถ่ตัว การเปลี่ยนศาสนา",fin:"1816, 1830",flags:["มีข้อโต้แย้ง"],page:"barbaresques"},
+ {id:"russie",page:"russie",vmax:null,vtype:null,pmax:37.7,name:"รัสเซีย (kholops, ข้าติดที่ดิน)",region:"ยุโรปและเมดิเตอร์เรเนียน",start:1450,end:1861,per:"1450 – 1861",vol:"Kholops ≈ 10 % (Hellie) ; ข้าติดที่ดินของเอกชน 37.7 % ในปี 1857",src:"การขายตัวเอง หนี้สิน ; ระบบข้าติดที่ดินโดยกฎหมาย (1649)",her:"oui",race:"ไม่",aff:"พบน้อยสำหรับข้าติดที่ดิน",fin:"1861 (ผ่อนชำระค่าไถ่ถอนจนถึงปี 1907)",flags:[]},
+ {id:"azt",page:"ameriques",vmax:null,vtype:null,pmax:null,name:"แอซเท็ก",region:"ทวีปอเมริกา",start:1325,end:1521,per:"ศตวรรษที่ 14 – 16",vol:"ไม่มีตัวเลขประมาณการ",src:"การลงโทษ สงคราม หนี้สิน การขายตัวเอง",her:"ไม่",race:"ไม่",aff:"ใช่ ; บุตรเกิดมาเป็นไท",fin:"สเปนพิชิต",flags:["แหล่งข้อมูลทุติยภูมิ"]},
+ {id:"nwc",page:"ameriques",vmax:null,vtype:null,pmax:25,name:"ชายฝั่งตะวันตกเฉียงเหนือ",region:"ทวีปอเมริกา",start:1500,end:1880,per:"ก่อนยุคอาณานิคม – ศตวรรษที่ 19",vol:"สูงถึง 1/4 ของประชากรในบางกลุ่ม",src:"การจู่โจม การซื้อขายระหว่างกลุ่ม",her:"ยังไม่มีหลักฐานชัดเจน",race:"ไม่",aff:"ยังไม่มีหลักฐานชัดเจน",fin:"การล่าอาณานิคม",flags:[]},
+ {id:"amind",page:"ameriques",vmax:5,vtype:"flux",pmax:null,name:"การบังคับชนพื้นเมืองอเมริกันเป็นทาส",region:"ทวีปอเมริกา",start:1492,end:1900,per:"1492 – ราว 1900",vol:"2.5 ถึง 5 ล้าน (Reséndez, นิยามแบบกว้าง)",src:"สงคราม การจู่โจม ระบบเอนโกมิเอนดา แรงงานขัดหนี้",her:"แตกต่างกันไป",race:"ใช่",aff:"แตกต่างกันไป",fin:"กฎหมายสเปนปี 1542 ; ยังคงหลงเหลืออยู่",flags:["มีข้อโต้แย้ง"]},
+ {id:"atl",vmax:12.5,vtype:"flux",pmax:null,name:"การค้าทาสแอตแลนติกและอาณานิคม",region:"ทวีปอเมริกา",start:1501,end:1888,per:"1501 – 1888",vol:"ถูกนำขึ้นเรือ 12.5 ล้าน ขึ้นฝั่ง 10.7 ล้าน ; ฝรั่งเศส 1.38 ล้าน",src:"การซื้อจากรัฐและพ่อค้าชาวแอฟริกัน สงคราม การจู่โจม",her:"oui",race:"ใช่ (สีผิว)",aff:"น้อย ; น้อยมากในสหรัฐอเมริกา",fin:"สหราชอาณาจักร 1833, ฝรั่งเศส 1848, สหรัฐอเมริกา 1865, บราซิล 1888",flags:["รอตรวจสอบ"],page:"traite-atlantique"}
+];
+const isRace = r => ["amind","atl"].includes(r.id);
+
+/* มาตราส่วนของเส้นเวลา: -3000→0 ใช้ 22 %, 0→1500 ใช้ 33 %, 1500→2000 ใช้ 45 % */
+function x(y){
+  if(y<0) return 22*(y+3000)/3000;
+  if(y<1500) return 22+33*y/1500;
+  return 55+45*(Math.min(y,2000)-1500)/500;
+}
+function fmt(y){return y<0? "−"+(-y) : String(y);}
+
+function buildFrise(){
+  const f=document.getElementById("frise");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const row=document.createElement("div"); row.className="frow";
+    const n=document.createElement("span"); n.className="name"; n.textContent=r.name; n.title=r.name;
+    const t=document.createElement("div"); t.className="track";
+    const b=document.createElement("button"); b.type="button"; b.className="bar"+(isRace(r)?" race":"");
+    b.style.left=x(r.start)+"%"; b.style.width=Math.max(.6,x(r.end)-x(r.start))+"%";
+    b.setAttribute("aria-label",r.name+", "+r.per); b.title=r.name+" · "+r.per;
+    b.addEventListener("click",()=>{ document.getElementById("f-q").value=r.name; render(); location.hash="comparer"; });
+    t.appendChild(b); row.append(n,t); f.appendChild(row);
+  });
+  const ticks=document.getElementById("ticks");
+  [-3000,-2000,-1000,0,500,1000,1500,1700,1800,1900,2000].forEach(y=>{
+    const s=document.createElement("span"); s.style.left=x(y)+"%"; s.textContent=y===0?"0":fmt(y); ticks.appendChild(s);
+  });
+}
+function buildCards(){
+  const c=document.getElementById("cards");
+  [...D].sort((a,b)=>a.start-b.start).forEach(r=>{
+    const a=document.createElement("a"); a.className="card"+(r.page?" live":"");
+    a.href=r.page? "#"+r.page : "#comparer";
+    if(!r.page) a.addEventListener("click",()=>{document.getElementById("f-q").value=r.name; render();});
+    a.innerHTML=`<span class="per"></span><strong></strong><span class="soon">${r.page?"อ่านหน้านี้":"หน้านี้กำลังจัดทำ · ดูในตาราง"}</span>`;
+    a.querySelector(".per").textContent=r.per; a.querySelector("strong").textContent=r.name;
+    c.appendChild(a);
+  });
+}
+
+let sortKey=null, sortDir=1;
+function render(){
+  const q=document.getElementById("f-q").value.trim().toLowerCase();
+  const reg=document.getElementById("f-region").value;
+  const her=document.getElementById("f-her").checked, race=document.getElementById("f-race").checked;
+  let rows=D.filter(r=>(!reg||r.region===reg)&&(!her||r.her==="oui")&&(!race||isRace(r))&&(!q||(r.name+" "+r.vol+" "+r.src+" "+r.region).toLowerCase().includes(q)));
+  const desc=(fa)=>(a,b)=>{const x=fa(a),y=fa(b); if(x==null&&y==null) return a.start-b.start; if(x==null) return 1; if(y==null) return -1; return y-x;};
+  const mode=document.getElementById("f-sort").value;
+  if(sortKey==="name") rows.sort((a,b)=>a.name.localeCompare(b.name,"th")*sortDir);
+  else if(sortKey) rows.sort((a,b)=>(a[sortKey]-b[sortKey])*sortDir);
+  else if(mode==="vol") rows.sort(desc(r=>r.vmax));
+  else if(mode==="part") rows.sort(desc(r=>r.pmax));
+  else if(mode==="dur") rows.sort(desc(r=>r.end-r.start));
+  else if(mode==="end") rows.sort(desc(r=>r.end));
+  else rows.sort((a,b)=>a.start-b.start);
+  const note=document.getElementById("sortnote");
+  note.textContent = sortKey? "" : mode==="vol" ? "จัดอันดับตามตัวเลขประมาณการด้านสูงของแต่ละช่วง “ยอดสะสม” = ผลรวมตลอดทั้งช่วงเวลา ; “จำนวน ณ ขณะหนึ่ง” = จำนวนทาสที่มีอยู่ ณ เวลาใดเวลาหนึ่ง ตัวเลขทั้งสองแบบนำมาเทียบกันโดยตรงไม่ได้ ระบบที่ไม่มีตัวเลขประมาณการอยู่ท้ายรายการ"
+    : mode==="part" ? "จัดอันดับตามสัดส่วนสูงสุดของประชากรทาส ณ ช่วงเวลาหนึ่ง ระบบที่ไม่มีตัวเลขประมาณการอยู่ท้ายรายการ" : "";
+  const tb=document.getElementById("tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      `<span class="civ"></span><br><span class="pill"></span>${r.vtype?`<span class="pill">${r.vtype==="flux"?"ยอดสะสม":"จำนวน ณ ขณะหนึ่ง"}</span>`:""}${r.flags.map(f=>`<span class="pill flag">${f}</span>`).join("")}${r.page?` <a href="#${r.page}">อ่าน</a>`:""}`,
+      r.per, r.vol, r.src,
+      r.her==="oui"?'<span class="yes">ใช่</span>':r.her,
+      isRace(r)?`<span class="yes"></span>`:r.race,
+      r.aff, r.fin
+    ];
+    cells.forEach((h,i)=>{const td=document.createElement("td"); if(i===1) td.className="num";
+      if(i===0){td.innerHTML=h; td.querySelector(".civ").textContent=r.name; td.querySelector(".pill").textContent=r.region;}
+      else if(i===5&&isRace(r)){td.innerHTML=h; td.querySelector(".yes").textContent=r.race;}
+      else if(i===4&&r.her==="oui"){td.innerHTML=h;}
+      else td.textContent=h;
+      tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent="แสดง "+rows.length+" ระบบ จากทั้งหมด "+D.length+" ระบบ";
+}
+function initFilters(){
+  const s=document.getElementById("f-region");
+  [...new Set(D.map(r=>r.region))].forEach(r=>{const o=document.createElement("option"); o.value=r; o.textContent=r; s.appendChild(o);});
+  ["f-q","f-region","f-her","f-race"].forEach(id=>document.getElementById(id).addEventListener("input",render));
+  document.getElementById("f-sort").addEventListener("input",()=>{sortKey=null; render();});
+  document.querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.sort; sortDir = sortKey===k? -sortDir : 1; sortKey=k; render();}));
+}
+
+const CIV=[...new Set(D.map(r=>r.page))];
+const VIEWS=["accueil","comparer","civilisations","abolitions","debat","pourquoi","aujourdhui","methode",...CIV];
+function route(){
+  const h=location.hash.replace("#","");
+  const v=VIEWS.includes(h)?h:"accueil";
+  VIEWS.forEach(n=>document.getElementById("v-"+n).classList.toggle("active",n===v));
+  const navv=CIV.includes(v)?"civilisations":v;
+  document.querySelectorAll("nav.main a").forEach(a=>{ if(a.getAttribute("href")==="#"+navv) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
+  window.scrollTo(0,0);
+}
+function buildCivGroups(){
+  const box=document.getElementById("civgroups"); const seen=new Set();
+  [...new Set(D.map(r=>r.region))].forEach(reg=>{
+    const g=document.createElement("div"); g.className="stack";
+    const h=document.createElement("h2"); h.textContent=reg; g.appendChild(h);
+    const c=document.createElement("div"); c.className="cards";
+    D.filter(r=>r.region===reg).sort((a,b)=>a.start-b.start).forEach(r=>{
+      if(seen.has(r.page)) return; seen.add(r.page);
+      const same=D.filter(x=>x.page===r.page);
+      const a=document.createElement("a"); a.className="card live"; a.href="#"+r.page;
+      a.innerHTML='<span class="per"></span><strong></strong><span class="soon">อ่านหน้านี้</span>';
+      a.querySelector(".per").textContent=same.map(x=>x.per).join(" · ");
+      a.querySelector("strong").textContent=same.map(x=>x.name).join(", ");
+      c.appendChild(a);
+    });
+    g.appendChild(c); box.appendChild(g);
+  });
+}
+buildFrise(); buildCards(); buildCivGroups(); initFilters(); render(); route();
+window.addEventListener("hashchange",route);
+</script>
+</body>
+</html>
