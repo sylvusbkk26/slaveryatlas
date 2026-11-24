@@ -6,7 +6,7 @@ disponible produit /<lang>/<page>/index.html, avec hreflang croisés.
 """
 import re, os, shutil, pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import map_i18n, consent_i18n
+import map_i18n, consent_i18n, contact_i18n
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
@@ -77,17 +77,20 @@ def main():
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
 '''
-    css += map_i18n.CSS + consent_i18n.CSS
+    css += map_i18n.CSS + consent_i18n.CSS + contact_i18n.CSS
     (OUT / 'assets/site.css').write_text(css, encoding='utf-8')
     shutil.copytree(ROOT / 'src/static/vendor', OUT / 'assets/vendor')
     shutil.copy(ROOT / 'src/static/map.js', OUT / 'assets/map.js')
     shutil.copy(ROOT / 'src/static/consent.js', OUT / 'assets/consent.js')
+    shutil.copy(ROOT / 'src/static/contact.js', OUT / 'assets/contact.js')
 
     # pages par langue : {lang: {pid: body}}
     secs, meta = {}, {}
     for l, _, _ in avail:
         s = sources[l]
         secs[l] = dict(re.findall(r'<section class="view" id="v-([a-z-]+)">(.*?)</section>', s, re.S))
+        if l in contact_i18n.C:
+            secs[l]['contact'] = contact_i18n.body(l)
         navhtml = re.search(r'<nav class="main"[^>]*>(.*?)</nav>', s, re.S).group(1)
         meta[l] = {
             'nav': re.findall(r'<a href="#([a-z-]*)"[^>]*>(.*?)</a>', navhtml),
@@ -110,7 +113,7 @@ header.top .wrap{row-gap:4px}
             path = path_of(l, pid)
             urls.append(path)
             b = body.replace('href="#accueil"', f'href="/{l}/"')
-            extra_js = ''
+            extra_js = contact_i18n.script(l) if pid == 'contact' else ''
             if pid == 'accueil' and '<div class="frise"' in b:
                 i = b.rfind('<div class="stack">', 0, b.index('<div class="frise"'))
                 b = b[:i] + map_i18n.block(l) + b[i:]
@@ -160,7 +163,7 @@ header.top .wrap{row-gap:4px}
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/{l}/">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
 <main><section class="view">{b}</section></main>
-{m["footer"].replace("</div></footer>", consent_i18n.footer_link(l) + "</div></footer>")}
+{m["footer"].replace("</div></footer>", contact_i18n.footer_link(l) + consent_i18n.footer_link(l) + "</div></footer>")}
 <script src="/assets/app.{l}.js"></script>
 {consent_i18n.script(l)}
 {extra_js}

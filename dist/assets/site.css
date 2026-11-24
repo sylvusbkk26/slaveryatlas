@@ -200,3 +200,16 @@ header.top .wrap{row-gap:4px}
 #consent div{display:flex;gap:8px}
 #consent button{font:inherit;padding:7px 14px;border-radius:6px;border:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer}
 #consent button.yes{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:600}
+
+.contact-form{display:flex;flex-direction:column;gap:14px;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:20px}
+.contact-form label{display:flex;flex-direction:column;gap:5px;font-size:.88rem;font-weight:500;color:var(--muted)}
+.contact-form input,.contact-form textarea{font:inherit;font-size:1rem;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:9px 11px}
+.contact-form textarea{resize:vertical;min-height:140px}
+.contact-form .row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.contact-form .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact-form .small{font-size:.82rem}
+.btn-send{font:inherit;font-weight:600;padding:10px 20px;border-radius:6px;border:0;background:var(--accent);color:var(--panel);cursor:pointer}
+.btn-send:disabled{opacity:.6;cursor:default}
+.cf-status{margin:0;font-weight:500}
+.cf-status.ok{color:var(--accent)}
+.cf-status.err{color:var(--warn)}

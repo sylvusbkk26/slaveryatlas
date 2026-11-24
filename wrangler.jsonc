@@ -7,8 +7,12 @@
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/"]
+    "run_worker_first": ["/", "/api/*"]
   },
+  "send_email": [
+    { "name": "CONTACT" }
+  ],
+  "observability": { "enabled": true },
   "routes": [
     { "pattern": "slaveryatlas.org", "custom_domain": true },
     { "pattern": "www.slaveryatlas.org", "custom_domain": true }
