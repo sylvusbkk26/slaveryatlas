@@ -6,7 +6,7 @@ disponible produit /<lang>/<page>/index.html, avec hreflang croisés.
 """
 import re, os, shutil, pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import map_i18n
+import map_i18n, consent_i18n
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
@@ -77,10 +77,11 @@ def main():
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
 '''
-    css += map_i18n.CSS
+    css += map_i18n.CSS + consent_i18n.CSS
     (OUT / 'assets/site.css').write_text(css, encoding='utf-8')
     shutil.copytree(ROOT / 'src/static/vendor', OUT / 'assets/vendor')
     shutil.copy(ROOT / 'src/static/map.js', OUT / 'assets/map.js')
+    shutil.copy(ROOT / 'src/static/consent.js', OUT / 'assets/consent.js')
 
     # pages par langue : {lang: {pid: body}}
     secs, meta = {}, {}
@@ -159,8 +160,9 @@ header.top .wrap{row-gap:4px}
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/{l}/">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
 <main><section class="view">{b}</section></main>
-{m["footer"]}
+{m["footer"].replace("</div></footer>", consent_i18n.footer_link(l) + "</div></footer>")}
 <script src="/assets/app.{l}.js"></script>
+{consent_i18n.script(l)}
 {extra_js}
 </body>
 </html>'''
