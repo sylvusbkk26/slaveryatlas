@@ -308,7 +308,7 @@ header.top .wrap{row-gap:4px}
 </head>
 <body>
 <a class="skip" href="#main">{SKIP.get(l, 'Skip to content')}</a>
-<header class="top"><div class="wrap"><a class="brand" href="/{l}/"><img src="/assets/logo.svg" alt="" width="28" height="28">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="/{l}/"><img src="/assets/favicon.svg" alt="" width="28" height="28">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
 <main id="main" tabindex="-1"><section class="view">{b}</section></main>
 {m["footer"].replace("</div></footer>", contact_i18n.footer_link(l) + about_i18n.footer_bits(l, TODAY) + consent_i18n.footer_link(l) + "</div></footer>")}
 <script src="/assets/app.{l}.js"></script>
