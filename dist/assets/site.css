@@ -145,6 +145,8 @@ footer{border-top:1px solid var(--rule);padding:24px 0;font-size:.85rem;color:va
 .langs a{color:var(--muted);text-decoration:none;padding:4px 7px;border-radius:5px;font-weight:500}
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
+.brand{display:inline-flex;align-items:center;gap:8px}
+.brand img{width:28px;height:28px;flex:none}
 .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600}
 .skip:focus{top:8px}
 :lang(th){--body:"IBM Plex Sans Thai","IBM Plex Sans",system-ui,sans-serif}

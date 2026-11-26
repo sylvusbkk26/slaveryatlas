@@ -192,6 +192,8 @@ def main():
 .langs a{color:var(--muted);text-decoration:none;padding:4px 7px;border-radius:5px;font-weight:500}
 .langs a[aria-current="true"]{color:var(--ink);background:var(--chip)}
 header.top .wrap{row-gap:4px}
+.brand{display:inline-flex;align-items:center;gap:8px}
+.brand img{width:28px;height:28px;flex:none}
 .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600}
 .skip:focus{top:8px}
 :lang(th){--body:"IBM Plex Sans Thai","IBM Plex Sans",system-ui,sans-serif}
@@ -204,6 +206,15 @@ header.top .wrap{row-gap:4px}
     shutil.copy(ROOT / 'src/static/consent.js', OUT / 'assets/consent.js')
     shutil.copy(ROOT / 'src/static/contact.js', OUT / 'assets/contact.js')
     shutil.copytree(ROOT / 'src/static/fonts', OUT / 'assets/fonts')
+    shutil.copytree(ROOT / 'src/static/og', OUT / 'assets/og')
+    for f in ('logo.svg', 'favicon.svg', 'icon-192.png', 'icon-512.png'):
+        shutil.copy(ROOT / 'src/static' / f, OUT / 'assets' / f)
+    for f in ('favicon.ico', 'apple-touch-icon.png'):
+        shutil.copy(ROOT / 'src/static' / f, OUT / f)
+    (OUT / 'site.webmanifest').write_text(json.dumps({'name': 'Slavery Atlas', 'short_name': 'Slavery Atlas',
+        'icons': [{'src': '/assets/icon-192.png', 'sizes': '192x192', 'type': 'image/png'},
+                  {'src': '/assets/icon-512.png', 'sizes': '512x512', 'type': 'image/png'}],
+        'theme_color': '#102036', 'background_color': '#f3f4f2', 'display': 'standalone', 'start_url': '/'}), encoding='utf-8')
 
     # pages par langue : {lang: {pid: body}}
     secs, meta = {}, {}
@@ -280,6 +291,16 @@ header.top .wrap{row-gap:4px}
 <meta property="og:locale" content="{loc}">
 <meta property="og:site_name" content="Slavery Atlas">
 <meta property="article:modified_time" content="{TODAY.isoformat()}">
+<meta property="og:image" content="{BASE}/assets/og/{l}.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Slavery Atlas">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#102036">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">{'<link rel="stylesheet" href="/assets/fonts/fonts-thai.css">' if l == 'th' else ''}
 <link rel="stylesheet" href="/assets/site.css">
@@ -287,7 +308,7 @@ header.top .wrap{row-gap:4px}
 </head>
 <body>
 <a class="skip" href="#main">{SKIP.get(l, 'Skip to content')}</a>
-<header class="top"><div class="wrap"><a class="brand" href="/{l}/">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="/{l}/"><img src="/assets/logo.svg" alt="" width="28" height="28">{m["brand"]}</a><nav class="main" aria-label="{esc(m["navlabel"])}">{nav}</nav><nav class="langs" aria-label="Language">{switch}</nav></div></header>
 <main id="main" tabindex="-1"><section class="view">{b}</section></main>
 {m["footer"].replace("</div></footer>", contact_i18n.footer_link(l) + about_i18n.footer_bits(l, TODAY) + consent_i18n.footer_link(l) + "</div></footer>")}
 <script src="/assets/app.{l}.js"></script>
